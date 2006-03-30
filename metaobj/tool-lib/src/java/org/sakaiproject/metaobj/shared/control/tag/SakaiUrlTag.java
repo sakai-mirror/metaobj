@@ -22,22 +22,23 @@
  **********************************************************************************/
 package org.sakaiproject.metaobj.shared.control.tag;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.taglibs.standard.tag.el.core.UrlTag;
-import org.sakaiproject.api.kernel.component.cover.ComponentManager;
-import org.sakaiproject.api.kernel.tool.Tool;
-import org.sakaiproject.metaobj.shared.mgt.PortalParamManager;
-import org.sakaiproject.metaobj.shared.model.OspException;
-import org.sakaiproject.util.web.Web;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyContent;
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.taglibs.standard.tag.el.core.UrlTag;
+import org.sakaiproject.component.cover.ComponentManager;
+import org.sakaiproject.metaobj.shared.mgt.PortalParamManager;
+import org.sakaiproject.metaobj.shared.model.OspException;
+import org.sakaiproject.util.Web;
+import org.sakaiproject.webapp.api.Tool;
 
 public class SakaiUrlTag extends UrlTag {
    protected final transient Log logger = LogFactory.getLog(getClass());

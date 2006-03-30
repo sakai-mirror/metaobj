@@ -27,7 +27,7 @@
 
       <dependency>
          <groupId>sakaiproject</groupId>
-         <artifactId>sakai-function</artifactId>
+         <artifactId>sakai-authz-api</artifactId>
          <version>${sakai.version}</version>
       </dependency>
 
@@ -39,13 +39,37 @@
 
       <dependency>
          <groupId>sakaiproject</groupId>
-         <artifactId>sakai-thread_local</artifactId>
+         <artifactId>sakai-component-api</artifactId>
          <version>${sakai.version}</version>
       </dependency>
 
       <dependency>
          <groupId>sakaiproject</groupId>
-         <artifactId>sakai-legacy-service</artifactId>
+         <artifactId>sakai-content-api</artifactId>
+         <version>${sakai.version}</version>
+      </dependency>
+
+      <dependency>
+         <groupId>sakaiproject</groupId>
+         <artifactId>sakai-entity-api</artifactId>
+         <version>${sakai.version}</version>
+      </dependency>
+
+      <dependency>
+         <groupId>sakaiproject</groupId>
+         <artifactId>sakai-user-api</artifactId>
+         <version>${sakai.version}</version>
+      </dependency>
+
+      <dependency>
+         <groupId>sakaiproject</groupId>
+         <artifactId>sakai-util-api</artifactId>
+         <version>${sakai.version}</version>
+      </dependency>
+
+      <dependency>
+         <groupId>sakaiproject</groupId>
+         <artifactId>sakai-site-api</artifactId>
          <version>${sakai.version}</version>
       </dependency>
 
@@ -57,7 +81,7 @@
 
       <dependency>
          <groupId>sakaiproject</groupId>
-         <artifactId>sakai-tool</artifactId>
+         <artifactId>sakai-webapp-api</artifactId>
          <version>${sakai.version}</version>
       </dependency>
 

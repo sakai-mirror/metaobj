@@ -22,6 +22,11 @@
  **********************************************************************************/
 package org.sakaiproject.metaobj.security.model;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.metaobj.security.mgt.PermissionManager;
@@ -32,12 +37,7 @@ import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.worksite.intf.ToolEventListener;
 import org.sakaiproject.metaobj.worksite.model.SiteTool;
-import org.sakaiproject.service.legacy.site.ToolConfiguration;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import org.sakaiproject.site.api.ToolConfiguration;
 
 public class SimpleToolPermissionManager implements ToolEventListener, ToolPermissionManager {
    protected final transient Log logger = LogFactory.getLog(getClass());

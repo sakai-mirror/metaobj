@@ -20,18 +20,19 @@
  **********************************************************************************/
 package org.sakaiproject.metaobj.shared.mgt;
 
-import org.sakaiproject.exception.CopyrightException;
-import org.sakaiproject.exception.IdUnusedException;
-import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.exception.ServerOverloadException;
-import org.sakaiproject.service.legacy.entity.EntityProducer;
-import org.sakaiproject.service.legacy.entity.HttpAccess;
-import org.sakaiproject.service.legacy.entity.Reference;
-import org.sakaiproject.service.legacy.resource.cover.EntityManager;
+import java.util.Collection;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Collection;
+
+import org.sakaiproject.entity.api.EntityAccessOverloadException;
+import org.sakaiproject.entity.api.EntityCopyrightException;
+import org.sakaiproject.entity.api.EntityNotDefinedException;
+import org.sakaiproject.entity.api.EntityPermissionException;
+import org.sakaiproject.entity.api.EntityProducer;
+import org.sakaiproject.entity.api.HttpAccess;
+import org.sakaiproject.entity.api.Reference;
+import org.sakaiproject.entity.cover.EntityManager;
 
 /**
  * Created by IntelliJ IDEA.
@@ -44,7 +45,7 @@ public abstract class HttpAccessBase implements HttpAccess {
 
    public void handleAccess(HttpServletRequest req, HttpServletResponse res,
                             Reference ref, Collection copyrightAcceptedRefs)
-         throws PermissionException, IdUnusedException, ServerOverloadException, CopyrightException {
+         throws EntityPermissionException, EntityNotDefinedException, EntityAccessOverloadException, EntityCopyrightException {
       ReferenceParser parser = createParser(ref);
       checkSource(ref, parser);
       ContentEntityWrapper wrapper = (ContentEntityWrapper) ref.getEntity();
@@ -58,6 +59,6 @@ public abstract class HttpAccessBase implements HttpAccess {
    }
 
    protected abstract void checkSource(Reference ref, ReferenceParser parser)
-         throws PermissionException, IdUnusedException, ServerOverloadException, CopyrightException;
+         throws EntityPermissionException, EntityNotDefinedException, EntityAccessOverloadException, EntityCopyrightException;
 
 }

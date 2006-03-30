@@ -22,22 +22,22 @@
  **********************************************************************************/
 package org.sakaiproject.metaobj.security.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.api.kernel.thread_local.cover.ThreadLocalManager;
-import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.authz.api.AuthzGroup;
+import org.sakaiproject.authz.api.GroupNotDefinedException;
+import org.sakaiproject.authz.cover.AuthzGroupService;
 import org.sakaiproject.metaobj.security.AuthorizationFacade;
 import org.sakaiproject.metaobj.security.AuthorizationFailedException;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.service.framework.portal.PortalService;
-import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
-import org.sakaiproject.service.legacy.authzGroup.AuthzGroupService;
-import org.sakaiproject.service.legacy.user.UserDirectoryService;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import org.sakaiproject.thread_local.cover.ThreadLocalManager;
+import org.sakaiproject.user.api.UserDirectoryService;
+import org.sakaiproject.webapp.cover.ToolManager;
 
 /**
  * Created by IntelliJ IDEA.
@@ -53,7 +53,6 @@ public class AuthzShim implements AuthorizationFacade {
       "org.sakaiproject.metaobj.security.impl.AuthzShim.groups";
 
    private AuthzGroupService realmService;
-   private PortalService portalService;
    private UserDirectoryService userDirectoryService;
 
    public void checkPermission(String function, Id id) throws AuthorizationFailedException {
@@ -88,7 +87,7 @@ public class AuthzShim implements AuthorizationFacade {
       try {
          siteRealm = getRealmService().getAuthzGroup(getCurrentRealm());
       }
-      catch (IdUnusedException e) {
+      catch (GroupNotDefinedException e) {
          logger.warn("unkown realm", e);
       }
       String maintain = siteRealm.getMaintainRole();
@@ -98,7 +97,7 @@ public class AuthzShim implements AuthorizationFacade {
 
    protected String getCurrentRealm() {
       if (getAuthzGroupsList().size() == 0) {
-         return "/site/" + getPortalService().getCurrentSiteId();
+         return "/site/" + ToolManager.getCurrentPlacement().getContext();
       }
       else {
          return "/site/" + getAuthzGroupsList().get(0);
@@ -137,14 +136,6 @@ public class AuthzShim implements AuthorizationFacade {
 
    public void setRealmService(AuthzGroupService realmService) {
       this.realmService = realmService;
-   }
-
-   public PortalService getPortalService() {
-      return portalService;
-   }
-
-   public void setPortalService(PortalService portalService) {
-      this.portalService = portalService;
    }
 
    public UserDirectoryService getUserDirectoryService() {

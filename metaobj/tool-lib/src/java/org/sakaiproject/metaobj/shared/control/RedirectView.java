@@ -22,15 +22,16 @@
  **********************************************************************************/
 package org.sakaiproject.metaobj.shared.control;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.api.kernel.component.cover.ComponentManager;
-import org.sakaiproject.metaobj.shared.mgt.PortalParamManager;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.component.cover.ComponentManager;
+import org.sakaiproject.metaobj.shared.mgt.PortalParamManager;
 
 public class RedirectView extends org.springframework.web.servlet.view.RedirectView {
    protected final transient Log logger = LogFactory.getLog(getClass());

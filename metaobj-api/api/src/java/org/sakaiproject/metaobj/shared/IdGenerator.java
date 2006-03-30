@@ -22,14 +22,15 @@
  **********************************************************************************/
 package org.sakaiproject.metaobj.shared;
 
+import java.io.Serializable;
+import java.sql.SQLException;
+
 import net.sf.hibernate.HibernateException;
 import net.sf.hibernate.engine.SessionImplementor;
 import net.sf.hibernate.id.IdentifierGenerator;
-import org.sakaiproject.api.kernel.component.cover.ComponentManager;
-import org.sakaiproject.metaobj.shared.mgt.IdManager;
 
-import java.io.Serializable;
-import java.sql.SQLException;
+import org.sakaiproject.component.cover.ComponentManager;
+import org.sakaiproject.metaobj.shared.mgt.IdManager;
 
 /**
  * creates unique identifiers for hibernate

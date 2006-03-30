@@ -22,25 +22,6 @@
  **********************************************************************************/
 package org.sakaiproject.metaobj.shared.mgt.impl;
 
-import org.jdom.CDATA;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
-import org.sakaiproject.exception.EmptyException;
-import org.sakaiproject.exception.ServerOverloadException;
-import org.sakaiproject.exception.TypeException;
-import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
-import org.sakaiproject.metaobj.shared.mgt.IdManager;
-import org.sakaiproject.metaobj.shared.mgt.PresentableObjectHome;
-import org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome;
-import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactHomeInterface;
-import org.sakaiproject.metaobj.shared.model.*;
-import org.sakaiproject.metaobj.utils.xml.SchemaNode;
-import org.sakaiproject.service.legacy.content.ContentResource;
-import org.sakaiproject.service.legacy.entity.ResourceProperties;
-import org.sakaiproject.service.legacy.time.Time;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,6 +29,32 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+
+import org.jdom.CDATA;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
+import org.sakaiproject.content.api.ContentResource;
+import org.sakaiproject.entity.api.EntityPropertyNotDefinedException;
+import org.sakaiproject.entity.api.EntityPropertyTypeException;
+import org.sakaiproject.entity.api.ResourceProperties;
+import org.sakaiproject.exception.ServerOverloadException;
+import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
+import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.mgt.PresentableObjectHome;
+import org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome;
+import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactHomeInterface;
+import org.sakaiproject.metaobj.shared.model.Agent;
+import org.sakaiproject.metaobj.shared.model.Artifact;
+import org.sakaiproject.metaobj.shared.model.ContentResourceArtifact;
+import org.sakaiproject.metaobj.shared.model.FinderException;
+import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.shared.model.MimeType;
+import org.sakaiproject.metaobj.shared.model.PersistenceException;
+import org.sakaiproject.metaobj.shared.model.Type;
+import org.sakaiproject.metaobj.utils.xml.SchemaNode;
+import org.sakaiproject.time.api.Time;
 
 /**
  * Created by IntelliJ IDEA.
@@ -264,10 +271,10 @@ public class ContentResourceHome implements ReadableObjectHome, PresentableObjec
          Time time = resource.getProperties().getTimeProperty(propName);
          return new Date(time.getTime());
       }
-      catch (EmptyException e) {
+      catch (EntityPropertyNotDefinedException e) {
          return null;
       }
-      catch (TypeException e) {
+      catch (EntityPropertyTypeException e) {
          throw new RuntimeException(e);
       }
    }

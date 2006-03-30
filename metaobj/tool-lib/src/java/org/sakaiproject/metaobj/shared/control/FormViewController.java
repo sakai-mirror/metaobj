@@ -20,17 +20,17 @@
  **********************************************************************************/
 package org.sakaiproject.metaobj.shared.control;
 
+import java.util.Map;
+
 import org.jdom.Document;
 import org.jdom.Element;
-import org.sakaiproject.api.kernel.tool.Tool;
-import org.sakaiproject.api.kernel.tool.cover.ToolManager;
+import org.sakaiproject.content.api.ResourceEditingHelper;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
 import org.sakaiproject.metaobj.utils.mvc.intf.Controller;
-import org.sakaiproject.service.legacy.filepicker.ResourceEditingHelper;
+import org.sakaiproject.webapp.api.Tool;
+import org.sakaiproject.webapp.cover.ToolManager;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
-
-import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.

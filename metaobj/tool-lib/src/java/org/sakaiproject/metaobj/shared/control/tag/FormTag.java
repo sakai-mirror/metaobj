@@ -22,17 +22,18 @@
  **********************************************************************************/
 package org.sakaiproject.metaobj.shared.control.tag;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.api.kernel.component.cover.ComponentManager;
-import org.sakaiproject.metaobj.shared.mgt.PortalParamManager;
-
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.Iterator;
 import java.util.Map;
+
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.tagext.BodyTagSupport;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.component.cover.ComponentManager;
+import org.sakaiproject.metaobj.shared.mgt.PortalParamManager;
 
 public class FormTag extends BodyTagSupport {
    protected final transient Log logger = LogFactory.getLog(getClass());

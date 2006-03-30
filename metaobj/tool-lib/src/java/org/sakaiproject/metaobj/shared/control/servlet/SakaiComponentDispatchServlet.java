@@ -22,23 +22,27 @@
  **********************************************************************************/
 package org.sakaiproject.metaobj.shared.control.servlet;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.api.kernel.component.cover.ComponentManager;
-import org.sakaiproject.api.kernel.session.Session;
-import org.sakaiproject.api.kernel.session.cover.SessionManager;
-import org.sakaiproject.metaobj.shared.model.*;
-import org.sakaiproject.service.framework.portal.cover.PortalService;
-import org.sakaiproject.service.framework.session.SessionState;
-import org.springframework.web.servlet.DispatcherServlet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.component.cover.ComponentManager;
+import org.sakaiproject.metaobj.shared.model.Agent;
+import org.sakaiproject.metaobj.shared.model.Artifact;
+import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.shared.model.IdImpl;
+import org.sakaiproject.metaobj.shared.model.OspException;
+import org.sakaiproject.webapp.api.Session;
+import org.sakaiproject.webapp.api.ToolSession;
+import org.sakaiproject.webapp.cover.SessionManager;
+import org.springframework.web.servlet.DispatcherServlet;
 
 public class SakaiComponentDispatchServlet extends DispatcherServlet {
 
@@ -153,7 +157,8 @@ public class SakaiComponentDispatchServlet extends DispatcherServlet {
             //
 
             // relies on "osp.tool.view" param being in tool session state
-            SessionState toolState = PortalService.getCurrentToolState();
+            ToolSession toolState = SessionManager.getCurrentToolSession();
+//            SessionState toolState = PortalService.getCurrentToolState();
             if (toolState != null) {
                String redirectPath = (String) toolState.getAttribute(TOOL_STATE_VIEW_KEY);
 

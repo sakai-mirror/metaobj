@@ -20,8 +20,8 @@
  **********************************************************************************/
 package org.sakaiproject.metaobj.shared.mgt;
 
-import org.sakaiproject.service.legacy.entity.Entity;
-import org.sakaiproject.service.legacy.entity.EntityProducer;
+import org.sakaiproject.entity.api.Entity;
+import org.sakaiproject.entity.api.EntityProducer;
 
 /**
  * Created by IntelliJ IDEA.

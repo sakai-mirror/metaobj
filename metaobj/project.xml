@@ -2,7 +2,7 @@
 
 <project>
    <pomVersion>3</pomVersion>
-   <extend>../master/project.xml</extend>
+   <extend>../../master/project.xml</extend>
    <name>sakai-metaobj</name>
    <groupId>sakai-metaobj</groupId>
    <currentVersion>${sakai.version}</currentVersion>
@@ -18,15 +18,6 @@
          <artifactId>sakai</artifactId>
          <version>${sakai.plugin.version}</version>
          <type>plugin</type>
-      </dependency>
-
-      <dependency>
-         <groupId>sakaiproject</groupId>
-         <artifactId>sakai-util-i18n</artifactId>
-         <version>${sakai.version}</version>
-         <properties>
-            <war.bundle>true</war.bundle>
-         </properties>
       </dependency>
 
    </dependencies>

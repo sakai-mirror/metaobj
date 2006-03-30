@@ -20,10 +20,10 @@
  **********************************************************************************/
 package org.sakaiproject.metaobj.shared.mgt.impl;
 
+import org.sakaiproject.entity.api.Entity;
 import org.sakaiproject.metaobj.shared.mgt.EntityProducerBase;
 import org.sakaiproject.metaobj.shared.mgt.MetaobjEntityManager;
 import org.sakaiproject.metaobj.shared.mgt.ReferenceParser;
-import org.sakaiproject.service.legacy.entity.Entity;
 
 /**
  * Created by IntelliJ IDEA.

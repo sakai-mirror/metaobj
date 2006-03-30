@@ -22,9 +22,18 @@
  **********************************************************************************/
 package org.sakaiproject.metaobj.security.mgt.impl;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.authz.api.AuthzGroup;
+import org.sakaiproject.authz.api.GroupNotDefinedException;
+import org.sakaiproject.authz.api.Role;
+import org.sakaiproject.authz.cover.AuthzGroupService;
 import org.sakaiproject.metaobj.security.Authorization;
 import org.sakaiproject.metaobj.security.AuthorizationFacade;
 import org.sakaiproject.metaobj.security.mgt.PermissionManager;
@@ -36,12 +45,7 @@ import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.OspException;
 import org.sakaiproject.metaobj.shared.model.OspRole;
-import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
-import org.sakaiproject.service.legacy.authzGroup.Role;
-import org.sakaiproject.service.legacy.authzGroup.cover.AuthzGroupService;
-import org.sakaiproject.service.legacy.site.Site;
-
-import java.util.*;
+import org.sakaiproject.site.api.Site;
 
 public class PermissionManagerImpl implements PermissionManager {
    protected final transient Log logger = LogFactory.getLog(getClass());
@@ -61,7 +65,7 @@ public class PermissionManagerImpl implements PermissionManager {
          returned.addAll(siteRealm.getRoles());
          return returned;
       }
-      catch (IdUnusedException e) {
+      catch (GroupNotDefinedException e) {
          logger.error("", e);
          throw new OspException(e);
       }
@@ -102,7 +106,7 @@ public class PermissionManagerImpl implements PermissionManager {
             }
          }
       }
-      catch (IdUnusedException e) {
+      catch (GroupNotDefinedException e) {
          logger.error("", e);
          throw new OspException(e);
       }

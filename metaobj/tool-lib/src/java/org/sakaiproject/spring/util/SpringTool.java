@@ -22,15 +22,8 @@
  **********************************************************************************/
 package org.sakaiproject.spring.util;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.api.kernel.session.ToolSession;
-import org.sakaiproject.api.kernel.session.cover.SessionManager;
-import org.sakaiproject.api.kernel.tool.ActiveTool;
-import org.sakaiproject.api.kernel.tool.Tool;
-import org.sakaiproject.api.kernel.tool.ToolException;
-import org.sakaiproject.api.kernel.tool.cover.ActiveToolManager;
-import org.sakaiproject.util.web.Web;
+import java.io.IOException;
+import java.util.Enumeration;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
@@ -38,8 +31,16 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Enumeration;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.util.Web;
+import org.sakaiproject.webapp.api.ActiveTool;
+import org.sakaiproject.webapp.api.Tool;
+import org.sakaiproject.webapp.api.ToolException;
+import org.sakaiproject.webapp.api.ToolSession;
+import org.sakaiproject.webapp.cover.ActiveToolManager;
+import org.sakaiproject.webapp.cover.SessionManager;
 
 
 public class SpringTool extends HttpServlet {

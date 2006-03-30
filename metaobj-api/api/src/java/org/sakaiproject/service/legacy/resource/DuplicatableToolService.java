@@ -22,9 +22,9 @@
  **********************************************************************************/
 package org.sakaiproject.service.legacy.resource;
 
-import org.sakaiproject.service.legacy.site.ToolConfiguration;
-
 import java.util.List;
+
+import org.sakaiproject.site.api.ToolConfiguration;
 
 public interface DuplicatableToolService {
 

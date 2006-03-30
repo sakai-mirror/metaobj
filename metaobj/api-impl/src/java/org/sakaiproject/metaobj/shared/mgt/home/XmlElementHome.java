@@ -22,23 +22,6 @@
  **********************************************************************************/
 package org.sakaiproject.metaobj.shared.mgt.home;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.input.SAXBuilder;
-import org.jdom.output.Format;
-import org.jdom.output.XMLOutputter;
-import org.sakaiproject.metaobj.shared.mgt.IdManager;
-import org.sakaiproject.metaobj.shared.model.*;
-import org.sakaiproject.metaobj.utils.xml.SchemaFactory;
-import org.sakaiproject.metaobj.utils.xml.SchemaInvalidException;
-import org.sakaiproject.metaobj.utils.xml.SchemaNode;
-import org.sakaiproject.service.framework.portal.cover.PortalService;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.context.ResourceLoaderAware;
-import org.springframework.core.io.ResourceLoader;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -47,6 +30,30 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.input.SAXBuilder;
+import org.jdom.output.Format;
+import org.jdom.output.XMLOutputter;
+import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.model.Agent;
+import org.sakaiproject.metaobj.shared.model.Artifact;
+import org.sakaiproject.metaobj.shared.model.FinderException;
+import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.shared.model.OspException;
+import org.sakaiproject.metaobj.shared.model.PersistenceException;
+import org.sakaiproject.metaobj.shared.model.StructuredArtifact;
+import org.sakaiproject.metaobj.shared.model.Type;
+import org.sakaiproject.metaobj.utils.xml.SchemaFactory;
+import org.sakaiproject.metaobj.utils.xml.SchemaInvalidException;
+import org.sakaiproject.metaobj.utils.xml.SchemaNode;
+import org.sakaiproject.webapp.cover.ToolManager;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ResourceLoaderAware;
+import org.springframework.core.io.ResourceLoader;
 
 /**
  * Created by IntelliJ IDEA.
@@ -243,7 +250,7 @@ public class XmlElementHome implements StructuredArtifactHomeInterface, Initiali
 
    public String getExternalUri(Id artifactId, String name) {
       //http://johnellis.rsmart.com:8080/osp/member/viewNode.osp?pid=1107451588272-643&nodeId=48D2AFE5A98453AD673579E14405607C
-      return "viewNode.osp?pid=" + PortalService.getCurrentToolId() +
+      return "viewNode.osp?pid=" + ToolManager.getCurrentPlacement().getId() +
             "&nodeId=" + artifactId.getValue();
    }
 

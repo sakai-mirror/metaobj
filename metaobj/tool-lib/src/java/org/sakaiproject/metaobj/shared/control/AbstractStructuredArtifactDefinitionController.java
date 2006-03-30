@@ -22,6 +22,14 @@
  **********************************************************************************/
 package org.sakaiproject.metaobj.shared.control;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
@@ -35,12 +43,10 @@ import org.sakaiproject.metaobj.utils.mvc.impl.servlet.AbstractFormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.ListScroll;
 import org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
-import org.sakaiproject.service.framework.portal.cover.PortalService;
-import org.sakaiproject.service.legacy.site.Site;
-import org.sakaiproject.service.legacy.site.ToolConfiguration;
+import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.api.ToolConfiguration;
+import org.sakaiproject.webapp.cover.ToolManager;
 import org.springframework.web.servlet.ModelAndView;
-
-import java.util.*;
 
 abstract public class AbstractStructuredArtifactDefinitionController extends AbstractFormController {
    protected final Log logger = LogFactory.getLog(getClass());
@@ -62,14 +68,14 @@ abstract public class AbstractStructuredArtifactDefinitionController extends Abs
          getAuthzManager().checkPermission(function, getIdManager().getId(StructuredArtifactDefinitionManager.GLOBAL_SAD_QUALIFIER));
       }
       else {
-         getAuthzManager().checkPermission(function, getIdManager().getId(PortalService.getCurrentToolId()));
+         getAuthzManager().checkPermission(function, getIdManager().getId(ToolManager.getCurrentPlacement().getId()));
       }
 
    }
 
    protected Boolean isMaintainer() {
       return new Boolean(getAuthzManager().isAuthorized(WorksiteManager.WORKSITE_MAINTAIN,
-            getIdManager().getId(PortalService.getCurrentSiteId())));
+            getIdManager().getId(ToolManager.getCurrentPlacement().getContext())));
    }
 
    protected ModelAndView prepareListView(Map request, String recentId) {
@@ -78,7 +84,7 @@ abstract public class AbstractStructuredArtifactDefinitionController extends Abs
       model.put("isMaintainer", isMaintainer());
       model.put("worksite", getWorksiteManager().getSite(worksiteId));
       model.put("sites", getUserSites());
-      ToolConfiguration tool = getWorksiteManager().getTool(PortalService.getCurrentToolId());
+      ToolConfiguration tool = getWorksiteManager().getTool(ToolManager.getCurrentPlacement().getId());
       model.put("tool", tool);
 
       boolean global = getStructuredArtifactDefinitionManager().isGlobal();
@@ -92,7 +98,7 @@ abstract public class AbstractStructuredArtifactDefinitionController extends Abs
             model.put("authZqualifier", getIdManager().getId(tool.getId()));
          }
          else {
-            model.put("authZqualifier", getIdManager().getId(PortalService.getCurrentToolId()));
+            model.put("authZqualifier", getIdManager().getId(ToolManager.getCurrentPlacement().getId()));
          }
       }
 

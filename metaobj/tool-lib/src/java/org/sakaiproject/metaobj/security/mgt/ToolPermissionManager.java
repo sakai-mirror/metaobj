@@ -22,10 +22,10 @@
  **********************************************************************************/
 package org.sakaiproject.metaobj.security.mgt;
 
-import org.sakaiproject.metaobj.security.model.PermissionsEdit;
-import org.sakaiproject.service.legacy.site.ToolConfiguration;
-
 import java.util.List;
+
+import org.sakaiproject.metaobj.security.model.PermissionsEdit;
+import org.sakaiproject.site.api.ToolConfiguration;
 
 public interface ToolPermissionManager {
 

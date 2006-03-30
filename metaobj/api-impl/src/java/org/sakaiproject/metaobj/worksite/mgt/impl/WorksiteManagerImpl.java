@@ -22,22 +22,27 @@
  **********************************************************************************/
 package org.sakaiproject.metaobj.worksite.mgt.impl;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.authz.api.AuthzGroup;
+import org.sakaiproject.authz.api.GroupNotDefinedException;
+import org.sakaiproject.authz.cover.AuthzGroupService;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.OspException;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
-import org.sakaiproject.service.framework.portal.cover.PortalService;
-import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
-import org.sakaiproject.service.legacy.authzGroup.cover.AuthzGroupService;
-import org.sakaiproject.service.legacy.site.Site;
-import org.sakaiproject.service.legacy.site.SitePage;
-import org.sakaiproject.service.legacy.site.ToolConfiguration;
-import org.sakaiproject.service.legacy.site.cover.SiteService;
-
-import java.util.*;
+import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.api.SitePage;
+import org.sakaiproject.site.api.ToolConfiguration;
+import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.webapp.cover.ToolManager;
 
 public class WorksiteManagerImpl implements WorksiteManager {
    protected final transient Log logger = LogFactory.getLog(getClass());
@@ -50,8 +55,8 @@ public class WorksiteManagerImpl implements WorksiteManager {
 
    public List getUserSites(Map properties) {
       // process all the sites
-      List mySites = SiteService.getSites(org.sakaiproject.service.legacy.site.SiteService.SelectionType.ACCESS,
-            null, null, properties, org.sakaiproject.service.legacy.site.SiteService.SortType.NONE, null);
+      List mySites = SiteService.getSites(org.sakaiproject.site.api.SiteService.SelectionType.ACCESS,
+            null, null, properties, org.sakaiproject.site.api.SiteService.SortType.NONE, null);
 
       if (mySites.size() > 0) {
          Collections.sort(mySites);
@@ -61,7 +66,7 @@ public class WorksiteManagerImpl implements WorksiteManager {
    }
 
    public Id getCurrentWorksiteId() {
-      String id = PortalService.getCurrentSiteId();
+      String id = ToolManager.getCurrentPlacement().getContext();
 
       if (id != null) {
          return getIdManager().getId(id);
@@ -107,7 +112,7 @@ public class WorksiteManagerImpl implements WorksiteManager {
          siteRealm = AuthzGroupService.getAuthzGroup("/site/" +
                siteId);
       }
-      catch (IdUnusedException e) {
+      catch (GroupNotDefinedException e) {
          logger.error("", e);
          throw new OspException(e);
       }

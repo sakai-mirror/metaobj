@@ -22,20 +22,21 @@
  **********************************************************************************/
 package org.sakaiproject.metaobj.security.control.tag;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.taglibs.standard.lang.support.ExpressionEvaluatorManager;
-import org.sakaiproject.api.kernel.component.cover.ComponentManager;
-import org.sakaiproject.metaobj.security.AuthorizationFacade;
-import org.sakaiproject.metaobj.security.model.AuthZMap;
-import org.sakaiproject.metaobj.shared.mgt.IdManager;
-import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.service.framework.portal.cover.PortalService;
+import java.util.Map;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.TagSupport;
-import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.taglibs.standard.lang.support.ExpressionEvaluatorManager;
+import org.sakaiproject.component.cover.ComponentManager;
+import org.sakaiproject.metaobj.security.AuthorizationFacade;
+import org.sakaiproject.metaobj.security.model.AuthZMap;
+import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.webapp.cover.ToolManager;
 
 public class AuthZMapTag extends TagSupport {
 
@@ -93,10 +94,10 @@ public class AuthZMapTag extends TagSupport {
 
    public Id evaluateQualifier() throws JspException {
       if (isUseSite()) {
-         qualifier = getIdManager().getId(PortalService.getCurrentSiteId());
+         qualifier = getIdManager().getId(ToolManager.getCurrentPlacement().getContext());
       }
       else if (qualifierExpression == null) {
-         qualifier = getIdManager().getId(PortalService.getCurrentToolId());
+         qualifier = getIdManager().getId(ToolManager.getCurrentPlacement().getId());
       }
       else {
          qualifier = (Id) ExpressionEvaluatorManager.evaluate("qualifier", qualifierExpression,

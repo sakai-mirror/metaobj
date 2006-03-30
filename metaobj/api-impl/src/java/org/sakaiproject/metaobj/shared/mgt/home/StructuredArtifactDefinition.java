@@ -22,17 +22,22 @@
  **********************************************************************************/
 package org.sakaiproject.metaobj.shared.mgt.home;
 
-import org.sakaiproject.api.kernel.component.cover.ComponentManager;
-import org.sakaiproject.metaobj.shared.mgt.IdManager;
-import org.sakaiproject.metaobj.shared.mgt.PresentableObjectHome;
-import org.sakaiproject.metaobj.shared.model.*;
-import org.sakaiproject.metaobj.utils.xml.SchemaFactory;
-import org.sakaiproject.metaobj.utils.xml.SchemaNode;
-
 import java.io.ByteArrayInputStream;
 import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.Date;
+
+import org.sakaiproject.component.cover.ComponentManager;
+import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.mgt.PresentableObjectHome;
+import org.sakaiproject.metaobj.shared.model.Agent;
+import org.sakaiproject.metaobj.shared.model.Artifact;
+import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.shared.model.StructuredArtifact;
+import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
+import org.sakaiproject.metaobj.shared.model.Type;
+import org.sakaiproject.metaobj.utils.xml.SchemaFactory;
+import org.sakaiproject.metaobj.utils.xml.SchemaNode;
 
 
 /**

@@ -23,7 +23,7 @@
 package org.sakaiproject.metaobj.worksite.intf;
 
 import org.sakaiproject.metaobj.worksite.model.SiteTool;
-import org.sakaiproject.service.legacy.site.ToolConfiguration;
+import org.sakaiproject.site.api.ToolConfiguration;
 
 public interface ToolEventListener {
 

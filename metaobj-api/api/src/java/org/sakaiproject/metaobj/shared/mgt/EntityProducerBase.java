@@ -20,14 +20,22 @@
  **********************************************************************************/
 package org.sakaiproject.metaobj.shared.mgt;
 
-import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
-import org.sakaiproject.service.legacy.content.ContentResource;
-import org.sakaiproject.service.legacy.entity.*;
-import org.sakaiproject.service.legacy.site.Site;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Stack;
+
+import org.sakaiproject.component.cover.ServerConfigurationService;
+import org.sakaiproject.content.api.ContentResource;
+import org.sakaiproject.entity.api.Entity;
+import org.sakaiproject.entity.api.EntityProducer;
+import org.sakaiproject.entity.api.HttpAccess;
+import org.sakaiproject.entity.api.Reference;
+import org.sakaiproject.entity.api.ResourceProperties;
+import org.sakaiproject.entity.cover.EntityManager;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
-import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -86,7 +94,7 @@ public abstract class EntityProducerBase implements EntityProducer {
       String wholeRef = ref.getReference();
       ReferenceParser parser = parseReference(wholeRef);
       ContentResource base =
-            (ContentResource) getEntityManager().newReference(parser.getRef()).getEntity();
+            (ContentResource) EntityManager.newReference(parser.getRef()).getEntity();
       return new ContentEntityWrapper(base, wholeRef);
    }
 
@@ -106,7 +114,7 @@ public abstract class EntityProducerBase implements EntityProducer {
       return null;
    }
 
-   public void syncWithSiteChange(Site site, EntityProducer.ChangeType change) {
+   public void syncWithSiteChange(Object site, EntityProducer.ChangeType change) {
    }
 
    public EntityManager getEntityManager() {

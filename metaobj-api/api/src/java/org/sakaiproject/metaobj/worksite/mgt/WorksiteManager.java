@@ -22,12 +22,12 @@
  **********************************************************************************/
 package org.sakaiproject.metaobj.worksite.mgt;
 
-import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
-import org.sakaiproject.service.legacy.site.Site;
-import org.sakaiproject.service.legacy.site.ToolConfiguration;
-
 import java.util.List;
+
+import org.sakaiproject.authz.api.AuthzGroup;
+import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.api.ToolConfiguration;
 
 public interface WorksiteManager {
 

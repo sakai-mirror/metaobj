@@ -22,11 +22,11 @@
  **********************************************************************************/
 package org.sakaiproject.metaobj.security.mgt;
 
+import java.util.List;
+
 import org.sakaiproject.metaobj.security.model.PermissionsEdit;
 import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.service.legacy.site.Site;
-
-import java.util.List;
+import org.sakaiproject.site.api.Site;
 
 public interface PermissionManager {
 

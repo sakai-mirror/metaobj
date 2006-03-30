@@ -23,7 +23,7 @@
 package org.sakaiproject.metaobj.shared.model;
 
 import org.jdom.Element;
-import org.sakaiproject.api.kernel.component.cover.ComponentManager;
+import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome;
 import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactHomeInterface;

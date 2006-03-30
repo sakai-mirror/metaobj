@@ -22,10 +22,15 @@
  **********************************************************************************/
 package org.sakaiproject.metaobj.utils.ioc.web;
 
+import java.io.IOException;
+import java.util.Properties;
+
+import javax.servlet.ServletContext;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.api.kernel.component.cover.ComponentManager;
-import org.sakaiproject.component.kernel.component.SpringCompMgr;
+import org.sakaiproject.component.cover.ComponentManager;
+import org.sakaiproject.component.impl.SpringCompMgr;
 import org.sakaiproject.metaobj.utils.ioc.ApplicationContextFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
@@ -35,10 +40,6 @@ import org.springframework.web.context.ConfigurableWebApplicationContext;
 import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.XmlWebApplicationContext;
-
-import javax.servlet.ServletContext;
-import java.io.IOException;
-import java.util.Properties;
 
 public class WebContextLoader extends ContextLoader {
    private final Log logger = LogFactory.getLog(ContextLoader.class);

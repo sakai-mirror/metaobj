@@ -22,9 +22,9 @@
  **********************************************************************************/
 package org.sakaiproject.metaobj.shared.model;
 
+import org.sakaiproject.content.api.ContentResource;
+import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome;
-import org.sakaiproject.service.legacy.content.ContentResource;
-import org.sakaiproject.service.legacy.entity.ResourceProperties;
 
 /**
  * Created by IntelliJ IDEA.

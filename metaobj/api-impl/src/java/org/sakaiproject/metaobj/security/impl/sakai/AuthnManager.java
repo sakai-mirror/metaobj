@@ -27,7 +27,7 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.metaobj.security.AnonymousAgent;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
-import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
+import org.sakaiproject.user.cover.UserDirectoryService;
 
 public class AuthnManager extends SecurityBase implements AuthenticationManager {
    protected final transient Log logger = LogFactory.getLog(getClass());

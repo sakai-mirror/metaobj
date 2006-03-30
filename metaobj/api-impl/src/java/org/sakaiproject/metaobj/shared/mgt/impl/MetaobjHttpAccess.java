@@ -20,28 +20,33 @@
  **********************************************************************************/
 package org.sakaiproject.metaobj.shared.mgt.impl;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.Collection;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.xml.transform.Templates;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.transform.JDOMSource;
-import org.sakaiproject.exception.CopyrightException;
-import org.sakaiproject.exception.IdUnusedException;
-import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.exception.ServerOverloadException;
+import org.sakaiproject.entity.api.EntityAccessOverloadException;
+import org.sakaiproject.entity.api.EntityCopyrightException;
+import org.sakaiproject.entity.api.EntityNotDefinedException;
+import org.sakaiproject.entity.api.EntityPermissionException;
+import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.metaobj.shared.mgt.HttpAccessBase;
 import org.sakaiproject.metaobj.shared.mgt.ReferenceParser;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
-import org.sakaiproject.service.legacy.entity.Reference;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.xml.transform.*;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-import java.io.IOException;
-import java.net.URL;
-import java.util.Collection;
 
 /**
  * Created by IntelliJ IDEA.
@@ -59,8 +64,7 @@ public class MetaobjHttpAccess extends HttpAccessBase {
    private Templates templates;
 
    public void handleAccess(HttpServletRequest req, HttpServletResponse res, Reference ref,
-                            Collection copyrightAcceptedRefs) throws PermissionException, IdUnusedException,
-         ServerOverloadException, CopyrightException {
+                            Collection copyrightAcceptedRefs) throws EntityPermissionException, EntityNotDefinedException, EntityAccessOverloadException, EntityCopyrightException {
       res.setContentType("text/html; charset=UTF-8");
       res.addDateHeader("Expires", System.currentTimeMillis() - (1000L * 60L * 60L * 24L * 365L));
       res.addDateHeader("Last-Modified", System.currentTimeMillis());
@@ -85,7 +89,7 @@ public class MetaobjHttpAccess extends HttpAccessBase {
    }
 
    protected void checkSource(Reference ref, ReferenceParser parser)
-         throws PermissionException, IdUnusedException, ServerOverloadException, CopyrightException {
+         throws EntityPermissionException, EntityNotDefinedException, EntityAccessOverloadException, EntityCopyrightException {
 
    }
 

@@ -22,20 +22,6 @@
  **********************************************************************************/
 package org.sakaiproject.metaobj.shared.model.impl;
 
-import net.sf.hibernate.HibernateException;
-import net.sf.hibernate.UserType;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
-import org.jdom.output.XMLOutputter;
-import org.sakaiproject.api.kernel.component.cover.ComponentManager;
-import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
-import org.sakaiproject.metaobj.shared.mgt.WritableObjectHome;
-import org.sakaiproject.metaobj.shared.model.StructuredArtifact;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -43,6 +29,21 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+
+import net.sf.hibernate.HibernateException;
+import net.sf.hibernate.UserType;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
+import org.jdom.output.XMLOutputter;
+import org.sakaiproject.component.cover.ComponentManager;
+import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
+import org.sakaiproject.metaobj.shared.mgt.WritableObjectHome;
+import org.sakaiproject.metaobj.shared.model.StructuredArtifact;
 
 public class HibernateStructuredArtifact extends StructuredArtifact implements UserType {
    protected final Log logger = LogFactory.getLog(getClass());

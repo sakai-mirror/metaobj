@@ -20,15 +20,15 @@
  **********************************************************************************/
 package org.sakaiproject.metaobj.shared.mgt;
 
-import org.sakaiproject.exception.ServerOverloadException;
-import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
-import org.sakaiproject.service.legacy.content.ContentResource;
-import org.sakaiproject.service.legacy.entity.ResourceProperties;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 import java.io.InputStream;
 import java.util.Stack;
+
+import org.sakaiproject.component.cover.ServerConfigurationService;
+import org.sakaiproject.content.api.ContentResource;
+import org.sakaiproject.entity.api.ResourceProperties;
+import org.sakaiproject.exception.ServerOverloadException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * Created by IntelliJ IDEA.

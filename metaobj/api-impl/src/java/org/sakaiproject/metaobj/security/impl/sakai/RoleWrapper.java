@@ -22,16 +22,16 @@
  **********************************************************************************/
 package org.sakaiproject.metaobj.security.impl.sakai;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.authz.api.AuthzGroup;
+import org.sakaiproject.authz.api.Role;
 import org.sakaiproject.metaobj.shared.model.Artifact;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.OspRole;
-import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
-import org.sakaiproject.service.legacy.authzGroup.Role;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class RoleWrapper implements OspRole {
    protected final transient Log logger = LogFactory.getLog(getClass());

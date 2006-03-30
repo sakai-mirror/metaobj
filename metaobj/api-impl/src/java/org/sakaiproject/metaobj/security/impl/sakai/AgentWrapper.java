@@ -22,19 +22,24 @@
  **********************************************************************************/
 package org.sakaiproject.metaobj.security.impl.sakai;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.api.kernel.component.cover.ComponentManager;
-import org.sakaiproject.exception.IdUnusedException;
-import org.sakaiproject.metaobj.shared.model.*;
-import org.sakaiproject.service.framework.portal.cover.PortalService;
-import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
-import org.sakaiproject.service.legacy.authzGroup.Role;
-import org.sakaiproject.service.legacy.authzGroup.cover.AuthzGroupService;
-import org.sakaiproject.service.legacy.user.User;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.authz.api.AuthzGroup;
+import org.sakaiproject.authz.api.GroupNotDefinedException;
+import org.sakaiproject.authz.api.Role;
+import org.sakaiproject.authz.cover.AuthzGroupService;
+import org.sakaiproject.component.cover.ComponentManager;
+import org.sakaiproject.metaobj.shared.model.Agent;
+import org.sakaiproject.metaobj.shared.model.Artifact;
+import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
+import org.sakaiproject.metaobj.shared.model.OspException;
+import org.sakaiproject.metaobj.shared.model.StructuredArtifact;
+import org.sakaiproject.user.api.User;
+import org.sakaiproject.webapp.cover.ToolManager;
 
 
 public class AgentWrapper extends IdentifiableObject implements Agent {
@@ -97,7 +102,7 @@ public class AgentWrapper extends IdentifiableObject implements Agent {
             returned.add(getSecurityBase().convertRole(role, siteRealm));
          }
       }
-      catch (IdUnusedException e) {
+      catch (GroupNotDefinedException e) {
          logger.error("", e);
          throw new OspException(e);
       }
@@ -106,7 +111,7 @@ public class AgentWrapper extends IdentifiableObject implements Agent {
    }
 
    public List getWorksiteRoles() {
-      return getWorksiteRoles(PortalService.getCurrentSiteId());
+      return getWorksiteRoles(ToolManager.getCurrentPlacement().getContext());
    }
 
    public boolean isRole() {

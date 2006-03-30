@@ -22,8 +22,19 @@
  **********************************************************************************/
 package org.sakaiproject.metaobj.security.impl.sakai;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.authz.api.AuthzGroup;
+import org.sakaiproject.authz.api.GroupNotDefinedException;
+import org.sakaiproject.authz.api.Role;
+import org.sakaiproject.authz.cover.AuthzGroupService;
+import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.metaobj.security.AnonymousAgent;
 import org.sakaiproject.metaobj.security.PasswordGenerator;
@@ -32,16 +43,11 @@ import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.OspException;
 import org.sakaiproject.metaobj.shared.model.impl.AgentImpl;
-import org.sakaiproject.service.framework.component.cover.ComponentManager;
-import org.sakaiproject.service.framework.portal.cover.PortalService;
-import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
-import org.sakaiproject.service.legacy.authzGroup.Role;
-import org.sakaiproject.service.legacy.authzGroup.cover.AuthzGroupService;
-import org.sakaiproject.service.legacy.user.User;
-import org.sakaiproject.service.legacy.user.UserDirectoryService;
-import org.sakaiproject.service.legacy.user.UserEdit;
-
-import java.util.*;
+import org.sakaiproject.user.api.User;
+import org.sakaiproject.user.api.UserDirectoryService;
+import org.sakaiproject.user.api.UserEdit;
+import org.sakaiproject.user.api.UserNotDefinedException;
+import org.sakaiproject.webapp.cover.ToolManager;
 
 public class AgentManager extends SecurityBase implements org.sakaiproject.metaobj.shared.mgt.AgentManager {
    protected final transient Log logger = LogFactory.getLog(getClass());
@@ -127,7 +133,7 @@ public class AgentManager extends SecurityBase implements org.sakaiproject.metao
    }
 
    public Agent getWorksiteRole(String roleName) {
-      return getWorksiteRole(roleName, PortalService.getCurrentSiteId());
+      return getWorksiteRole(roleName, ToolManager.getCurrentPlacement().getContext());
    }
 
    public List getWorksiteRoles(String siteId) {
@@ -139,7 +145,7 @@ public class AgentManager extends SecurityBase implements org.sakaiproject.metao
             roles.add(convertRole(sakaiRole, siteRealm));
          }
       }
-      catch (IdUnusedException e) {
+      catch (GroupNotDefinedException e) {
          logger.error("", e);
          throw new OspException(e);
       }
@@ -155,7 +161,7 @@ public class AgentManager extends SecurityBase implements org.sakaiproject.metao
 
          return convertRole(sakaiRole, siteRealm);
       }
-      catch (IdUnusedException e) {
+      catch (GroupNotDefinedException e) {
          logger.error("", e);
          throw new OspException(e);
       }
@@ -177,8 +183,12 @@ public class AgentManager extends SecurityBase implements org.sakaiproject.metao
 
       User sakaiUser = null;
 
-      sakaiUser = getDirectoryService().getUser(username);
-
+      try {
+    	    sakaiUser = getDirectoryService().getUser(username);
+      }
+      catch (UserNotDefinedException e) {
+    	    throw new IdUnusedException(e.getId());
+      }
       return morphAgent(sakaiUser);
    }
 
@@ -192,7 +202,12 @@ public class AgentManager extends SecurityBase implements org.sakaiproject.metao
 
       Role role = null;
       AuthzGroup realm = null;
-      realm = AuthzGroupService.getAuthzGroup(siteId);
+      try {
+        realm = AuthzGroupService.getAuthzGroup(siteId);
+      }
+      catch (GroupNotDefinedException e) {
+    	    throw new IdUnusedException (e.getId());
+      }
       role = realm.getRole(roleName);
 
       if (role == null || realm == null) {
@@ -218,7 +233,7 @@ public class AgentManager extends SecurityBase implements org.sakaiproject.metao
             participants.add(morphAgent(user));
          }
       }
-      catch (IdUnusedException e) {
+      catch (GroupNotDefinedException e) {
          logger.warn("" + realmId);
       }
       return participants;
@@ -246,7 +261,7 @@ public class AgentManager extends SecurityBase implements org.sakaiproject.metao
             users.add(morphAgent(getDirectoryService().getUser((String) object)));
             return users;
          }
-         catch (IdUnusedException e) {
+         catch (UserNotDefinedException e) {
             // user not found, return null
             return null;
          }
@@ -277,7 +292,7 @@ public class AgentManager extends SecurityBase implements org.sakaiproject.metao
       }
 
       try {
-         UserEdit uEdit = org.sakaiproject.service.legacy.user.cover.UserDirectoryService.addUser(agent.getId().getValue());
+         UserEdit uEdit = org.sakaiproject.user.cover.UserDirectoryService.addUser(agent.getId().getValue());
 
          //set email address
          uEdit.setEmail(agent.getId().getValue());
@@ -290,7 +305,7 @@ public class AgentManager extends SecurityBase implements org.sakaiproject.metao
 
          String pw = getPasswordGenerator().generate();
          uEdit.setPassword(pw);
-         org.sakaiproject.service.legacy.user.cover.UserDirectoryService.commitEdit(uEdit);
+         org.sakaiproject.user.cover.UserDirectoryService.commitEdit(uEdit);
 
          AgentImpl impl = (AgentImpl) agent;
          impl.setPassword(pw);

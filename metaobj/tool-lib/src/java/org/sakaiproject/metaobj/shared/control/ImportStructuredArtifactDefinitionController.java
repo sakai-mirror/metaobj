@@ -20,27 +20,32 @@
  **********************************************************************************/
 package org.sakaiproject.metaobj.shared.control;
 
-import org.sakaiproject.api.kernel.component.cover.ComponentManager;
-import org.sakaiproject.api.kernel.session.SessionManager;
-import org.sakaiproject.api.kernel.session.ToolSession;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.sakaiproject.component.cover.ComponentManager;
+import org.sakaiproject.content.api.ContentResource;
+import org.sakaiproject.content.api.FilePickerHelper;
+import org.sakaiproject.content.cover.ContentHostingService;
+import org.sakaiproject.entity.api.Reference;
+import org.sakaiproject.entity.cover.EntityManager;
 import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.exception.ImportException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.exception.UnsupportedFileTypeException;
-import org.sakaiproject.exception.ImportException;
 import org.sakaiproject.metaobj.shared.model.FormUploadForm;
 import org.sakaiproject.metaobj.shared.model.InvalidUploadException;
 import org.sakaiproject.metaobj.utils.mvc.intf.Controller;
-import org.sakaiproject.service.legacy.content.ContentHostingService;
-import org.sakaiproject.service.legacy.content.ContentResource;
-import org.sakaiproject.service.legacy.entity.EntityManager;
-import org.sakaiproject.service.legacy.entity.Reference;
-import org.sakaiproject.service.legacy.filepicker.FilePickerHelper;
+import org.sakaiproject.webapp.api.ToolSession;
+import org.sakaiproject.webapp.cover.SessionManager;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import org.springframework.web.servlet.ModelAndView;
-
-import java.util.*;
 
 public class ImportStructuredArtifactDefinitionController extends AddStructuredArtifactDefinitionController
       implements Controller, Validator {

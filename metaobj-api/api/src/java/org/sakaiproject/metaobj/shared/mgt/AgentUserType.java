@@ -22,16 +22,17 @@
  **********************************************************************************/
 package org.sakaiproject.metaobj.shared.mgt;
 
-import net.sf.hibernate.HibernateException;
-import net.sf.hibernate.UserType;
-import org.sakaiproject.api.kernel.component.cover.ComponentManager;
-import org.sakaiproject.metaobj.shared.model.Agent;
-import org.sakaiproject.metaobj.shared.model.Id;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+
+import net.sf.hibernate.HibernateException;
+import net.sf.hibernate.UserType;
+
+import org.sakaiproject.component.cover.ComponentManager;
+import org.sakaiproject.metaobj.shared.model.Agent;
+import org.sakaiproject.metaobj.shared.model.Id;
 
 public class AgentUserType implements UserType {
 

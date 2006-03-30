@@ -20,11 +20,11 @@
  **********************************************************************************/
 package org.sakaiproject.metaobj.shared.mgt;
 
-import org.sakaiproject.service.legacy.entity.Reference;
-import org.sakaiproject.service.legacy.resource.cover.EntityManager;
-
 import java.io.IOException;
 import java.io.Serializable;
+
+import org.sakaiproject.entity.api.Reference;
+import org.sakaiproject.entity.cover.EntityManager;
 
 /**
  * Created by IntelliJ IDEA.
