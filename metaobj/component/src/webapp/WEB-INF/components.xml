@@ -30,13 +30,10 @@
    <bean id="org.sakaiproject.metaobj.security.AuthorizationFacade"
       class="org.sakaiproject.metaobj.security.impl.AuthzShim">
       <property name="realmService">
-         <ref bean="org.sakaiproject.service.legacy.authzGroup.AuthzGroupService"/>
-      </property>
-      <property name="portalService">
-         <ref bean="org.sakaiproject.service.framework.portal.PortalService"/>
+         <ref bean="org.sakaiproject.authz.api.AuthzGroupService"/>
       </property>
       <property name="userDirectoryService">
-         <ref bean="org.sakaiproject.service.legacy.user.UserDirectoryService"/>
+         <ref bean="org.sakaiproject.user.api.UserDirectoryService"/>
       </property>
    </bean>
 
@@ -269,7 +266,7 @@
       destroy-method="destroy"
       singleton="true">
       <property name="entityManager">
-         <ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/>
+         <ref bean="org.sakaiproject.entity.api.EntityManager"/>
       </property>
       <property name="httpAccess">
          <ref bean="org.sakaiproject.service.legacy.entity.HttpAccess.metaobj"/>
