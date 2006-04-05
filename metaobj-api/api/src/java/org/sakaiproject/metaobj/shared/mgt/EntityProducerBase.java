@@ -33,7 +33,7 @@ import org.sakaiproject.entity.api.EntityProducer;
 import org.sakaiproject.entity.api.HttpAccess;
 import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.entity.api.ResourceProperties;
-import org.sakaiproject.entity.cover.EntityManager;
+import org.sakaiproject.entity.api.EntityManager;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -94,7 +94,7 @@ public abstract class EntityProducerBase implements EntityProducer {
       String wholeRef = ref.getReference();
       ReferenceParser parser = parseReference(wholeRef);
       ContentResource base =
-            (ContentResource) EntityManager.newReference(parser.getRef()).getEntity();
+            (ContentResource) entityManager.newReference(parser.getRef()).getEntity();
       return new ContentEntityWrapper(base, wholeRef);
    }
 
