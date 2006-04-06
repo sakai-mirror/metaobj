@@ -114,9 +114,6 @@ public abstract class EntityProducerBase implements EntityProducer {
       return null;
    }
 
-   public void syncWithSiteChange(Object site, EntityProducer.ChangeType change) {
-   }
-
    public EntityManager getEntityManager() {
       return entityManager;
    }
