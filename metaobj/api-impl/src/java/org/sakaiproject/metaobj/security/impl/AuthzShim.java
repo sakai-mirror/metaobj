@@ -37,7 +37,7 @@ import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.thread_local.cover.ThreadLocalManager;
 import org.sakaiproject.user.api.UserDirectoryService;
-import org.sakaiproject.webapp.cover.ToolManager;
+import org.sakaiproject.tool.cover.ToolManager;
 
 /**
  * Created by IntelliJ IDEA.

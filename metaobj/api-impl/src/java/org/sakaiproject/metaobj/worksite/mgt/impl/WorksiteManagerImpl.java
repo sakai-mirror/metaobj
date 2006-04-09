@@ -42,7 +42,7 @@ import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SitePage;
 import org.sakaiproject.site.api.ToolConfiguration;
 import org.sakaiproject.site.cover.SiteService;
-import org.sakaiproject.webapp.cover.ToolManager;
+import org.sakaiproject.tool.cover.ToolManager;
 
 public class WorksiteManagerImpl implements WorksiteManager {
    protected final transient Log logger = LogFactory.getLog(getClass());

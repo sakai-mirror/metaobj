@@ -85,8 +85,8 @@ import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.service.legacy.resource.DuplicatableToolService;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.ToolConfiguration;
-import org.sakaiproject.webapp.api.Placement;
-import org.sakaiproject.webapp.api.ToolManager;
+import org.sakaiproject.tool.api.Placement;
+import org.sakaiproject.tool.api.ToolManager;
 import org.springframework.orm.hibernate.support.HibernateDaoSupport;
 
 

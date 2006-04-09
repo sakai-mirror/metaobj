@@ -35,12 +35,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.util.Web;
-import org.sakaiproject.webapp.api.ActiveTool;
-import org.sakaiproject.webapp.api.Tool;
-import org.sakaiproject.webapp.api.ToolException;
-import org.sakaiproject.webapp.api.ToolSession;
-import org.sakaiproject.webapp.cover.ActiveToolManager;
-import org.sakaiproject.webapp.cover.SessionManager;
+import org.sakaiproject.tool.api.ActiveTool;
+import org.sakaiproject.tool.api.Tool;
+import org.sakaiproject.tool.api.ToolException;
+import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.tool.cover.ActiveToolManager;
+import org.sakaiproject.tool.cover.SessionManager;
 
 
 public class SpringTool extends HttpServlet {

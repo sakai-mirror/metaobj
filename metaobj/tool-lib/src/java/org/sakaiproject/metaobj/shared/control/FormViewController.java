@@ -27,8 +27,8 @@ import org.jdom.Element;
 import org.sakaiproject.content.api.ResourceEditingHelper;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
 import org.sakaiproject.metaobj.utils.mvc.intf.Controller;
-import org.sakaiproject.webapp.api.Tool;
-import org.sakaiproject.webapp.cover.ToolManager;
+import org.sakaiproject.tool.api.Tool;
+import org.sakaiproject.tool.cover.ToolManager;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 

@@ -113,7 +113,7 @@
          <ref bean="org.sakaiproject.content.api.ContentHostingService"/>
       </property>
       <property name="toolManager">
-         <ref bean="org.sakaiproject.webapp.api.ToolManager"/>
+         <ref bean="org.sakaiproject.tool.api.ToolManager"/>
       </property>
       <property name="artifactFinder">
          <ref bean="org.sakaiproject.metaobj.shared.ArtifactFinder.default"/>

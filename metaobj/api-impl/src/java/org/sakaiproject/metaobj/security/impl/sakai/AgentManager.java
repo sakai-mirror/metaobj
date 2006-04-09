@@ -47,7 +47,7 @@ import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.api.UserDirectoryService;
 import org.sakaiproject.user.api.UserEdit;
 import org.sakaiproject.user.api.UserNotDefinedException;
-import org.sakaiproject.webapp.cover.ToolManager;
+import org.sakaiproject.tool.cover.ToolManager;
 
 public class AgentManager extends SecurityBase implements org.sakaiproject.metaobj.shared.mgt.AgentManager {
    protected final transient Log logger = LogFactory.getLog(getClass());

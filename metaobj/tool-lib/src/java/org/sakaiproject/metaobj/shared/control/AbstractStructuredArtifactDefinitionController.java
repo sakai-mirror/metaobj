@@ -45,7 +45,7 @@ import org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.ToolConfiguration;
-import org.sakaiproject.webapp.cover.ToolManager;
+import org.sakaiproject.tool.cover.ToolManager;
 import org.springframework.web.servlet.ModelAndView;
 
 abstract public class AbstractStructuredArtifactDefinitionController extends AbstractFormController {

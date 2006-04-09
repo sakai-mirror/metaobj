@@ -26,7 +26,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/site-api"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/content-api"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/authz-api"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/webapp-api"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/tool-api"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/user-api"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -38,7 +38,7 @@ import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.metaobj.shared.mgt.PortalParamManager;
 import org.sakaiproject.metaobj.shared.model.OspException;
 import org.sakaiproject.util.Web;
-import org.sakaiproject.webapp.api.Tool;
+import org.sakaiproject.tool.api.Tool;
 
 public class SakaiUrlTag extends UrlTag {
    protected final transient Log logger = LogFactory.getLog(getClass());

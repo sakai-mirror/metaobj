@@ -39,9 +39,9 @@ import org.sakaiproject.metaobj.shared.model.Artifact;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.IdImpl;
 import org.sakaiproject.metaobj.shared.model.OspException;
-import org.sakaiproject.webapp.api.Session;
-import org.sakaiproject.webapp.api.ToolSession;
-import org.sakaiproject.webapp.cover.SessionManager;
+import org.sakaiproject.tool.api.Session;
+import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.tool.cover.SessionManager;
 import org.springframework.web.servlet.DispatcherServlet;
 
 public class SakaiComponentDispatchServlet extends DispatcherServlet {
