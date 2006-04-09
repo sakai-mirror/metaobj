@@ -82,7 +82,7 @@
                <value>osp.structuredartifact</value>
             </property>
             <property name="sessionManager">
-               <ref bean="org.sakaiproject.api.kernel.session.SessionManager"/>
+               <ref bean="org.sakaiproject.tool.api.SessionManager"/>
             </property>
          </bean>
       </property>
@@ -209,7 +209,7 @@
                <value>osp.structuredartifact</value>
             </property>
             <property name="sessionManager">
-               <ref bean="org.sakaiproject.api.kernel.session.SessionManager"/>
+               <ref bean="org.sakaiproject.tool.api.SessionManager"/>
             </property>
          </bean>
       </property>
@@ -247,10 +247,10 @@
       <property name="controller">
          <bean class="org.sakaiproject.metaobj.shared.control.ImportStructuredArtifactDefinitionController">
             <property name="contentHosting">
-               <ref bean="org.sakaiproject.service.legacy.content.ContentHostingService"/>
+               <ref bean="org.sakaiproject.content.api.ContentHostingService"/>
             </property>
             <property name="entityManager">
-               <ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/>
+               <ref bean="org.sakaiproject.entity.api.EntityManager"/>
             </property>
             <property name="homeFactory">
                <ref bean="homeFactory"/>
@@ -277,7 +277,7 @@
                <value>osp.structuredartifact</value>
             </property>
             <property name="sessionManager">
-               <ref bean="org.sakaiproject.api.kernel.session.SessionManager"/>
+               <ref bean="org.sakaiproject.tool.api.SessionManager"/>
             </property>
          </bean>
       </property>
@@ -313,10 +313,10 @@
 
    <bean class="org.sakaiproject.metaobj.shared.control.ImportStructuredArtifactDefinitionController">
       <property name="contentHosting">
-         <ref bean="org.sakaiproject.service.legacy.content.ContentHostingService"/>
+         <ref bean="org.sakaiproject.content.api.ContentHostingService"/>
       </property>
       <property name="entityManager">
-         <ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/>
+         <ref bean="org.sakaiproject.entity.api.EntityManager"/>
       </property>
       <property name="homeFactory">
          <ref bean="homeFactory"/>
@@ -343,7 +343,7 @@
          <value>osp.structuredartifact</value>
       </property>
       <property name="sessionManager">
-         <ref bean="org.sakaiproject.api.kernel.session.SessionManager"/>
+         <ref bean="org.sakaiproject.tool.api.SessionManager"/>
       </property>
    </bean>
 

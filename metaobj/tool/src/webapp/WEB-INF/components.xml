@@ -9,21 +9,6 @@
       </constructor-arg>
    </bean>
 
-   <bean id="org.sakaiproject.service.framework.log.Logger"
-      class="org.sakaiproject.component.framework.log.Jdk14Logger"
-      init-method="init"
-      destroy-method="destroy"
-      singleton="true">
-      <property name="filePath">
-         <value>/usr/local/sakai/logs/sakai%u.log</value>
-      </property>
-      <property name="level">
-         <value>info</value>
-      </property>
-   </bean>
-
-
-
    <!--
       <bean id="org.sakaiproject.service.legacy.resource.DuplicatableToolService.presentationTemplateManager"
             class="org.sakaiproject.metaobj.worksite.mgt.impl.ResourceServiceTranslator"

@@ -1,7 +1,7 @@
 <%@ page import="java.io.PrintWriter,
                  org.apache.commons.logging.Log,
                  org.apache.commons.logging.LogFactory,
-                 org.sakaiproject.service.framework.session.cover.UsageSessionService"%><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                 org.sakaiproject.event.cover.UsageSessionService"%><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 "http://www.w3.org/TR/html4/loose.dtd">
 
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
