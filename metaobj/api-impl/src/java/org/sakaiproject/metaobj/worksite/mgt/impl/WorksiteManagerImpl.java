@@ -87,7 +87,7 @@ public class WorksiteManagerImpl implements WorksiteManager {
             if (toolId == null) {
                tools.add(tool);
             }
-            else if (toolId.equals(tool.getTool().getId())) {
+            else if (toolId.equals(tool.getToolId())) {
                tools.add(tool);
             }
          }
