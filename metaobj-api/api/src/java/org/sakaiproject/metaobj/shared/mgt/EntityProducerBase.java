@@ -53,19 +53,12 @@ public abstract class EntityProducerBase implements EntityProducer {
       return false;
    }
 
-   public boolean willImport() {
-      return false;
-   }
-
    public String archive(String siteId, Document doc, Stack stack, String archivePath, List attachments) {
       return null;
    }
 
    public String merge(String siteId, Element root, String archivePath, String fromSiteId, Map attachmentNames, Map userIdTrans, Set userListAllowImport) {
       return null;
-   }
-
-   public void importEntities(String fromContext, String toContext, List ids) {
    }
 
    public boolean parseEntityReference(String reference, Reference ref) {
