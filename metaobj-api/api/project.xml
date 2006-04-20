@@ -4,7 +4,7 @@
    <extend>../../../master/project.xml</extend>
    <id>sakai-metaobj-api</id>
    <groupId>sakaiproject</groupId>
-   <name>Sakai Meta Object Service</name>
+   <name>sakai-metaobj-api</name>
    <currentVersion>${sakai.version}</currentVersion>
    <organization>
       <name>Sakai Project</name>

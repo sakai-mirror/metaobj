@@ -18,6 +18,7 @@
  * limitations under the License.
  *
  **********************************************************************************/
+
 package org.sakaiproject.metaobj.shared;
 
 import java.io.IOException;
