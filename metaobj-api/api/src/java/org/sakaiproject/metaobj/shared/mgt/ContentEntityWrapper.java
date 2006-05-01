@@ -22,12 +22,15 @@
 package org.sakaiproject.metaobj.shared.mgt;
 
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.Stack;
 
 import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.content.api.ContentResource;
+import org.sakaiproject.content.api.GroupAwareEntity.AccessMode;
 import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.exception.ServerOverloadException;
+import org.sakaiproject.time.api.Time;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -99,4 +102,24 @@ public class ContentEntityWrapper implements ContentResource {
    public void setBase(ContentResource base) {
       this.base = base;
    }
+
+	public Collection getGroups()
+	{
+		return base.getGroups();
+	}
+	
+	public AccessMode getAccess()
+	{
+		return base.getAccess();
+	}
+
+	public Time getReleaseDate()
+	{
+		return base.getReleaseDate();
+	}
+
+	public Time getRetractDate()
+	{
+		return base.getRetractDate();
+	}
 }
