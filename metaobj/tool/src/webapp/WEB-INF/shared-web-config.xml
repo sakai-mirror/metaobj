@@ -413,11 +413,4 @@
 
    <bean id="controllerFilterManager" class="org.sakaiproject.metaobj.utils.mvc.impl.ControllerFilterManager"/>
 
-   <bean id="org.springframework.web.servlet.HandlerExceptionResolver.errorHandler"
-      class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
-      <property name="defaultErrorView">
-         <value>defaultErrorPage</value>
-      </property>
-   </bean>
-
 </beans>
