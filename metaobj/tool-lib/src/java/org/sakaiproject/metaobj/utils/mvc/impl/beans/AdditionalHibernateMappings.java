@@ -21,8 +21,8 @@
 
 package org.sakaiproject.metaobj.utils.mvc.impl.beans;
 
-import net.sf.hibernate.MappingException;
-import net.sf.hibernate.cfg.Configuration;
+import org.hibernate.MappingException;
+import org.hibernate.cfg.Configuration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.core.io.ClassPathResource;

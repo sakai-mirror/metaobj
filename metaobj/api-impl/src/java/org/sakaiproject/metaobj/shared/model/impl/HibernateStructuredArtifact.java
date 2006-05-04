@@ -24,13 +24,14 @@ package org.sakaiproject.metaobj.shared.model.impl;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
-import net.sf.hibernate.HibernateException;
-import net.sf.hibernate.UserType;
+import org.hibernate.HibernateException;
+import org.hibernate.usertype.UserType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -56,28 +57,28 @@ public class HibernateStructuredArtifact extends StructuredArtifact implements U
    }
 
    /* (non-Javadoc)
-    * @see net.sf.hibernate.UserType#deepCopy(java.lang.Object)
+    * @see org.hibernate.UserType#deepCopy(java.lang.Object)
     */
    public Object deepCopy(Object arg0) throws HibernateException {
       return arg0;
    }
 
    /* (non-Javadoc)
-    * @see net.sf.hibernate.UserType#equals(java.lang.Object, java.lang.Object)
+    * @see org.hibernate.UserType#equals(java.lang.Object, java.lang.Object)
     */
    public boolean equals(Object x, Object y) throws HibernateException {
       return (x == y) || (x != null && y != null && x.equals(y));
    }
 
    /* (non-Javadoc)
-    * @see net.sf.hibernate.UserType#isMutable()
+    * @see org.hibernate.UserType#isMutable()
     */
    public boolean isMutable() {
       return false;
    }
 
    /* (non-Javadoc)
-    * @see net.sf.hibernate.UserType#nullSafeGet(java.sql.ResultSet, java.lang.String[], java.lang.Object)
+    * @see org.hibernate.UserType#nullSafeGet(java.sql.ResultSet, java.lang.String[], java.lang.Object)
     */
    public Object nullSafeGet(ResultSet rs, String[] names, Object owner)
          throws HibernateException, SQLException {
@@ -107,7 +108,7 @@ public class HibernateStructuredArtifact extends StructuredArtifact implements U
    }
 
    /* (non-Javadoc)
-    * @see net.sf.hibernate.UserType#nullSafeSet(java.sql.PreparedStatement, java.lang.Object, int)
+    * @see org.hibernate.UserType#nullSafeSet(java.sql.PreparedStatement, java.lang.Object, int)
     */
    public void nullSafeSet(PreparedStatement st, Object value, int index)
          throws HibernateException, SQLException {
@@ -134,10 +135,28 @@ public class HibernateStructuredArtifact extends StructuredArtifact implements U
    }
 
    /* (non-Javadoc)
-    * @see net.sf.hibernate.UserType#returnedClass()
+    * @see org.hibernate.UserType#returnedClass()
     */
    public Class returnedClass() {
       return StructuredArtifact.class;
    }
+
+	public Object assemble(Serializable arg0, Object arg1)
+			throws HibernateException {
+		return null;
+	}
+
+	public Serializable disassemble(Object arg0) throws HibernateException {
+		return null;
+	}
+
+	public int hashCode(Object arg0) throws HibernateException {
+		return arg0.hashCode();
+	}
+
+	public Object replace(Object arg0, Object arg1, Object arg2)
+			throws HibernateException {
+		return arg0;
+	}
 
 }

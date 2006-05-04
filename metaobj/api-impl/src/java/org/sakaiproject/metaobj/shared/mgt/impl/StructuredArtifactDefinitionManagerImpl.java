@@ -86,7 +86,7 @@ import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.ToolConfiguration;
 import org.sakaiproject.tool.api.Placement;
 import org.sakaiproject.tool.api.ToolManager;
-import org.springframework.orm.hibernate.support.HibernateDaoSupport;
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 
 /**
@@ -244,7 +244,8 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
          sad = new StructuredArtifactDefinition(bean);
          bean.setExternalType(sad.getExternalType());
          bean.setSchemaHash(calculateSchemaHash(bean));
-         getHibernateTemplate().saveOrUpdateCopy(bean);
+         getHibernateTemplate().merge(bean);
+         //         getHibernateTemplate().saveOrUpdateCopy(bean);
       }
       else {
          throw new PersistenceException("Form name {0} exists", new Object[]{bean.getDescription()}, "description");
@@ -535,7 +536,9 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
          if (fromTool.getSiteId().equals(bean.getSiteId())) {
             bean.setSiteId(toTool.getSiteId());
             bean.setId(null);
-            getHibernateTemplate().saveOrUpdateCopy(bean);
+            getHibernateTemplate().merge(bean);
+
+            //            getHibernateTemplate().saveOrUpdateCopy(bean);
          }
       }
 
@@ -567,7 +570,9 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       for (Iterator i = forms.iterator(); i.hasNext();) {
          StructuredArtifactDefinitionBean bean = (StructuredArtifactDefinitionBean) i.next();
          bean.setSchemaHash(calculateSchemaHash(bean));
-         getHibernateTemplate().saveOrUpdateCopy(bean);
+         getHibernateTemplate().merge(bean);
+
+         //         getHibernateTemplate().saveOrUpdateCopy(bean);
       }
    }
 
