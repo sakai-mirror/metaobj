@@ -121,7 +121,7 @@ public class IdType implements UserType {
 	}
 
 	public int hashCode(Object value) throws HibernateException {
-		return ((IdImpl) value).getValue().hashCode();
+		return value.hashCode();
 	}
 
 	public Object replace(Object original, Object target, Object owner)
