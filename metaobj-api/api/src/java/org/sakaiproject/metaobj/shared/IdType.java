@@ -113,11 +113,21 @@ public class IdType implements UserType {
 
 	public Object assemble(Serializable cached, Object owner)
 			throws HibernateException {
-		return new IdImpl((String) cached, null);
+      if (cached==null) {
+         return null;
+      }
+      else {
+         return deepCopy(cached);
+      }
 	}
 
 	public Serializable disassemble(Object value) throws HibernateException {
-		return ((IdImpl) value).getValue();
+      if (value==null) {
+         return null;
+      }
+      else {
+         return (Serializable) deepCopy(value);
+      }
 	}
 
 	public int hashCode(Object value) throws HibernateException {
