@@ -189,7 +189,7 @@ return prepareListView(request, null);
       session.removeAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
       session.removeAttribute(FilePickerHelper.FILE_PICKER_CANCEL);
       session.setAttribute(FilePickerHelper.FILE_PICKER_RESOURCE_FILTER,
-            ComponentManager.get("org.sakaiproject.metaobj.shared.ContentResourceFilter.formUploadStyleFile"));
+            ComponentManager.get("org.sakaiproject.content.api.ContentResourceFilter.formUploadStyleFile"));
       return model;
    }
 
