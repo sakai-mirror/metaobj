@@ -87,14 +87,21 @@ public class AgentUserType implements UserType {
 
 	public Object assemble(Serializable cached, Object owner)
 			throws HibernateException {
-	      Id agentId = getIdManager().getId((String) cached);
-	      Agent agent = getAgentManager().getAgent(agentId);
-	      return agent;
+      if (cached==null) {
+         return null;
+      }
+      else {
+         return deepCopy(cached);
+      }
 	}
 
 	public Serializable disassemble(Object value) throws HibernateException {
-		Agent agent = (Agent) value;
-		return agent.getId().getValue();
+		if (value==null) {
+         return null;
+      }
+      else {
+         return (Serializable) deepCopy(value);
+      }
 	}
 
 	public int hashCode(Object o) throws HibernateException {
