@@ -21,13 +21,14 @@
 
 package org.sakaiproject.metaobj.shared.mgt;
 
+import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
-import net.sf.hibernate.HibernateException;
-import net.sf.hibernate.UserType;
+import org.hibernate.HibernateException;
+import org.hibernate.usertype.UserType;
 
 import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
@@ -83,5 +84,27 @@ public class AgentUserType implements UserType {
    public IdManager getIdManager() {
       return (IdManager) ComponentManager.getInstance().get("idManager");
    }
+
+	public Object assemble(Serializable cached, Object owner)
+			throws HibernateException {
+	      Id agentId = getIdManager().getId((String) cached);
+	      Agent agent = getAgentManager().getAgent(agentId);
+	      return agent;
+	}
+
+	public Serializable disassemble(Object value) throws HibernateException {
+		Agent agent = (Agent) value;
+		return agent.getId().getValue();
+	}
+
+	public int hashCode(Object o) throws HibernateException {
+		Agent agent = (Agent) o;
+		return agent.getId().getValue().hashCode();
+	}
+
+	public Object replace(Object original, Object target, Object owner)
+			throws HibernateException {
+		return original;
+	}
 
 }

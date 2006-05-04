@@ -21,10 +21,11 @@
 
 package org.sakaiproject.metaobj.shared;
 
-import net.sf.hibernate.HibernateException;
-import net.sf.hibernate.UserType;
+import org.hibernate.HibernateException;
+import org.hibernate.usertype.UserType;
 import org.sakaiproject.metaobj.shared.model.IdImpl;
 
+import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -43,28 +44,28 @@ public class IdType implements UserType {
 
 
    /* (non-Javadoc)
-    * @see net.sf.hibernate.UserType#deepCopy(java.lang.Object)
+    * @see org.hibernate.UserType#deepCopy(java.lang.Object)
     */
    public Object deepCopy(Object arg0) throws HibernateException {
       return arg0;
    }
 
    /* (non-Javadoc)
-    * @see net.sf.hibernate.UserType#equals(java.lang.Object, java.lang.Object)
+    * @see org.hibernate.UserType#equals(java.lang.Object, java.lang.Object)
     */
    public boolean equals(Object x, Object y) throws HibernateException {
       return (x == y) || (x != null && y != null && x.equals(y));
    }
 
    /* (non-Javadoc)
-    * @see net.sf.hibernate.UserType#isMutable()
+    * @see org.hibernate.UserType#isMutable()
     */
    public boolean isMutable() {
       return false;
    }
 
    /* (non-Javadoc)
-    * @see net.sf.hibernate.UserType#nullSafeGet(java.sql.ResultSet, java.lang.String[], java.lang.Object)
+    * @see org.hibernate.UserType#nullSafeGet(java.sql.ResultSet, java.lang.String[], java.lang.Object)
     */
    public Object nullSafeGet(ResultSet rs, String[] names, Object owner)
          throws HibernateException, SQLException {
@@ -83,7 +84,7 @@ public class IdType implements UserType {
    }
 
    /* (non-Javadoc)
-    * @see net.sf.hibernate.UserType#nullSafeSet(java.sql.PreparedStatement, java.lang.Object, int)
+    * @see org.hibernate.UserType#nullSafeSet(java.sql.PreparedStatement, java.lang.Object, int)
     */
    public void nullSafeSet(PreparedStatement st, Object value, int index)
          throws HibernateException, SQLException {
@@ -97,17 +98,35 @@ public class IdType implements UserType {
    }
 
    /* (non-Javadoc)
-    * @see net.sf.hibernate.UserType#returnedClass()
+    * @see org.hibernate.UserType#returnedClass()
     */
    public Class returnedClass() {
       return IdImpl.class;
    }
 
    /* (non-Javadoc)
-    * @see net.sf.hibernate.UserType#sqlTypes()
+    * @see org.hibernate.UserType#sqlTypes()
     */
    public int[] sqlTypes() {
       return SQL_TYPES;
    }
+
+	public Object assemble(Serializable cached, Object owner)
+			throws HibernateException {
+		return new IdImpl((String) cached, null);
+	}
+
+	public Serializable disassemble(Object value) throws HibernateException {
+		return ((IdImpl) value).getValue();
+	}
+
+	public int hashCode(Object value) throws HibernateException {
+		return ((IdImpl) value).getValue().hashCode();
+	}
+
+	public Object replace(Object original, Object target, Object owner)
+			throws HibernateException {
+		return original;
+	}
 
 }

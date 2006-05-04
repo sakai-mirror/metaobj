@@ -22,11 +22,9 @@
 package org.sakaiproject.metaobj.shared;
 
 import java.io.Serializable;
-import java.sql.SQLException;
-
-import net.sf.hibernate.HibernateException;
-import net.sf.hibernate.engine.SessionImplementor;
-import net.sf.hibernate.id.IdentifierGenerator;
+import org.hibernate.HibernateException;
+import org.hibernate.engine.SessionImplementor;
+import org.hibernate.id.IdentifierGenerator;
 
 import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
@@ -42,7 +40,7 @@ public class IdGenerator implements IdentifierGenerator {
    }
 
    public Serializable generate(SessionImplementor arg0, Object arg1)
-         throws SQLException, HibernateException {
+         throws HibernateException {
       return getIdManager().createId();
    }
 
