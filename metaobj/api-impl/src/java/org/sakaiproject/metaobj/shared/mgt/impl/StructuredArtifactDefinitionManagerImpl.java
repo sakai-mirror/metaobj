@@ -244,7 +244,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
          sad = new StructuredArtifactDefinition(bean);
          bean.setExternalType(sad.getExternalType());
          bean.setSchemaHash(calculateSchemaHash(bean));
-         getHibernateTemplate().merge(bean);
+         getHibernateTemplate().saveOrUpdate(bean);
          //         getHibernateTemplate().saveOrUpdateCopy(bean);
       }
       else {
@@ -536,7 +536,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
          if (fromTool.getSiteId().equals(bean.getSiteId())) {
             bean.setSiteId(toTool.getSiteId());
             bean.setId(null);
-            getHibernateTemplate().merge(bean);
+            getHibernateTemplate().saveOrUpdate(bean);
 
             //            getHibernateTemplate().saveOrUpdateCopy(bean);
          }
@@ -570,7 +570,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       for (Iterator i = forms.iterator(); i.hasNext();) {
          StructuredArtifactDefinitionBean bean = (StructuredArtifactDefinitionBean) i.next();
          bean.setSchemaHash(calculateSchemaHash(bean));
-         getHibernateTemplate().merge(bean);
+         getHibernateTemplate().saveOrUpdate(bean);
 
          //         getHibernateTemplate().saveOrUpdateCopy(bean);
       }
