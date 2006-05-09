@@ -291,7 +291,7 @@ public class AgentManager extends SecurityBase implements org.sakaiproject.metao
       }
 
       try {
-         UserEdit uEdit = org.sakaiproject.user.cover.UserDirectoryService.addUser(agent.getId().getValue());
+         UserEdit uEdit = org.sakaiproject.user.cover.UserDirectoryService.addUser(agent.getId().getValue(), agent.getId().getValue());
 
          //set email address
          uEdit.setEmail(agent.getId().getValue());
