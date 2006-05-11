@@ -21,10 +21,16 @@
 
 package org.sakaiproject.metaobj.shared.mgt.impl;
 
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.entity.api.Entity;
+import org.sakaiproject.entity.api.EntityTransferrer;
 import org.sakaiproject.metaobj.shared.mgt.EntityProducerBase;
 import org.sakaiproject.metaobj.shared.mgt.MetaobjEntityManager;
 import org.sakaiproject.metaobj.shared.mgt.ReferenceParser;
+import org.sakaiproject.service.legacy.resource.DuplicatableToolService;
 
 /**
  * Created by IntelliJ IDEA.
@@ -33,18 +39,46 @@ import org.sakaiproject.metaobj.shared.mgt.ReferenceParser;
  * Time: 1:23:17 PM
  * To change this template use File | Settings | File Templates.
  */
-public class MetaobjEntityProducer extends EntityProducerBase {
+public class MetaobjEntityProducer extends EntityProducerBase implements EntityTransferrer {
 
+   protected final Log logger = LogFactory.getLog(getClass());
+   private DuplicatableToolService structuredArtifactDefinitionManager;
+   
    public String getLabel() {
       return MetaobjEntityManager.METAOBJ_ENTITY_PREFIX;
    }
 
    public void init() {
-      getEntityManager().registerEntityProducer(this, Entity.SEPARATOR + MetaobjEntityManager.METAOBJ_ENTITY_PREFIX);
+      try {
+         getEntityManager().registerEntityProducer(this, Entity.SEPARATOR + MetaobjEntityManager.METAOBJ_ENTITY_PREFIX);
+      }
+      catch (Exception e) {
+         logger.warn("Error registering MetaObj Entity Producer", e);
+      }   
    }
 
    protected ReferenceParser parseReference(String wholeRef) {
       return new ReferenceParser(wholeRef, this, false);
    }
+
+   public void transferCopyEntities(String fromContext, String toContext, List ids) {
+      getStructuredArtifactDefinitionManager().importResources(fromContext, toContext, ids);      
+   }
+
+   public String[] myToolIds() {
+      String[] toolIds = { "sakai.metaobj" };
+      return toolIds;
+   }
+
+   public DuplicatableToolService getStructuredArtifactDefinitionManager() {
+      return structuredArtifactDefinitionManager;
+   }
+
+   public void setStructuredArtifactDefinitionManager(
+         DuplicatableToolService structuredArtifactDefinitionManager) {
+      this.structuredArtifactDefinitionManager = structuredArtifactDefinitionManager;
+   }
+   
+   
 
 }

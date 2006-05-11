@@ -83,7 +83,6 @@ import org.sakaiproject.metaobj.utils.xml.SchemaNode;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.service.legacy.resource.DuplicatableToolService;
 import org.sakaiproject.site.api.Site;
-import org.sakaiproject.site.api.ToolConfiguration;
 import org.sakaiproject.tool.api.Placement;
 import org.sakaiproject.tool.api.ToolManager;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
@@ -525,18 +524,19 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       return idManager.getId(placement.getId());
    }
 
-   public void importResources(ToolConfiguration fromTool, ToolConfiguration toTool, List resourceIds) {
+   public void importResources(String fromContext, String toContext, List resourceIds) {
       // select all this worksites forms and create them for the new worksite
-      Map homes = getWorksiteHomes(getIdManager().getId(fromTool.getSiteId()));
+      Map homes = getWorksiteHomes(getIdManager().getId(fromContext));
 
       for (Iterator i = homes.entrySet().iterator(); i.hasNext();) {
          Map.Entry entry = (Map.Entry) i.next();
          StructuredArtifactDefinitionBean bean = (StructuredArtifactDefinitionBean) entry.getValue();
 
-         if (fromTool.getSiteId().equals(bean.getSiteId())) {
-            bean.setSiteId(toTool.getSiteId());
+         if (fromContext.equals(bean.getSiteId())) {
+            getHibernateTemplate().evict(bean);
+            bean.setSiteId(toContext);
             bean.setId(null);
-            getHibernateTemplate().saveOrUpdate(bean);
+            getHibernateTemplate().save(bean);
 
             //            getHibernateTemplate().saveOrUpdateCopy(bean);
          }

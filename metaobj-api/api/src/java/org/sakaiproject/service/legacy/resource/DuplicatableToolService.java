@@ -23,11 +23,15 @@ package org.sakaiproject.service.legacy.resource;
 
 import java.util.List;
 
-import org.sakaiproject.site.api.ToolConfiguration;
-
 public interface DuplicatableToolService {
 
-   public void importResources(ToolConfiguration fromTool, ToolConfiguration toTool, List resourceIds);
+   /**
+    * 
+    * @param fromContext
+    * @param toContext
+    * @param resourceIds
+    */
+   public void importResources(String fromContext, String toContext, List resourceIds);
 
 
 }
