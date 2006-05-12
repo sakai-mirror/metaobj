@@ -24,6 +24,7 @@ package org.sakaiproject.metaobj.shared.mgt.impl;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -536,13 +537,14 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
             getHibernateTemplate().evict(bean);
             bean.setSiteId(toContext);
             bean.setId(null);
-            getHibernateTemplate().save(bean);
+            
+            //Check for an existing form
+            if(findBean(bean)== null)
+               getHibernateTemplate().save(bean);
 
             //            getHibernateTemplate().saveOrUpdateCopy(bean);
          }
       }
-
-      // check for presentations that may need to be updated.
    }
 
    public ContentHostingService getContentHosting() {
@@ -742,7 +744,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
             StructuredArtifactDefinitionBean found = findBean(bean);
             if (found != null) {
                if(foundThrowsException)
-                  throw new ImportException("The Structured Artifact Definition being imported already exists and has been published");
+                  throw new ImportException("The Form being imported already exists and has been published");
                else
                   return found;
             }
