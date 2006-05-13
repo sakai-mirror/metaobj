@@ -122,4 +122,14 @@ public class ContentEntityWrapper implements ContentResource {
 	{
 		return base.getRetractDate();
 	}
+
+	public boolean isResource()
+	{
+		return base.isResource();
+	}
+
+	public boolean isCollection()
+	{
+		return base.isCollection();
+	}
 }
