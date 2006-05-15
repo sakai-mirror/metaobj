@@ -21,6 +21,11 @@
 
 package org.sakaiproject.metaobj.utils.mvc.impl;
 
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Properties;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.velocity.app.VelocityEngine;
@@ -33,11 +38,6 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.web.context.WebApplicationContext;
-
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Properties;
 
 /**
  * Created by IntelliJ IDEA.

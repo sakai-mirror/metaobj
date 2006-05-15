@@ -21,13 +21,13 @@
 
 package org.sakaiproject.metaobj.shared.mgt.home;
 
+import java.util.Date;
+
 import org.sakaiproject.metaobj.shared.mgt.CloneableObjectHome;
 import org.sakaiproject.metaobj.shared.mgt.PresentableObjectHome;
 import org.sakaiproject.metaobj.shared.mgt.WritableObjectHome;
 import org.sakaiproject.metaobj.shared.model.Type;
 import org.sakaiproject.metaobj.utils.xml.SchemaNode;
-
-import java.util.Date;
 
 /**
  * marker for structured artifact home

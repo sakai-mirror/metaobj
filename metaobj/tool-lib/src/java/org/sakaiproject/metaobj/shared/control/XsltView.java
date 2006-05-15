@@ -20,14 +20,15 @@
  **********************************************************************************/
 package org.sakaiproject.metaobj.shared.control;
 
-import org.jdom.Document;
-import org.jdom.transform.JDOMSource;
-import org.springframework.web.servlet.view.xslt.AbstractXsltView;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.transform.Source;
-import java.util.Map;
+
+import org.jdom.Document;
+import org.jdom.transform.JDOMSource;
+import org.springframework.web.servlet.view.xslt.AbstractXsltView;
 
 /**
  * Created by IntelliJ IDEA.

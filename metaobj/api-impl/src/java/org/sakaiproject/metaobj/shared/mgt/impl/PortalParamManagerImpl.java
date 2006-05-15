@@ -21,15 +21,16 @@
 
 package org.sakaiproject.metaobj.shared.mgt.impl;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.metaobj.shared.mgt.PortalParamManager;
-
-import javax.servlet.ServletRequest;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.ServletRequest;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.metaobj.shared.mgt.PortalParamManager;
 
 public class PortalParamManagerImpl implements PortalParamManager {
    protected final transient Log logger = LogFactory.getLog(getClass());

@@ -21,11 +21,11 @@
 
 package org.sakaiproject.metaobj.security.mgt.impl;
 
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.metaobj.security.mgt.PermissionManager;
-
-import java.util.Map;
 
 public class AddPermissionTool {
    protected final transient Log logger = LogFactory.getLog(getClass());

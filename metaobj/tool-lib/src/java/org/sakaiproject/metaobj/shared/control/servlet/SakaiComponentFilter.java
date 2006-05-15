@@ -21,13 +21,13 @@
 
 package org.sakaiproject.metaobj.shared.control.servlet;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.MultipartResolver;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 public class SakaiComponentFilter implements RequestSetupFilter {
    protected final transient Log logger = LogFactory.getLog(getClass());

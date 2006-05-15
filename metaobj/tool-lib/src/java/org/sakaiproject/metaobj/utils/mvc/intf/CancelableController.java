@@ -21,10 +21,10 @@
 
 package org.sakaiproject.metaobj.utils.mvc.intf;
 
+import java.util.Map;
+
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
-
-import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.

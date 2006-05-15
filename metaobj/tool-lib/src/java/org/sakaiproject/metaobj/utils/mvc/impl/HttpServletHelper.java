@@ -21,11 +21,12 @@
 
 package org.sakaiproject.metaobj.utils.mvc.impl;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 public class HttpServletHelper {
    private static HttpServletHelper ourInstance = null;

@@ -21,12 +21,12 @@
 
 package org.sakaiproject.metaobj.shared.control;
 
+import java.util.Map;
+
 import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
 import org.sakaiproject.metaobj.utils.mvc.intf.Controller;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
-
-import java.util.Map;
 
 public class RefreshHomesController implements Controller {
    private HomeFactory homeFactory;

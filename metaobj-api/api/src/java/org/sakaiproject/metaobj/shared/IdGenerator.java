@@ -22,10 +22,10 @@
 package org.sakaiproject.metaobj.shared;
 
 import java.io.Serializable;
+
 import org.hibernate.HibernateException;
 import org.hibernate.engine.SessionImplementor;
 import org.hibernate.id.IdentifierGenerator;
-
 import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 

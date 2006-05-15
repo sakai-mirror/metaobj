@@ -21,11 +21,11 @@
 
 package org.sakaiproject.metaobj.security;
 
-import org.sakaiproject.metaobj.shared.model.Agent;
-import org.sakaiproject.metaobj.shared.model.Id;
-
 import java.util.Collection;
 import java.util.List;
+
+import org.sakaiproject.metaobj.shared.model.Agent;
+import org.sakaiproject.metaobj.shared.model.Id;
 
 /**
  * Created by IntelliJ IDEA.

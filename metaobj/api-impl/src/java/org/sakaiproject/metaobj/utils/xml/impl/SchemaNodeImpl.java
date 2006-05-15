@@ -21,13 +21,23 @@
 
 package org.sakaiproject.metaobj.utils.xml.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import org.jdom.Attribute;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.Namespace;
-import org.sakaiproject.metaobj.utils.xml.*;
-
-import java.util.*;
+import org.sakaiproject.metaobj.utils.xml.ElementType;
+import org.sakaiproject.metaobj.utils.xml.NormalizationException;
+import org.sakaiproject.metaobj.utils.xml.SchemaFactory;
+import org.sakaiproject.metaobj.utils.xml.SchemaInvalidException;
+import org.sakaiproject.metaobj.utils.xml.SchemaNode;
+import org.sakaiproject.metaobj.utils.xml.ValidatedNode;
 
 /**
  * Created by IntelliJ IDEA.

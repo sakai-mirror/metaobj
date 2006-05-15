@@ -21,11 +21,11 @@
 
 package org.sakaiproject.metaobj.shared.mgt.factories;
 
-import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
-import org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome;
-
 import java.util.Hashtable;
 import java.util.Map;
+
+import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
+import org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome;
 
 /**
  * Created by IntelliJ IDEA.

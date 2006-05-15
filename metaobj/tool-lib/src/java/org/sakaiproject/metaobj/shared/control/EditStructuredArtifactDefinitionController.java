@@ -21,13 +21,13 @@
 
 package org.sakaiproject.metaobj.shared.control;
 
+import java.util.Map;
+
 import org.sakaiproject.metaobj.shared.SharedFunctionConstants;
 import org.sakaiproject.metaobj.shared.model.PersistenceException;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
 import org.springframework.validation.Errors;
-
-import java.util.Map;
 
 public class EditStructuredArtifactDefinitionController extends AddStructuredArtifactDefinitionController implements LoadObjectController {
    //private ArtifactFinderManager artifactFinderManager;

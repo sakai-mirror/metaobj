@@ -21,10 +21,10 @@
 
 package org.sakaiproject.metaobj.security.model;
 
+import java.util.HashMap;
+
 import org.sakaiproject.metaobj.security.AuthorizationFacade;
 import org.sakaiproject.metaobj.shared.model.Id;
-
-import java.util.HashMap;
 
 public class AuthZMap extends HashMap {
    private AuthorizationFacade authzFacade;

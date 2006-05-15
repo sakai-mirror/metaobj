@@ -21,14 +21,14 @@
 
 package org.sakaiproject.metaobj.utils.mvc.impl.servlet;
 
+import javax.servlet.ServletRequest;
+
 import org.sakaiproject.metaobj.utils.mvc.impl.BindExceptionBase;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.bind.ServletRequestParameterPropertyValues;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-
-import javax.servlet.ServletRequest;
 
 public class ServletRequestBeanDataBinder extends ServletRequestDataBinder {
    public ServletRequestBeanDataBinder(Object o, String s) {

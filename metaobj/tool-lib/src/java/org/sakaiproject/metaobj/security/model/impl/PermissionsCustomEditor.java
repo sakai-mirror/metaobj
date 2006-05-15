@@ -21,18 +21,18 @@
 
 package org.sakaiproject.metaobj.security.model.impl;
 
+import java.beans.PropertyEditorSupport;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.metaobj.security.model.Permission;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.utils.mvc.intf.TypedPropertyEditor;
-
-import java.beans.PropertyEditorSupport;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
 
 public class PermissionsCustomEditor extends PropertyEditorSupport implements TypedPropertyEditor {
    protected final transient Log logger = LogFactory.getLog(getClass());

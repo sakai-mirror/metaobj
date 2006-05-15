@@ -21,11 +21,11 @@
 
 package org.sakaiproject.metaobj.shared;
 
+import java.util.Collection;
+
 import org.sakaiproject.metaobj.shared.model.Artifact;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.MimeType;
-
-import java.util.Collection;
 
 /*
  * Common search

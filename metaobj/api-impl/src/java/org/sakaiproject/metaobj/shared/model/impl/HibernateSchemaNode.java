@@ -21,16 +21,6 @@
 
 package org.sakaiproject.metaobj.shared.model.impl;
 
-import org.hibernate.HibernateException;
-import org.hibernate.usertype.UserType;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.jdom.Document;
-import org.jdom.output.XMLOutputter;
-import org.sakaiproject.metaobj.utils.xml.SchemaFactory;
-import org.sakaiproject.metaobj.utils.xml.SchemaNode;
-import org.sakaiproject.metaobj.utils.xml.impl.SchemaNodeImpl;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,6 +29,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.hibernate.HibernateException;
+import org.hibernate.usertype.UserType;
+import org.jdom.Document;
+import org.jdom.output.XMLOutputter;
+import org.sakaiproject.metaobj.utils.xml.SchemaFactory;
+import org.sakaiproject.metaobj.utils.xml.SchemaNode;
+import org.sakaiproject.metaobj.utils.xml.impl.SchemaNodeImpl;
 
 public class HibernateSchemaNode implements UserType {
 

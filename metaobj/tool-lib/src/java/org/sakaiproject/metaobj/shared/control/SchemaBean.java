@@ -21,11 +21,15 @@
 
 package org.sakaiproject.metaobj.shared.control;
 
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.metaobj.utils.xml.SchemaNode;
-
-import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.

@@ -21,14 +21,18 @@
 
 package org.sakaiproject.metaobj.utils.mvc.impl;
 
+import java.beans.PropertyEditor;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.BeansException;
-
-import java.beans.PropertyEditor;
-import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.

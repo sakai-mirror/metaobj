@@ -21,9 +21,9 @@
 
 package org.sakaiproject.metaobj.shared.mgt;
 
-import org.sakaiproject.metaobj.shared.model.ElementBean;
-
 import java.util.List;
+
+import org.sakaiproject.metaobj.shared.model.ElementBean;
 
 /**
  * Created by IntelliJ IDEA.

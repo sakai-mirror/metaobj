@@ -21,15 +21,15 @@
 
 package org.sakaiproject.metaobj.shared.model.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Artifact;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifact;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class AgentImpl implements Agent {
    static public final String ID = "id";

@@ -21,13 +21,13 @@
 
 package org.sakaiproject.metaobj.utils.xml.impl;
 
-import org.jdom.Element;
-import org.sakaiproject.metaobj.utils.xml.SchemaNode;
-import org.sakaiproject.metaobj.utils.xml.ValidatedNode;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import org.jdom.Element;
+import org.sakaiproject.metaobj.utils.xml.SchemaNode;
+import org.sakaiproject.metaobj.utils.xml.ValidatedNode;
 
 /**
  * Created by IntelliJ IDEA.

@@ -21,14 +21,14 @@
 
 package org.sakaiproject.metaobj.utils.mvc.impl.beans;
 
-import org.hibernate.MappingException;
-import org.hibernate.cfg.Configuration;
+import java.io.IOException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.MappingException;
+import org.hibernate.cfg.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-
-import java.io.IOException;
 
 public class AdditionalHibernateMappings {
    protected final transient Log logger = LogFactory.getLog(getClass());

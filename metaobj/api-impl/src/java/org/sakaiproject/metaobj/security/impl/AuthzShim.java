@@ -28,15 +28,15 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.authz.api.AuthzGroup;
-import org.sakaiproject.authz.api.GroupNotDefinedException;
 import org.sakaiproject.authz.api.AuthzGroupService;
+import org.sakaiproject.authz.api.GroupNotDefinedException;
 import org.sakaiproject.metaobj.security.AuthorizationFacade;
 import org.sakaiproject.metaobj.security.AuthorizationFailedException;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.thread_local.cover.ThreadLocalManager;
-import org.sakaiproject.user.api.UserDirectoryService;
 import org.sakaiproject.tool.cover.ToolManager;
+import org.sakaiproject.user.api.UserDirectoryService;
 
 /**
  * Created by IntelliJ IDEA.

@@ -21,15 +21,15 @@
 
 package org.sakaiproject.metaobj.utils.mvc.impl;
 
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
+
 import org.sakaiproject.metaobj.utils.mvc.intf.ControllerFilter;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.web.servlet.ModelAndView;
-
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
 
 public class ControllerFilterManager implements ApplicationContextAware {
    private Collection filters;

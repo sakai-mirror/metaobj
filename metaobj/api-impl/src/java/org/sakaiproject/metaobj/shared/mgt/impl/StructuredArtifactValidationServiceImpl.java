@@ -21,6 +21,11 @@
 
 package org.sakaiproject.metaobj.shared.mgt.impl;
 
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.jdom.Attribute;
 import org.jdom.Element;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactValidationService;
@@ -30,11 +35,6 @@ import org.sakaiproject.metaobj.shared.model.ValidationError;
 import org.sakaiproject.metaobj.utils.mvc.intf.FieldValueWrapper;
 import org.sakaiproject.metaobj.utils.xml.NormalizationException;
 import org.sakaiproject.metaobj.utils.xml.SchemaNode;
-
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.

@@ -21,11 +21,15 @@
 
 package org.sakaiproject.metaobj.utils.xml.impl;
 
-import org.jdom.Element;
-import org.sakaiproject.metaobj.utils.xml.*;
-
 import java.util.List;
 import java.util.Map;
+
+import org.jdom.Element;
+import org.sakaiproject.metaobj.utils.xml.ElementType;
+import org.sakaiproject.metaobj.utils.xml.NormalizationException;
+import org.sakaiproject.metaobj.utils.xml.SchemaInvalidException;
+import org.sakaiproject.metaobj.utils.xml.SchemaNode;
+import org.sakaiproject.metaobj.utils.xml.ValidatedNode;
 
 /**
  * Created by IntelliJ IDEA.

@@ -30,11 +30,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
-import org.hibernate.HibernateException;
-import org.hibernate.usertype.UserType;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.HibernateException;
+import org.hibernate.usertype.UserType;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;

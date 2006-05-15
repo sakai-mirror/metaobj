@@ -21,9 +21,9 @@
 
 package org.sakaiproject.metaobj.utils.mvc.intf;
 
-import org.springframework.web.servlet.ModelAndView;
-
 import java.util.Map;
+
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  * implement this interface if you have work that needs to be done after a controller.

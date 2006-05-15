@@ -21,11 +21,11 @@
 
 package org.sakaiproject.metaobj.security.model;
 
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.metaobj.shared.model.Id;
-
-import java.util.List;
 
 public class PermissionsEdit {
    protected final transient Log logger = LogFactory.getLog(getClass());

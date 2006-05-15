@@ -21,20 +21,20 @@
 
 package org.sakaiproject.metaobj.utils.mvc.impl.beans;
 
-import org.hibernate.HibernateException;
-import org.hibernate.cfg.Configuration;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.HibernateException;
+import org.hibernate.cfg.Configuration;
 import org.sakaiproject.metaobj.shared.model.OspException;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.orm.hibernate3.LocalSessionFactoryBean;
-
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
 
 public class AddableSessionFactoryBean extends LocalSessionFactoryBean implements ApplicationContextAware {
    protected final transient Log logger = LogFactory.getLog(getClass());

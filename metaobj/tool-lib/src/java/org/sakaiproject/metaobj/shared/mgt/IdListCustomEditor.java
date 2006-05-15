@@ -21,15 +21,15 @@
 
 package org.sakaiproject.metaobj.shared.mgt;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.metaobj.utils.mvc.intf.TypedPropertyEditor;
-
 import java.beans.PropertyEditorSupport;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.utils.mvc.intf.TypedPropertyEditor;
 
 public class IdListCustomEditor extends PropertyEditorSupport implements TypedPropertyEditor {
    protected final transient Log logger = LogFactory.getLog(getClass());

@@ -21,15 +21,15 @@
 
 package org.sakaiproject.metaobj.utils.mvc.impl;
 
+import java.beans.PropertyEditor;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.metaobj.utils.TypedMap;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.FatalBeanException;
-
-import java.beans.PropertyEditor;
-import java.util.Map;
 
 public class MapWrapper extends BeanWrapperBase {
    protected final Log logger = LogFactory.getLog(getClass());

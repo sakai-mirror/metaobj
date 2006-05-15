@@ -21,13 +21,13 @@
 
 package org.sakaiproject.metaobj.security;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.sakaiproject.metaobj.shared.mgt.IdManagerImpl;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Artifact;
 import org.sakaiproject.metaobj.shared.model.Id;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.

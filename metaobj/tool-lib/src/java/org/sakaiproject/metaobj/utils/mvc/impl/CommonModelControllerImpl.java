@@ -21,11 +21,12 @@
 
 package org.sakaiproject.metaobj.utils.mvc.impl;
 
-import org.sakaiproject.metaobj.utils.mvc.intf.CommonModelController;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
+
+import org.sakaiproject.metaobj.utils.mvc.intf.CommonModelController;
 
 /**
  * Created by IntelliJ IDEA.

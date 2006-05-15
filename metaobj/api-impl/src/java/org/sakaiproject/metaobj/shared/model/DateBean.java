@@ -21,15 +21,15 @@
 
 package org.sakaiproject.metaobj.shared.model;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.metaobj.utils.mvc.intf.FieldValueWrapper;
-import org.springframework.validation.Errors;
-
 import java.text.MessageFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.metaobj.utils.mvc.intf.FieldValueWrapper;
+import org.springframework.validation.Errors;
 
 public class DateBean implements FieldValueWrapper {
    protected final Log logger = LogFactory.getLog(getClass());

@@ -37,8 +37,8 @@ import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
 import org.sakaiproject.metaobj.shared.model.OspException;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifact;
-import org.sakaiproject.user.api.User;
 import org.sakaiproject.tool.cover.ToolManager;
+import org.sakaiproject.user.api.User;
 
 
 public class AgentWrapper extends IdentifiableObject implements Agent {

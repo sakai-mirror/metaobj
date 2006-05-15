@@ -21,10 +21,10 @@
 
 package org.sakaiproject.metaobj.shared.mgt;
 
+import java.util.Map;
+
 import org.sakaiproject.metaobj.shared.ArtifactFinder;
 import org.sakaiproject.metaobj.shared.ArtifactFinderManager;
-
-import java.util.Map;
 
 public class ArtifactFinderManagerImpl implements ArtifactFinderManager {
    private Map finders = null;

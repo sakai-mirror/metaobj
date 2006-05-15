@@ -21,9 +21,9 @@
 
 package org.sakaiproject.metaobj.shared.mgt;
 
-import org.sakaiproject.metaobj.shared.model.Id;
-
 import java.util.Map;
+
+import org.sakaiproject.metaobj.shared.model.Id;
 
 /**
  * Created by IntelliJ IDEA.

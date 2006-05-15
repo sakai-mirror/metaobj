@@ -21,9 +21,9 @@
 
 package org.sakaiproject.metaobj.shared.mgt;
 
-import org.sakaiproject.metaobj.shared.model.Id;
-
 import java.io.InputStream;
+
+import org.sakaiproject.metaobj.shared.model.Id;
 
 public interface StreamableObjectHome {
    public InputStream getStream(Id artifactId);

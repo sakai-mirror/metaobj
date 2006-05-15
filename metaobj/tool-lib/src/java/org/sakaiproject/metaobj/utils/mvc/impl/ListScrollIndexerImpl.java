@@ -21,13 +21,13 @@
 
 package org.sakaiproject.metaobj.utils.mvc.impl;
 
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.metaobj.utils.mvc.intf.ListScroll;
 import org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer;
-
-import java.util.List;
-import java.util.Map;
 
 public class ListScrollIndexerImpl implements ListScrollIndexer {
    protected final transient Log logger = LogFactory.getLog(getClass());

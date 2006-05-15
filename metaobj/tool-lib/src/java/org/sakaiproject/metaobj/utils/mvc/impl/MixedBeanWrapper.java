@@ -21,10 +21,10 @@
 
 package org.sakaiproject.metaobj.utils.mvc.impl;
 
+import java.util.Map;
+
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.BeansException;
-
-import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.

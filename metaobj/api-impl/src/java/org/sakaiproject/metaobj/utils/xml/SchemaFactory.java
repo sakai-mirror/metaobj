@@ -21,13 +21,13 @@
 
 package org.sakaiproject.metaobj.utils.xml;
 
-import org.jdom.Document;
-import org.jdom.input.SAXBuilder;
-import org.sakaiproject.metaobj.utils.xml.impl.SchemaNodeImpl;
-
 import java.io.File;
 import java.net.URL;
 import java.util.Hashtable;
+
+import org.jdom.Document;
+import org.jdom.input.SAXBuilder;
+import org.sakaiproject.metaobj.utils.xml.impl.SchemaNodeImpl;
 
 public class SchemaFactory {
    static private SchemaFactory schemaFactory = new SchemaFactory();

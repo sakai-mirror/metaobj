@@ -21,14 +21,14 @@
 
 package org.sakaiproject.metaobj.shared.control;
 
+import java.util.Map;
+
 import org.sakaiproject.metaobj.shared.SharedFunctionConstants;
 import org.sakaiproject.metaobj.shared.model.PersistenceException;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
-
-import java.util.Map;
 
 public class PublishStructuredArtifactDefinitionController extends AbstractStructuredArtifactDefinitionController implements LoadObjectController {
    public final static String SITE_PUBLISH_ACTION = "site_publish";

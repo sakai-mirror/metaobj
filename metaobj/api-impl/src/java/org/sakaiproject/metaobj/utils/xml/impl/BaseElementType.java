@@ -21,15 +21,20 @@
 
 package org.sakaiproject.metaobj.utils.xml.impl;
 
-import org.jdom.Attribute;
-import org.jdom.Element;
-import org.jdom.Namespace;
-import org.sakaiproject.metaobj.utils.xml.*;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
+
+import org.jdom.Attribute;
+import org.jdom.Element;
+import org.jdom.Namespace;
+import org.sakaiproject.metaobj.utils.xml.ElementType;
+import org.sakaiproject.metaobj.utils.xml.NormalizationException;
+import org.sakaiproject.metaobj.utils.xml.SchemaNode;
+import org.sakaiproject.metaobj.utils.xml.ValidatedNode;
+import org.sakaiproject.metaobj.utils.xml.ValidationError;
+import org.sakaiproject.metaobj.utils.xml.ValueRange;
 
 /**
  * Created by IntelliJ IDEA.

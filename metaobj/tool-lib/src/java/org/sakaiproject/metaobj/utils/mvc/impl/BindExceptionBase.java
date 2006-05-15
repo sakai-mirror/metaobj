@@ -21,11 +21,11 @@
 
 package org.sakaiproject.metaobj.utils.mvc.impl;
 
+import java.util.Map;
+
 import org.springframework.beans.BeanWrapper;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
-
-import java.util.Map;
 
 public class BindExceptionBase extends BindException {
 

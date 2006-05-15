@@ -21,9 +21,9 @@
 
 package org.sakaiproject.metaobj.utils.mvc.intf;
 
-import org.springframework.validation.Errors;
-
 import java.util.Map;
+
+import org.springframework.validation.Errors;
 
 /*
  * $URL: /opt/CVS/osp2.x/HomesTool/src/java/org/theospi/utils/mvc/intf/FormController.java,v 1.1 2005/06/28 13:31:53 chmaurer Exp $

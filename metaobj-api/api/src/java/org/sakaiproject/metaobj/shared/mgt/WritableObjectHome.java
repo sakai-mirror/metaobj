@@ -21,11 +21,11 @@
 
 package org.sakaiproject.metaobj.shared.mgt;
 
+import java.io.InputStream;
+
 import org.sakaiproject.metaobj.shared.model.Artifact;
 import org.sakaiproject.metaobj.shared.model.PersistenceException;
 import org.sakaiproject.metaobj.shared.model.Type;
-
-import java.io.InputStream;
 
 /**
  * Created by IntelliJ IDEA.

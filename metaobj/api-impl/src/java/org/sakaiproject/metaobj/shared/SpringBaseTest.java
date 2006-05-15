@@ -21,15 +21,16 @@
 
 package org.sakaiproject.metaobj.shared;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 import junit.framework.TestCase;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.metaobj.utils.ioc.ApplicationContextFactory;
 import org.springframework.beans.factory.BeanFactory;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
 
 /**
  * Created by IntelliJ IDEA.

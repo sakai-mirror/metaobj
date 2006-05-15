@@ -21,6 +21,12 @@
 
 package org.sakaiproject.metaobj.shared.control.tag;
 
+import java.io.IOException;
+
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.PageContext;
+import javax.servlet.jsp.tagext.BodyContent;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.taglibs.standard.lang.support.ExpressionEvaluatorManager;
@@ -28,11 +34,6 @@ import org.apache.taglibs.standard.tag.common.core.Util;
 import org.apache.taglibs.standard.tag.common.fmt.MessageSupport;
 import org.apache.taglibs.standard.tag.el.fmt.MessageTag;
 import org.sakaiproject.metaobj.shared.model.OspException;
-
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
-import javax.servlet.jsp.tagext.BodyContent;
-import java.io.IOException;
 
 public class Message extends MessageTag {
    protected final transient Log logger = LogFactory.getLog(getClass());

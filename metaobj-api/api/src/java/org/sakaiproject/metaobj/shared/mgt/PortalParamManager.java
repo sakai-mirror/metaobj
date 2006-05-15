@@ -21,8 +21,9 @@
 
 package org.sakaiproject.metaobj.shared.mgt;
 
-import javax.servlet.ServletRequest;
 import java.util.Map;
+
+import javax.servlet.ServletRequest;
 
 public interface PortalParamManager {
 

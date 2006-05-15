@@ -21,10 +21,10 @@
 
 package org.sakaiproject.metaobj.shared.mgt.factories;
 
+import java.util.Map;
+
 import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
 import org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome;
-
-import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.

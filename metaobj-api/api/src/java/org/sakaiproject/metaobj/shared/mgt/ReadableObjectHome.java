@@ -21,10 +21,15 @@
 
 package org.sakaiproject.metaobj.shared.mgt;
 
-import org.sakaiproject.metaobj.shared.model.*;
-
 import java.io.InputStream;
 import java.util.Collection;
+
+import org.sakaiproject.metaobj.shared.model.Agent;
+import org.sakaiproject.metaobj.shared.model.Artifact;
+import org.sakaiproject.metaobj.shared.model.FinderException;
+import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.shared.model.PersistenceException;
+import org.sakaiproject.metaobj.shared.model.Type;
 
 /**
  * Created by IntelliJ IDEA.

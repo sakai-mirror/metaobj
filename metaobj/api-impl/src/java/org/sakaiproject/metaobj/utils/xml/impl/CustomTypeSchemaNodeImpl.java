@@ -22,14 +22,14 @@
 
 package org.sakaiproject.metaobj.utils.xml.impl;
 
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdom.Element;
 import org.sakaiproject.metaobj.utils.xml.SchemaInvalidException;
 import org.sakaiproject.metaobj.utils.xml.SchemaNode;
-
-import java.util.List;
-import java.util.Map;
 
 public class CustomTypeSchemaNodeImpl extends RefSchemaNodeImpl {
    protected final Log logger = LogFactory.getLog(getClass());

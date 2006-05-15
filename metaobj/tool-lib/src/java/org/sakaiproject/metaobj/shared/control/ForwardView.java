@@ -21,12 +21,13 @@
 
 package org.sakaiproject.metaobj.shared.control;
 
-import org.springframework.web.servlet.view.AbstractUrlBasedView;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Iterator;
-import java.util.Map;
+
+import org.springframework.web.servlet.view.AbstractUrlBasedView;
 
 /**
  * Created by IntelliJ IDEA.

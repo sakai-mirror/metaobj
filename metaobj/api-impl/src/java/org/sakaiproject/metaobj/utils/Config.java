@@ -21,9 +21,9 @@
 
 package org.sakaiproject.metaobj.utils;
 
-import org.springframework.beans.factory.InitializingBean;
-
 import java.util.Properties;
+
+import org.springframework.beans.factory.InitializingBean;
 
 /**
  * Created by IntelliJ IDEA.

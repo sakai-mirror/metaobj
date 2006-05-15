@@ -21,13 +21,13 @@
 
 package org.sakaiproject.metaobj.utils.xml.impl;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import org.jdom.Element;
 import org.jdom.Namespace;
 import org.sakaiproject.metaobj.utils.xml.NormalizationException;
 import org.sakaiproject.metaobj.utils.xml.SchemaNode;
-
-import java.net.URI;
-import java.net.URISyntaxException;
 
 /**
  * Created by IntelliJ IDEA.

@@ -21,9 +21,9 @@
 
 package org.sakaiproject.metaobj.utils.xml;
 
-import org.jdom.Element;
-
 import java.util.List;
+
+import org.jdom.Element;
 
 /**
  * Created by IntelliJ IDEA.

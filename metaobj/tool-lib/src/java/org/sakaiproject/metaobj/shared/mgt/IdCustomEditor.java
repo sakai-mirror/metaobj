@@ -21,10 +21,10 @@
 
 package org.sakaiproject.metaobj.shared.mgt;
 
+import java.beans.PropertyEditorSupport;
+
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.utils.mvc.intf.TypedPropertyEditor;
-
-import java.beans.PropertyEditorSupport;
 
 /**
  * Created by IntelliJ IDEA.

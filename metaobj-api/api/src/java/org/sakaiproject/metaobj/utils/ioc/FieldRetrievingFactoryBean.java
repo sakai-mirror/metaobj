@@ -22,12 +22,12 @@
 package org.sakaiproject.metaobj.utils.ioc;
 
 
+import java.lang.reflect.Field;
+
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.ClassUtils;
-
-import java.lang.reflect.Field;
 
 /**
  * FactoryBean which retrieves a static or non-static field value.

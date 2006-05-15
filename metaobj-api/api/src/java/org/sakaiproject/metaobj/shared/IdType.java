@@ -21,15 +21,15 @@
 
 package org.sakaiproject.metaobj.shared;
 
-import org.hibernate.HibernateException;
-import org.hibernate.usertype.UserType;
-import org.sakaiproject.metaobj.shared.model.IdImpl;
-
 import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+
+import org.hibernate.HibernateException;
+import org.hibernate.usertype.UserType;
+import org.sakaiproject.metaobj.shared.model.IdImpl;
 
 /**
  * @author rpembry

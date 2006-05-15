@@ -21,13 +21,13 @@
 
 package org.sakaiproject.metaobj.utils.xml.impl;
 
+import java.text.Format;
+import java.text.ParseException;
+
 import org.jdom.Element;
 import org.jdom.Namespace;
 import org.sakaiproject.metaobj.utils.xml.NormalizationException;
 import org.sakaiproject.metaobj.utils.xml.SchemaNode;
-
-import java.text.Format;
-import java.text.ParseException;
 
 
 /**

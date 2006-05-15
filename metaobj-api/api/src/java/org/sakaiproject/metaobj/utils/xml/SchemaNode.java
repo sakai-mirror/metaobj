@@ -21,14 +21,14 @@
 
 package org.sakaiproject.metaobj.utils.xml;
 
-import org.jdom.Attribute;
-import org.jdom.Element;
-import org.jdom.Namespace;
-
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+
+import org.jdom.Attribute;
+import org.jdom.Element;
+import org.jdom.Namespace;
 
 /**
  * Created by IntelliJ IDEA.

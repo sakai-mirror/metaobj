@@ -21,6 +21,14 @@
 
 package org.sakaiproject.metaobj.utils.mvc.impl.beans;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
@@ -31,8 +39,6 @@ import org.springframework.beans.factory.support.PropertiesBeanDefinitionReader;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceEditor;
 import org.springframework.web.servlet.view.ResourceBundleViewResolver;
-
-import java.util.*;
 
 public class AddableResourceBundleViewResolver extends ResourceBundleViewResolver {
    protected final transient Log logger = LogFactory.getLog(getClass());

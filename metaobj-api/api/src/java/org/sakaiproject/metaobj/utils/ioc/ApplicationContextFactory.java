@@ -21,13 +21,17 @@
 
 package org.sakaiproject.metaobj.utils.ioc;
 
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.Properties;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-import java.io.IOException;
-import java.util.*;
 
 /**
  * <p>Loads the ApplicationContext from xml files listed in a property file.

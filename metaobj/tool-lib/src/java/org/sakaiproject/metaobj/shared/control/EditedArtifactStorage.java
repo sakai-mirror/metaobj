@@ -21,6 +21,8 @@
 
 package org.sakaiproject.metaobj.shared.control;
 
+import java.util.Stack;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdom.Element;
@@ -28,8 +30,6 @@ import org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome;
 import org.sakaiproject.metaobj.shared.model.ElementBean;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifact;
 import org.sakaiproject.metaobj.utils.xml.SchemaNode;
-
-import java.util.Stack;
 
 public class EditedArtifactStorage {
    protected final Log logger = LogFactory.getLog(getClass());
