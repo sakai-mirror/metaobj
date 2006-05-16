@@ -21,9 +21,6 @@
 
 package org.sakaiproject.metaobj.security.impl.sakai;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.authz.api.AuthzGroup;
@@ -31,14 +28,13 @@ import org.sakaiproject.authz.api.GroupNotDefinedException;
 import org.sakaiproject.authz.api.Role;
 import org.sakaiproject.authz.cover.AuthzGroupService;
 import org.sakaiproject.component.cover.ComponentManager;
-import org.sakaiproject.metaobj.shared.model.Agent;
-import org.sakaiproject.metaobj.shared.model.Artifact;
-import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
-import org.sakaiproject.metaobj.shared.model.OspException;
-import org.sakaiproject.metaobj.shared.model.StructuredArtifact;
+import org.sakaiproject.metaobj.shared.model.*;
+import org.sakaiproject.tool.api.Placement;
 import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.user.api.User;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class AgentWrapper extends IdentifiableObject implements Agent {
@@ -110,7 +106,13 @@ public class AgentWrapper extends IdentifiableObject implements Agent {
    }
 
    public List getWorksiteRoles() {
-      return getWorksiteRoles(ToolManager.getCurrentPlacement().getContext());
+      Placement currentPlacement = ToolManager.getCurrentPlacement();
+
+      if (currentPlacement == null) {
+         return new ArrayList();
+      }
+
+      return getWorksiteRoles(currentPlacement.getContext());
    }
 
    public boolean isRole() {
