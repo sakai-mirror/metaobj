@@ -169,7 +169,8 @@ public class AgentManager extends SecurityBase implements org.sakaiproject.metao
    public Agent getTempWorksiteRole(String roleName, String siteId) {
       Id roleId = getOspiIdManager().getId("/site/" + siteId + "/" + roleName);
 
-      return new RoleWrapper(roleId, null, null);
+      //TODO using the same value for both id and eid
+      return new RoleWrapper(roleId, roleId, null, null);
    }
 
    protected Agent getAgentInternal(String username) throws IdUnusedException {

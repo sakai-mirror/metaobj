@@ -42,11 +42,13 @@ public class AgentWrapper extends IdentifiableObject implements Agent {
 
    private User sakaiUser = null;
    private Id id = null;
+   private Id eid = null;
    private StructuredArtifact profile = null;
    private SecurityBase securityBase;
 
-   public AgentWrapper(Id id, User sakaiUser, StructuredArtifact profile, SecurityBase securityBase) {
+   public AgentWrapper(Id id, Id eid, User sakaiUser, StructuredArtifact profile, SecurityBase securityBase) {
       this.id = id;
+      this.eid = eid;
       this.sakaiUser = sakaiUser;
       this.profile = profile;
       this.securityBase = securityBase;
@@ -54,6 +56,10 @@ public class AgentWrapper extends IdentifiableObject implements Agent {
 
    public Id getId() {
       return id;
+   }
+   
+   public Id getEid() {
+      return eid;
    }
 
    public Artifact getProfile() {

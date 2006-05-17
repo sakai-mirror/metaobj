@@ -57,6 +57,10 @@ public class SakaiComponentDispatchServlet extends DispatcherServlet {
       }
 
       public Id getId() {
+         return new IdImpl(uid, null);
+      }
+      
+      public Id getEid() {
          return new IdImpl(eid, null);
       }
 

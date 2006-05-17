@@ -43,6 +43,8 @@ public interface Agent extends Serializable, Principal {
    public static final String ROLE_ANONYMOUS = "ROLE_ANONYMOUS";
 
    public Id getId();
+   
+   public Id getEid();
 
    public Artifact getProfile();
 

@@ -42,6 +42,10 @@ public class AnonymousAgent implements Agent {
    public Id getId() {
       return ANONYMOUS_AGENT_ID;
    }
+   
+   public Id getEid() {
+      return ANONYMOUS_AGENT_ID;
+   }
 
    public Artifact getProfile() {
       return null;

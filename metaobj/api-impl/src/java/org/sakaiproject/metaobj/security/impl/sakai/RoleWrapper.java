@@ -36,17 +36,23 @@ public class RoleWrapper implements OspRole {
    protected final transient Log logger = LogFactory.getLog(getClass());
 
    private Id id = null;
+   private Id eid = null;
    private Role sakaiRole = null;
    private AuthzGroup sakaiRealm = null;
 
-   public RoleWrapper(Id id, Role sakaiRole, AuthzGroup sakaiRealm) {
+   public RoleWrapper(Id id, Id eid, Role sakaiRole, AuthzGroup sakaiRealm) {
       this.id = id;
+      this.eid = eid;
       this.sakaiRealm = sakaiRealm;
       this.sakaiRole = sakaiRole;
    }
 
    public Id getId() {
       return id;
+   }
+   
+   public Id getEid() {
+      return eid;
    }
 
    public Artifact getProfile() {

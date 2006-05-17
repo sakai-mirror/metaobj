@@ -38,12 +38,13 @@ public class SecurityBase {
 
    protected Agent morphAgent(User sakaiUser) {
       Id ospiId = getOspiIdManager().getId(sakaiUser.getId());
+      Id ospiEid = getOspiIdManager().getId(sakaiUser.getEid());
       //StructuredArtifact profile = (StructuredArtifact)agentHome.createInstance();
 
       //profile.put("email", sakaiUser.getEmail());
 
       //return new AgentWrapper(ospiId,  sakaiUser, profile, this);
-      return new AgentWrapper(ospiId, sakaiUser, null, this);
+      return new AgentWrapper(ospiId, ospiEid, sakaiUser, null, this);
    }
 
 
@@ -70,6 +71,7 @@ public class SecurityBase {
       }
       Id roleId = getOspiIdManager().getId(siteRealm.getId() + "/" + sakaiRole.getId());
 
-      return new RoleWrapper(roleId, sakaiRole, siteRealm);
+      //TODO using the same value for id and eid
+      return new RoleWrapper(roleId, roleId, sakaiRole, siteRealm);
    }
 }
