@@ -62,7 +62,6 @@ import org.sakaiproject.exception.UnsupportedFileTypeException;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.security.AuthorizationFacade;
 import org.sakaiproject.metaobj.shared.ArtifactFinder;
-import org.sakaiproject.metaobj.shared.ArtifactFinderManager;
 import org.sakaiproject.metaobj.shared.DownloadableManager;
 import org.sakaiproject.metaobj.shared.SharedFunctionConstants;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
@@ -99,7 +98,6 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
 
    private AuthorizationFacade authzManager = null;
    private IdManager idManager;
-   private ArtifactFinderManager artifactFinderManager;
    private WorksiteManager worksiteManager;
    private ContentHostingService contentHosting;
    private ToolManager toolManager;
@@ -426,8 +424,8 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
 
       boolean finished = false;
       String type = sad.getType().getId().getValue();
-      ArtifactFinder artifactFinder = getArtifactFinderManager().getArtifactFinderByType(type);
-      Collection artifacts = artifactFinder.findByType(type);
+      //ArtifactFinder artifactFinder = getArtifactFinderManager().getArtifactFinderByType(type);
+      Collection artifacts = getArtifactFinder().findByType(type);
       Collection modifiedArtifacts = new ArrayList();
 
       // perform xsl transformations on existing artifacts
@@ -485,14 +483,6 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
 
    public AuthenticationManager getAuthManager() {
       return (AuthenticationManager) ComponentManager.getInstance().get("authManager");
-   }
-
-   public ArtifactFinderManager getArtifactFinderManager() {
-      return artifactFinderManager;
-   }
-
-   public void setArtifactFinderManager(ArtifactFinderManager artifactFinderManager) {
-      this.artifactFinderManager = artifactFinderManager;
    }
 
    public AuthorizationFacade getAuthzManager() {
