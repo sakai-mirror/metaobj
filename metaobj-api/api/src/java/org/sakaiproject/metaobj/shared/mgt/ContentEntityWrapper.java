@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.Stack;
 
 import org.sakaiproject.component.cover.ServerConfigurationService;
+import org.sakaiproject.content.api.ContentCollection;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.exception.ServerOverloadException;
@@ -131,4 +132,8 @@ public class ContentEntityWrapper implements ContentResource {
 	{
 		return base.isCollection();
 	}
+
+   public ContentCollection getContainingCollection() {
+      return base.getContainingCollection();
+   }
 }
