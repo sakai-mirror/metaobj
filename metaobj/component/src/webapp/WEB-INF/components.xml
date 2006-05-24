@@ -128,18 +128,25 @@
    </bean>
 
    <bean id="structuredArtifactDefinitionManager"
-      class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+      class="org.sakaiproject.springframework.transaction.interceptor.ConstructedTransactionProxyFactoryBean"
       singleton="true">
-      <property name="transactionManager">
+      <constructor-arg index="0">
          <ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalTransactionManager"/>
-      </property>
-      <property name="target">
-         <ref bean="structuredArtifactDefinitionManagerTarget"/>
-      </property>
-      <property name="transactionAttributes">
+      </constructor-arg>
+      <constructor-arg index="1">
+         <bean class="org.sakaiproject.metaobj.shared.mgt.impl.StructuredArtifactDefinitionManagerImpl">
+            <property name="sessionFactory">
+               <ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalSessionFactory"/>
+            </property>
+         </bean>
+      </constructor-arg>
+      <constructor-arg index="2">
          <props>
             <prop key="*">PROPAGATION_REQUIRED</prop>
          </props>
+      </constructor-arg>
+      <property name="target">
+         <ref bean="structuredArtifactDefinitionManagerTarget"/>
       </property>
    </bean>
 
