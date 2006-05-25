@@ -20,7 +20,12 @@
  **********************************************************************************/
 package org.sakaiproject.metaobj.shared.control.servlet;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.StringTokenizer;
@@ -121,9 +126,32 @@ public class FileDownloadServlet extends HttpServlet {
       Hashtable params = HttpUtils.parseQueryString(getNextToken(tokenizer));
 
       DownloadableManager manager = getDownloadableManager(((String[]) params.get(MANAGER_NAME))[0]);
-      manager.packageForDownload(params, response.getOutputStream());
-   }
+      ByteArrayOutputStream bos = new ByteArrayOutputStream();
+      String filename = manager.packageForDownload(params, bos);
+      
+      response.setHeader("Content-Type", "application/octet-stream");
+      response.setHeader("Content-Disposition", "attachment"
+              + ((filename != null && filename != "") ? ";filename=\"" + filename + "\"" : ""));
+      response.setHeader("Content-Length", Integer.toString(bos.size()));
+      
+      copyStream(new ByteArrayInputStream(bos.toByteArray()), response.getOutputStream());            
+      
 
+   }
+   private void copyStream(InputStream in, OutputStream out) throws IOException
+   {
+       byte data[] = new byte[1024*10];
+       
+       BufferedInputStream origin = new BufferedInputStream(in, data.length);
+       
+       int count;
+       while ((count = origin.read(data, 0, data.length)) != -1) {
+           out.write(data, 0, count);
+       }
+       in.close();
+       out.flush();
+   }
+   
    protected DownloadableManager getDownloadableManager(String name) {
       return (DownloadableManager) ComponentManager.get(name);
    }
