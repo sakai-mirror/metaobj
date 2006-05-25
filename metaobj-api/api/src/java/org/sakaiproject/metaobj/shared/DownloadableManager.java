@@ -27,5 +27,5 @@ import java.util.Map;
 
 public interface DownloadableManager {
 
-   public void packageForDownload(Map params, OutputStream out) throws IOException;
+   public String packageForDownload(Map params, OutputStream out) throws IOException;
 }
