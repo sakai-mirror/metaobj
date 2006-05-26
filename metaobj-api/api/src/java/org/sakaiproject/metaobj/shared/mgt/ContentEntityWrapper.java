@@ -36,78 +36,90 @@ import org.w3c.dom.Element;
 
 /**
  * Created by IntelliJ IDEA.
- * User: John Ellis
- * Date: Nov 7, 2005
- * Time: 3:12:50 PM
- * To change this template use File | Settings | File Templates.
+ * User: John Ellis Date: Nov 7, 2005 Time: 3:12:50 PM
  */
-public class ContentEntityWrapper implements ContentResource {
+public class ContentEntityWrapper implements ContentResource
+{
+	private ContentResource base;
 
-   private ContentResource base;
-   private String reference;
+	private String reference;
 
-   public ContentEntityWrapper(ContentResource base, String reference) {
-      this.base = base;
-      this.reference = reference;
-   }
+	public ContentEntityWrapper(ContentResource base, String reference)
+	{
+		this.base = base;
+		this.reference = reference;
+	}
 
-   public int getContentLength() {
-      return base.getContentLength();
-   }
+	public int getContentLength()
+	{
+		return base.getContentLength();
+	}
 
-   public String getContentType() {
-      return base.getContentType();
-   }
+	public String getContentType()
+	{
+		return base.getContentType();
+	}
 
-   public byte[] getContent() throws ServerOverloadException {
-      return base.getContent();
-   }
+	public byte[] getContent() throws ServerOverloadException
+	{
+		return base.getContent();
+	}
 
-   public InputStream streamContent() throws ServerOverloadException {
-      return base.streamContent();
-   }
+	public InputStream streamContent() throws ServerOverloadException
+	{
+		return base.streamContent();
+	}
 
-   public String getUrl() {
-      return ServerConfigurationService.getAccessUrl() + getReference();
-   }
+	public String getUrl()
+	{
+		return ServerConfigurationService.getAccessUrl() + getReference();
+	}
 
-   public String getReference() {
-      return reference;
-   }
+	public String getReference()
+	{
+		return reference;
+	}
 
-   public String getId() {
-      return base.getId();
-   }
+	public String getId()
+	{
+		return base.getId();
+	}
 
-   public ResourceProperties getProperties() {
-      return base.getProperties();
-   }
+	public ResourceProperties getProperties()
+	{
+		return base.getProperties();
+	}
 
-   public Element toXml(Document doc, Stack stack) {
-      return base.toXml(doc, stack);
-   }
+	public Element toXml(Document doc, Stack stack)
+	{
+		return base.toXml(doc, stack);
+	}
 
-   public String getUrl(String rootProperty) {
-      return base.getUrl(rootProperty);
-   }
+	public String getUrl(String rootProperty)
+	{
+		return base.getUrl(rootProperty);
+	}
 
-   public String getReference(String rootProperty) {
-      return base.getUrl(rootProperty);
-   }
+	public String getReference(String rootProperty)
+	{
+		return base.getUrl(rootProperty);
+	}
 
-   public ContentResource getBase() {
-      return base;
-   }
+	public ContentResource getBase()
+	{
+		return base;
+	}
 
-   public void setBase(ContentResource base) {
-      this.base = base;
-   }
+	public void setBase(ContentResource base)
+	{
+		this.base = base;
+	}
 
 	public Collection getGroups()
 	{
 		return base.getGroups();
 	}
-	
+
 	public AccessMode getAccess()
 	{
 		return base.getAccess();
@@ -133,7 +145,28 @@ public class ContentEntityWrapper implements ContentResource {
 		return base.isCollection();
 	}
 
-   public ContentCollection getContainingCollection() {
-      return base.getContainingCollection();
-   }
+	public ContentCollection getContainingCollection()
+	{
+		return base.getContainingCollection();
+	}
+
+	public Collection getGroupObjects()
+	{
+		return base.getGroupObjects();
+	}
+
+	public AccessMode getInheritedAccess()
+	{
+		return base.getInheritedAccess();
+	}
+
+	public Collection getInheritedGroupObjects()
+	{
+		return base.getInheritedGroupObjects();
+	}
+
+	public Collection getInheritedGroups()
+	{
+		return base.getInheritedGroups();
+	}
 }
