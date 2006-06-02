@@ -21,12 +21,6 @@
 
 package org.sakaiproject.metaobj.worksite.mgt.impl;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.authz.api.AuthzGroup;
@@ -41,7 +35,12 @@ import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SitePage;
 import org.sakaiproject.site.api.ToolConfiguration;
 import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.tool.api.Placement;
+import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.tool.cover.ToolManager;
+
+import java.util.*;
 
 public class WorksiteManagerImpl implements WorksiteManager {
    protected final transient Log logger = LogFactory.getLog(getClass());
@@ -65,12 +64,24 @@ public class WorksiteManagerImpl implements WorksiteManager {
    }
 
    public Id getCurrentWorksiteId() {
-      String id = ToolManager.getCurrentPlacement().getContext();
+      Placement currentPlacement = ToolManager.getCurrentPlacement();
+
+      if (currentPlacement == null) {
+         currentPlacement = getToolSessionPlacement();
+      }
+
+      String id = currentPlacement.getContext();
 
       if (id != null) {
          return getIdManager().getId(id);
       }
       return null;
+   }
+
+   protected Placement getToolSessionPlacement() {
+      ToolSession session = SessionManager.getCurrentToolSession();
+      String placementId = session.getPlacementId();
+      return getTool(placementId);
    }
 
    public List getSiteTools(String toolId, Site site) {

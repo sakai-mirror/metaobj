@@ -21,10 +21,11 @@
 
 package org.sakaiproject.metaobj.utils.mvc.impl;
 
-import java.util.Map;
-
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.NotWritablePropertyException;
+
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -64,6 +65,10 @@ public class MixedBeanWrapper extends BeanWrapperBase {
 
    protected BeanWrapperImpl createNestedWrapper(String parentPath, String nestedProperty) {
       Class type = getPropertyType(nestedProperty);
+
+      if (type == null) {
+         throw new NotWritablePropertyException(String.class, nestedProperty);
+      }
 
       if (java.util.Map.class.isAssignableFrom(type)) {
          return new MapWrapper((Map) getPropertyValue(nestedProperty),
