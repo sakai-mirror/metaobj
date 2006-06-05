@@ -216,8 +216,13 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
    }
 
    public StructuredArtifactDefinitionBean save(StructuredArtifactDefinitionBean bean) {
+      return save(bean, true);
+   }
+   
+   public StructuredArtifactDefinitionBean save(StructuredArtifactDefinitionBean bean, boolean updateModTime) {
       if (!sadExists(bean)) {
-         bean.setModified(new Date(System.currentTimeMillis()));
+         if(updateModTime)
+            bean.setModified(new Date(System.currentTimeMillis()));
 
          boolean loadSchema = false;
 
@@ -568,7 +573,9 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
    }
 
    protected String calculateSchemaHash(StructuredArtifactDefinitionBean bean) {
-      String hashString = new String(bean.getSchema());
+      String hashString = "";
+      if(bean.getSchema() != null)
+         hashString += new String(bean.getSchema());
       hashString += bean.getDocumentRoot();
       hashString += bean.getDescription();
       hashString += bean.getInstruction();

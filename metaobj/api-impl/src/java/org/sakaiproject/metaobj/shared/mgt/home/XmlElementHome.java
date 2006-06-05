@@ -171,6 +171,8 @@ public class XmlElementHome implements StructuredArtifactHomeInterface, Initiali
    }
 
    public String getExternalType() {
+      if(getSchema() == null)
+         return "";
       return getSchema().getTargetNamespace().getURI() + "?" + getRootNode();
    }
 

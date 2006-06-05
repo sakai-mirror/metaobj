@@ -70,6 +70,7 @@ public interface StructuredArtifactDefinitionManager {
    public StructuredArtifactDefinitionBean loadHomeByExternalType(String externalType, Id worksiteId);
 
    public StructuredArtifactDefinitionBean save(StructuredArtifactDefinitionBean sad);
+   public StructuredArtifactDefinitionBean save(StructuredArtifactDefinitionBean sad, boolean updateModDate);
 
    /**
     * @return true if user is in a SAD tool that is configured to manipulate globals SADs
