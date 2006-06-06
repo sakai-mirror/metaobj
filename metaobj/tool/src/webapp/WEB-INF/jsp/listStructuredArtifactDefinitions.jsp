@@ -24,7 +24,7 @@
          </fmt:message>
        </osp:param>
 
-       <osp:param name="session.sakaiproject.permissions.siteRef"
+       <osp:param name="session.sakaiproject.permissions.targetRef"
             value="${worksite.reference}"/>
        <osp:param name="session.sakaiproject.permissions.prefix" value="metaobj."/>
        </osp:url>"title="<fmt:message key="action_permissions"/>" ><fmt:message key="action_permissions_title"/>
