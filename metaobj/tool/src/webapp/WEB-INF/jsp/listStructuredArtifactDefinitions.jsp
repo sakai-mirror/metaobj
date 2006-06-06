@@ -67,6 +67,7 @@
                 <c:if test="${isGlobal && can.publish &&  home.canGlobalPublish}"> | <a href="<osp:url value="confirmSADPublish.osp"/>&action=global_publish&id=<c:out value="${home.id}" />"><fmt:message key="table_action_globalPublish"/></a></c:if>
                 <c:if test="${!isGlobal && home.canSuggestGlobalPublish && can['suggest.global.publish']}"> | <a href="<osp:url value="confirmSADPublish.osp"/>&action=suggest_global_publish&id=<c:out value="${home.id}" />"><fmt:message key="table_action_suggestPublishGlobal"/></a></c:if>
                 <c:if test="${isGlobal && home.canApproveGlobalPublish && can.publish}"> | <a href="<osp:url value="confirmSADPublish.osp"/>&action=global_publish&id=<c:out value="${home.id}" />"><fmt:message key="table_action_approveGlobalPublish"/></a></c:if>
+                <c:if test="${!home.published && can.delete}"> | <a href="<osp:url value="confirmSADDelete.osp"/>&id=<c:out value="${home.id}" />"><fmt:message key="table_action_delete"/></a></c:if>
             </div>
          </c:if>
       </TD>

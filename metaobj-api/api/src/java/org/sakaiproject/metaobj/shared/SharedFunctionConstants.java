@@ -27,6 +27,7 @@ public class SharedFunctionConstants {
    public final static String EDIT_ARTIFACT_DEF = ARTIFACT_DEF_PREFIX + "edit";
    public final static String EXPORT_ARTIFACT_DEF = ARTIFACT_DEF_PREFIX + "export";
    public final static String COPY_ARTIFACT_DEF = ARTIFACT_DEF_PREFIX + "copy";
+   public final static String DELETE_ARTIFACT_DEF = ARTIFACT_DEF_PREFIX + "delete";
    public final static String PUBLISH_ARTIFACT_DEF = ARTIFACT_DEF_PREFIX + "publish";
    public final static String SUGGEST_GLOBAL_PUBLISH_ARTIFACT_DEF = ARTIFACT_DEF_PREFIX + "suggest.global.publish";
    public final static String GLOBAL_PUBLISH_ARTIFACT_DEF = ARTIFACT_DEF_PREFIX + "global.publish";

@@ -4,17 +4,17 @@
  ***********************************************************************************
  *
  * Copyright (c) 2004, 2005, 2006 The Sakai Foundation.
- * 
- * Licensed under the Educational Community License, Version 1.0 (the "License"); 
- * you may not use this file except in compliance with the License. 
+ *
+ * Licensed under the Educational Community License, Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.opensource.org/licenses/ecl1.php
- * 
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  *
  **********************************************************************************/
@@ -191,7 +191,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
    public StructuredArtifactDefinitionBean save(StructuredArtifactDefinitionBean bean) {
       return save(bean, true);
    }
-   
+
    public StructuredArtifactDefinitionBean save(StructuredArtifactDefinitionBean bean, boolean updateModTime) {
       if (!sadExists(bean)) {
          if(updateModTime)
@@ -228,6 +228,12 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       return bean;
    }
 
+   public void delete(StructuredArtifactDefinitionBean sad) {
+      if (sad.isPublished()) {
+         throw new PersistenceException("unable_to_delete_published", new Object[]{}, "siteState");
+      }
+      getHibernateTemplate().delete(sad);
+   }
 
    /**
     * @return Returns the idManager.
@@ -503,7 +509,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
             getHibernateTemplate().evict(bean);
             bean.setSiteId(toContext);
             bean.setId(null);
-            
+
             //Check for an existing form
             if(findBean(bean)== null)
                getHibernateTemplate().save(bean);
@@ -526,6 +532,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       FunctionManager.registerFunction(SharedFunctionConstants.CREATE_ARTIFACT_DEF);
       FunctionManager.registerFunction(SharedFunctionConstants.EDIT_ARTIFACT_DEF);
       FunctionManager.registerFunction(SharedFunctionConstants.EXPORT_ARTIFACT_DEF);
+      FunctionManager.registerFunction(SharedFunctionConstants.DELETE_ARTIFACT_DEF);
       FunctionManager.registerFunction(SharedFunctionConstants.PUBLISH_ARTIFACT_DEF);
       FunctionManager.registerFunction(SharedFunctionConstants.SUGGEST_GLOBAL_PUBLISH_ARTIFACT_DEF);
       updateSchemaHash();
