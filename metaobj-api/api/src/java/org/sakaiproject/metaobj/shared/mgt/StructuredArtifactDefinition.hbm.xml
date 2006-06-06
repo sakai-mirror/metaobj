@@ -4,7 +4,7 @@
    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.sakaiproject.metaobj.shared.model">
 
-   <class name="StructuredArtifactDefinitionBean" table="osp_structured_artifact_def">
+   <class name="StructuredArtifactDefinitionBean" table="metaobj_form_def">
       <id name="id" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="id">
          <generator class="org.sakaiproject.metaobj.shared.IdGenerator"/>
       </id>
