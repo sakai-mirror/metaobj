@@ -21,22 +21,17 @@
 
 package org.sakaiproject.metaobj.shared.mgt.home;
 
+import org.sakaiproject.component.cover.ComponentManager;
+import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.mgt.PresentableObjectHome;
+import org.sakaiproject.metaobj.shared.model.*;
+import org.sakaiproject.metaobj.utils.xml.SchemaFactory;
+import org.sakaiproject.metaobj.utils.xml.SchemaNode;
+
 import java.io.ByteArrayInputStream;
 import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.Date;
-
-import org.sakaiproject.component.cover.ComponentManager;
-import org.sakaiproject.metaobj.shared.mgt.IdManager;
-import org.sakaiproject.metaobj.shared.mgt.PresentableObjectHome;
-import org.sakaiproject.metaobj.shared.model.Agent;
-import org.sakaiproject.metaobj.shared.model.Artifact;
-import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.metaobj.shared.model.StructuredArtifact;
-import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
-import org.sakaiproject.metaobj.shared.model.Type;
-import org.sakaiproject.metaobj.utils.xml.SchemaFactory;
-import org.sakaiproject.metaobj.utils.xml.SchemaNode;
 
 
 /**
@@ -52,6 +47,8 @@ public class StructuredArtifactDefinition extends StructuredArtifactHome impleme
    private Agent owner;
    private Date created = new Date();
    private Date modified = new Date();
+
+   private transient String decoratedDescription;
 
    /**
     * system only SAD's are not available to users to populate via a web form, they are for internal system use only
@@ -131,6 +128,7 @@ public class StructuredArtifactDefinition extends StructuredArtifactHome impleme
       this.setSiteId(bean.getSiteId());
       this.setExternalType(bean.getExternalType());
       this.setInstruction(bean.getInstruction());
+      this.decoratedDescription = bean.getDecoratedDescription();
    }
 
    public boolean equals(Object o) {
@@ -277,7 +275,7 @@ public class StructuredArtifactDefinition extends StructuredArtifactHome impleme
          type.setId(getId());
       }
       if (getDescription() != null) {
-         type.setDescription(getDescription());
+         type.setDescription(getDecoratedDescription());
       }
       type.setSystemOnly(isSystemOnly());
       return type;
@@ -425,6 +423,14 @@ public class StructuredArtifactDefinition extends StructuredArtifactHome impleme
 
    public void setAction(String action) {
       this.action = action;
+   }
+
+   public String getDecoratedDescription() {
+      return decoratedDescription;
+   }
+
+   public void setDecoratedDescription(String decoratedDescription) {
+      this.decoratedDescription = decoratedDescription;
    }
 
 }

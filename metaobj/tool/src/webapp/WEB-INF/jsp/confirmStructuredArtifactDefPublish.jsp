@@ -13,6 +13,14 @@
 <input type="hidden" name="<c:out value="${status.expression}"/>" id="<c:out value="${status.expression}"/>" value="<c:out value="${status.value}"/>" />
 </spring:bind>
 
+   <spring:hasBindErrors name="bean">
+<div class="alertMessage">
+   <c:forEach items="${errors.allErrors}" var="error">
+      <spring:message message="${error}" htmlEscape="true"/>
+   </c:forEach>
+</div>
+   </spring:hasBindErrors>
+
 <fieldset>
 <legend><fmt:message key="legend_confirm"/></legend>
 
@@ -33,10 +41,16 @@
 </spring:bind>
 </div>
 
-</fieldset>
 <spring:bind path="bean.description">
-<span class="error_message"><c:out value="${status.errorMessage}"/></span>
+   <c:if test="${status.error}">
+      <p class="shorttext">
+         <span class="reqStar">*</span><label><fmt:message key="label_newName"/></label>
+         <input type="text" name="<c:out value="${status.expression}"/>" value="<c:out value="${status.value}"/>"/>
+      </p>
+   </c:if>
 </spring:bind>
+
+</fieldset>
 
 <p class="act">
 <input name="publish" type="submit" value="<fmt:message key="button_yes"/>"/>

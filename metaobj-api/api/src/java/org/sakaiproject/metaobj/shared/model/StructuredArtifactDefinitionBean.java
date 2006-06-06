@@ -21,6 +21,10 @@
 
 package org.sakaiproject.metaobj.shared.model;
 
+import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.cover.SiteService;
+
 import java.text.MessageFormat;
 import java.util.Date;
 
@@ -54,6 +58,8 @@ public class StructuredArtifactDefinitionBean implements Comparable {
    private String externalType;
    private String instruction;
    private String filePickerAction;
+
+   private transient String decoratedDescription;
 
    /**
     * should be one of the following states
@@ -361,7 +367,7 @@ public class StructuredArtifactDefinitionBean implements Comparable {
          type.setId(getId());
       }
       if (getDescription() != null) {
-         type.setDescription(getDescription());
+         type.setDescription(getDecoratedDescription());
       }
       type.setSystemOnly(isSystemOnly());
       return type;
@@ -427,5 +433,31 @@ public class StructuredArtifactDefinitionBean implements Comparable {
 
    public boolean isPublished() {
       return getGlobalState() == STATE_PUBLISHED || getSiteState() == STATE_PUBLISHED;
+   }
+
+   public String getDecoratedDescription() {
+      if (decoratedDescription == null) {
+         decoratedDescription = getDescription() + calcSiteName();
+      }
+      return decoratedDescription;
+   }
+
+   protected String calcSiteName() {
+      if (siteId == null) {
+         return "";
+      }
+
+      Site site = null;
+      try {
+         site = SiteService.getSite(siteId);
+      } catch (IdUnusedException ignore) {
+         return "";
+      }
+
+      return "(" + site.getTitle() + ")";
+   }
+
+   public void setDecoratedDescription(String decoratedDescription) {
+      this.decoratedDescription = decoratedDescription;
    }
 }

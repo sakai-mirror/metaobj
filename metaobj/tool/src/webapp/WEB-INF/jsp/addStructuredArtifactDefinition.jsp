@@ -43,7 +43,7 @@
 
 <p class="shorttext">
 <spring:bind path="bean.description">
-<span class="reqStar">*</span><label>Name</label>
+<span class="reqStar">*</span><label><fmt:message key="label_name"/></label>
 <input type="text" name="<c:out value="${status.expression}"/>" value="<c:out value="${status.value}"/>"/>
 <span class="error_message"><c:out value="${status.errorMessage}"/></span>
 </spring:bind>
