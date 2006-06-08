@@ -31,7 +31,7 @@ import java.util.Date;
 /**
  * @author chmaurer
  */
-public class StructuredArtifactDefinitionBean implements Comparable {
+public class StructuredArtifactDefinitionBean extends IdentifiableObject implements Comparable {
 
    public static final int STATE_UNPUBLISHED = 0;
    public static final int STATE_WAITING_APPROVAL = 1;
@@ -166,20 +166,6 @@ public class StructuredArtifactDefinitionBean implements Comparable {
     */
    public void setGlobalState(int globalState) {
       this.globalState = globalState;
-   }
-
-   /**
-    * @return Returns the id.
-    */
-   public Id getId() {
-      return id;
-   }
-
-   /**
-    * @param id The id to set.
-    */
-   public void setId(Id id) {
-      this.id = id;
    }
 
    /**
