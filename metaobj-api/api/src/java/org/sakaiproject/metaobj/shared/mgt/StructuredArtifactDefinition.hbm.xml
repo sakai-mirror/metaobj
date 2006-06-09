@@ -6,7 +6,7 @@
 
    <class name="StructuredArtifactDefinitionBean" table="metaobj_form_def">
       <id name="id" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="id">
-         <generator class="org.sakaiproject.metaobj.shared.IdGenerator"/>
+         <generator class="org.sakaiproject.metaobj.shared.IdentifiableIdGenerator"/>
       </id>
       <property name="description" type="string" column="description"/>
       <property name="documentRoot" type="string" column="documentRoot" not-null="true"/>
