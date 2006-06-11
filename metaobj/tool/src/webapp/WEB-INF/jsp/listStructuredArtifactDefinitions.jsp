@@ -7,6 +7,8 @@
 <osp:authZMap prefix="metaobj." var="can" qualifier="${authZqualifier}"/>
 <!-- GUID=<c:out value="${newFormId}" /> -->
 
+<osp:url value="listStructuredArtifactDefinitions.osp" var="homeUrl"/>
+
 <div class="navIntraTool">
 <c:if test="${can.create}">
       <a href="<osp:url value="/addStructuredArtifactDefinition.osp?new=true"/>"
@@ -26,7 +28,8 @@
 
        <osp:param name="session.sakaiproject.permissions.targetRef"
             value="${worksite.reference}"/>
-       <osp:param name="session.sakaiproject.permissions.prefix" value="metaobj."/>
+      <osp:param name="session.sakai.permissions.helpersakai.tool.helper.done.url" value="${homeUrl}"/>
+      <osp:param name="session.sakaiproject.permissions.prefix" value="metaobj."/>
        </osp:url>"title="<fmt:message key="action_permissions"/>" ><fmt:message key="action_permissions_title"/>
      </a>
 
