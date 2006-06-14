@@ -92,8 +92,7 @@
 </td>
 </tr></table>
 <span class="error_message"><c:out value="${status.errorMessage}"/></span>
-    <script type="text/javascript" src="/library/htmlarea/sakai-htmlarea.js"></script>
-    <script type="text/javascript" defer="1">chef_setupformattedtextarea('<c:out value="${status.expression}"/>');</script>
+<osp:richTextWrapper textAreaId="${status.expression}" />
 </spring:bind>
 </p>
 
