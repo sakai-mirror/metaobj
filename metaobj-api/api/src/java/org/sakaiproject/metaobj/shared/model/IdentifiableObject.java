@@ -25,7 +25,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * Created by IntelliJ IDEA.
+ * any derived class should use the generator in the hibernate xml definitian:
+ *     org.theospi.portfolio.shared.model.IdentifiableIdGenerator
+ * This way the newId field will be supported when creating 
+ * new objects with predetermined ids.
+ * 
  * User: jbush
  * Date: May 15, 2004
  * Time: 1:55:47 PM
@@ -65,18 +69,39 @@ abstract public class IdentifiableObject {
       return (id != null ? id.hashCode() : 0);
    }
 
+   /**
+    * returns the id of the object stored in the database.  if the object is new and hasn't
+    * been saved to the database then it may have an id...  check getNewId.
+    * @return Id
+    */
    public Id getId() {
       return id;
    }
 
+   /**
+    * sets the id of the object.  If the object is new then this parameter will be ignored
+    * and a new id will be generated.  Use setNewId to set the id of a new object.
+    * 
+    * @param id
+    */
    public void setId(Id id) {
       this.id = id;
    }
 
+   /**
+    * If this object is new and we want it to have a specific id then this is set before
+    * the object is saved.
+    * @return Id
+    */
    public Id getNewId() {
       return newId;
    }
 
+   /**
+    * if create an identifiable object with a specific id, then this is what you set.
+    * The id generator won't create a new id but will use this field as the id
+    * @param newId
+    */
    public void setNewId(Id newId) {
       this.newId = newId;
    }
