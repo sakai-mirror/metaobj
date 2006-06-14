@@ -903,7 +903,13 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       }
 
       Element css = new Element("css");
-      String skin = getCurrentSite().getSkin();
+      String skin = null;
+      try {
+         skin = getCurrentSite().getSkin();
+      }
+      catch (NullPointerException npe) {
+         //Couldn't find the site, just use default skin
+      }
       if (skin == null || skin.length() == 0) {
          skin = ServerConfigurationService.getString("skin.default");
       }
