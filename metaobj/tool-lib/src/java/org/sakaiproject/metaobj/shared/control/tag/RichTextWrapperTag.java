@@ -75,7 +75,10 @@ public class RichTextWrapperTag extends BodyTagSupport {
             String tagFocus = ServerConfigurationService.getString("tags.focus");
             writer.write("<script type=\"text/javascript\" src=\"/library/editor/FCKeditor/sakai_fckconfig.js\"></script>\n");
             writer.write("<script type=\"text/javascript\" defer=\"1\">chef_setupfcktextarea('"+
-                  textAreaId+"', 450, 50, '" + collectionId + "', '" + tagFocus + "');</script>");
+                  textAreaId+"', 450, 50, '" + collectionId + "', '" + tagFocus + "');\n");
+            writer.write("\t\tvar f = document.getElementById('"+textAreaId+"').form;\n" +
+               "\t\tif (typeof f.onsubmit != \"function\") f.onsubmit = function() {};\n");
+            writer.write("</script>");
          }
          
    
