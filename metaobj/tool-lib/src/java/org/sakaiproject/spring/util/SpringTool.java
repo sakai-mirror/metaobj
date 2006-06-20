@@ -21,16 +21,6 @@
 
 package org.sakaiproject.spring.util;
 
-import java.io.IOException;
-import java.util.Enumeration;
-
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.tool.api.ActiveTool;
@@ -40,6 +30,15 @@ import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.cover.ActiveToolManager;
 import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.util.Web;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Enumeration;
 
 
 public class SpringTool extends HttpServlet {
@@ -164,6 +163,11 @@ public class SpringTool extends HttpServlet {
          ToolSession session = SessionManager.getCurrentToolSession();
 
          if (target == null || "/".equals(target)) {
+            if (!m_defaultToLastView) {
+               // make sure tool session is clean
+               session.clearAttributes();
+            }
+
             target = computeDefaultTarget();
             
             // make sure it's a valid path

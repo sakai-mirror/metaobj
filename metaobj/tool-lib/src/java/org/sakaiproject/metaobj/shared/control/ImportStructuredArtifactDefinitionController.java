@@ -21,24 +21,13 @@
 
 package org.sakaiproject.metaobj.shared.control;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.content.api.FilePickerHelper;
 import org.sakaiproject.entity.api.EntityManager;
 import org.sakaiproject.entity.api.Reference;
-import org.sakaiproject.exception.IdUnusedException;
-import org.sakaiproject.exception.ImportException;
-import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.exception.TypeException;
-import org.sakaiproject.exception.UnsupportedFileTypeException;
+import org.sakaiproject.exception.*;
 import org.sakaiproject.metaobj.shared.model.FormUploadForm;
 import org.sakaiproject.metaobj.shared.model.InvalidUploadException;
 import org.sakaiproject.metaobj.utils.mvc.intf.Controller;
@@ -47,6 +36,8 @@ import org.sakaiproject.tool.api.ToolSession;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.*;
 
 public class ImportStructuredArtifactDefinitionController extends AddStructuredArtifactDefinitionController
       implements Controller, Validator {
@@ -202,6 +193,19 @@ return prepareListView(request, null);
       if (templateForm.getUploadedForm() == null && templateForm.isValidate()) {
          errors.rejectValue("uploadedForm", "error.required", "required");
       }
+   }
+
+   /**
+    * override to prevent pulling it from the session.
+    * @param incomingModel
+    * @param request
+    * @param session
+    * @param application
+    * @return
+    * @throws Exception
+    */
+   public Object fillBackingObject(Object incomingModel, Map request, Map session, Map application) throws Exception {
+      return incomingModel;
    }
 
    public SessionManager getSessionManager() {
