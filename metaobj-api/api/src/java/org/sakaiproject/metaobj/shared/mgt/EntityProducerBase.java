@@ -104,7 +104,7 @@ public abstract class EntityProducerBase implements EntityProducer {
       return ServerConfigurationService.getAccessUrl() + ref.getReference();
    }
 
-   public Collection getEntityAuthzGroups(Reference ref) {
+   public Collection getEntityAuthzGroups(Reference ref, String userId) {
       return null;
    }
 
