@@ -35,6 +35,7 @@ import org.sakaiproject.entity.api.EntityProducer;
 import org.sakaiproject.entity.api.HttpAccess;
 import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.entity.api.ResourceProperties;
+import org.sakaiproject.util.Validator;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -101,7 +102,7 @@ public abstract class EntityProducerBase implements EntityProducer {
    }
 
    public String getEntityUrl(Reference ref) {
-      return ServerConfigurationService.getAccessUrl() + ref.getReference();
+      return ServerConfigurationService.getAccessUrl() + Validator.escapeUrl(ref.getReference());
    }
 
    public Collection getEntityAuthzGroups(Reference ref, String userId) {
