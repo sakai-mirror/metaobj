@@ -126,6 +126,7 @@
             <value>portfolioAdmin</value>
          </list>
       </property>
+      <property name="expressionMax"><value>999</value></property>
    </bean>
 
    <bean id="structuredArtifactDefinitionManager"
@@ -205,7 +206,7 @@
 
    <bean id="org.sakaiproject.metaobj.shared.mgt.StructuredArtifactValidationService"
       class="org.sakaiproject.metaobj.shared.mgt.impl.StructuredArtifactValidationServiceImpl"
-      singleton="true">         
+      singleton="true">
    </bean>
 
    <bean id="org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome.contentResource"

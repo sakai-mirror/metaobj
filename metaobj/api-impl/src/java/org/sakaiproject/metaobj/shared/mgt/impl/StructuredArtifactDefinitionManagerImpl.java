@@ -77,6 +77,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
    private List globalSites;
    private List globalSiteTypes;
    private ArtifactFinder artifactFinder;
+   private int expressionMax = 999;
 
    public StructuredArtifactDefinitionManagerImpl() {
    }
@@ -113,9 +114,32 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
     */
    public List findHomes() {
       // only for the appropriate worksites
-      String query = "from StructuredArtifactDefinitionBean where owner = ? or globalState = ? or (siteState = ?  and siteId in (";
-
       List sites = getWorksiteManager().getUserSites();
+      List returned = new ArrayList();
+      while (sites.size() > getExpressionMax()) {
+         returned.addAll(findHomes(sites.subList(0, getExpressionMax() - 1), false));
+         sites.subList(0, getExpressionMax() - 1).clear();
+      }
+      returned.addAll(findHomes(sites, true));
+      return returned;
+   }
+
+   protected List findHomes(List sites, boolean includeGlobal) {
+      String query;
+      Object[] params;
+
+      if (includeGlobal) {
+         query = "from StructuredArtifactDefinitionBean where owner = ? or globalState = ? or (siteState = ?  and siteId in (";
+         params = new Object[]{getAuthManager().getAgent().getId().getValue(),
+                               new Integer(StructuredArtifactDefinitionBean.STATE_PUBLISHED),
+                               new Integer(StructuredArtifactDefinitionBean.STATE_PUBLISHED)};
+      }
+      else {
+         query = "from StructuredArtifactDefinitionBean where owner != ? and (siteState = ?  and siteId in (";
+         params = new Object[]{getAuthManager().getAgent().getId().getValue(),
+                               new Integer(StructuredArtifactDefinitionBean.STATE_PUBLISHED)};
+      }
+
       for (Iterator i = sites.iterator(); i.hasNext();) {
          Site site = (Site) i.next();
          query += "'" + site.getId() + "'";
@@ -124,9 +148,6 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
 
       query += "''))";
 
-      Object[] params = new Object[]{getAuthManager().getAgent().getId().getValue(),
-                                     new Integer(StructuredArtifactDefinitionBean.STATE_PUBLISHED),
-                                     new Integer(StructuredArtifactDefinitionBean.STATE_PUBLISHED)};
       return getHibernateTemplate().find(query, params);
    }
 
@@ -194,8 +215,9 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
 
    public StructuredArtifactDefinitionBean save(StructuredArtifactDefinitionBean bean, boolean updateModTime) {
       if (!sadExists(bean)) {
-         if(updateModTime)
+         if (updateModTime) {
             bean.setModified(new Date(System.currentTimeMillis()));
+         }
 
          boolean loadSchema = false;
 
@@ -511,8 +533,9 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
             bean.setId(null);
 
             //Check for an existing form
-            if(findBean(bean)== null)
+            if (findBean(bean) == null) {
                getHibernateTemplate().save(bean);
+            }
 
             //            getHibernateTemplate().saveOrUpdateCopy(bean);
          }
@@ -553,8 +576,9 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
 
    protected String calculateSchemaHash(StructuredArtifactDefinitionBean bean) {
       String hashString = "";
-      if(bean.getSchema() != null)
+      if (bean.getSchema() != null) {
          hashString += new String(bean.getSchema());
+      }
       hashString += bean.getDocumentRoot();
       hashString += bean.getDescription();
       hashString += bean.getInstruction();
@@ -594,9 +618,10 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
     */
    public void packageFormForExport(String formId, OutputStream os, boolean checkPermission)
          throws IOException {
-      if(checkPermission)
+      if (checkPermission) {
          getAuthzManager().checkPermission(SharedFunctionConstants.EXPORT_ARTIFACT_DEF,
             getToolId());
+      }
 
       CheckedOutputStream checksum = new CheckedOutputStream(os,
             new Adler32());
@@ -721,10 +746,11 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
          if (findExisting) {
             StructuredArtifactDefinitionBean found = findBean(bean);
             if (found != null) {
-               if(foundThrowsException)
+               if (foundThrowsException) {
                   throw new ImportException("The Form being imported already exists and has been published");
-               else
+               } else {
                   return found;
+               }
             }
          }
 
@@ -779,9 +805,10 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       }
 
       ZipEntry currentEntry = zis.getNextEntry();
-      
-      if(currentEntry == null)
+
+      if (currentEntry == null) {
          return null;
+      }
       
       // If the zip was opened and re-zipped, then the directory was
       //    compressed with the files.  we need to deal with 
@@ -930,6 +957,14 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
 
    public void setArtifactFinder(ArtifactFinder artifactFinder) {
       this.artifactFinder = artifactFinder;
+   }
+
+   public int getExpressionMax() {
+      return expressionMax;
+   }
+
+   public void setExpressionMax(int expressionMax) {
+      this.expressionMax = expressionMax;
    }
 
 }
