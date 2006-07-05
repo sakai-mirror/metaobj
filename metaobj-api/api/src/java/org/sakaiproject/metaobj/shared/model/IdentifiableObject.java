@@ -105,4 +105,15 @@ abstract public class IdentifiableObject {
    public void setNewId(Id newId) {
       this.newId = newId;
    }
+
+   /**
+    * this returns the effective id.  First it checks for the real id,
+    * then if it's not good then it returns the newId.
+    * @return Id
+    */
+   public Id getVirtualId() {
+      if(id != null && id.getValue() != null && id.getValue().length() > 0)
+         return id;
+      return newId;
+   }
 }
