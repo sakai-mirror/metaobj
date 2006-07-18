@@ -206,8 +206,8 @@
       </dependency>
 
       <dependency>
-         <groupId>springframework</groupId>
-         <artifactId>spring</artifactId>
+         <groupId>${sakai.spring.groupId}</groupId>
+         <artifactId>${sakai.spring.artifactId}</artifactId>
          <version>${sakai.spring.version}</version>
       </dependency>
 
@@ -240,7 +240,7 @@
          <resource>
             <directory>src/bundle</directory>
             <includes>
-               <include>**/*</include>
+               <include>**/*.properties</include>
             </includes>
          </resource>
          <resource>
