@@ -240,7 +240,7 @@
          <resource>
             <directory>src/bundle</directory>
             <includes>
-               <include>**/*</include>
+               <include>**/*.properties</include>
             </includes>
          </resource>
          <resource>
