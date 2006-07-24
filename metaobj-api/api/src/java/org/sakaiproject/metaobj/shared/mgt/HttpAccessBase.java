@@ -50,9 +50,14 @@ public abstract class HttpAccessBase implements HttpAccess {
       ReferenceParser parser = createParser(ref);
       checkSource(ref, parser);
       ContentEntityWrapper wrapper = (ContentEntityWrapper) ref.getEntity();
-      Reference realRef = EntityManager.newReference(wrapper.getBase().getReference());
-      EntityProducer producer = realRef.getEntityProducer();
-      producer.getHttpAccess().handleAccess(req, res, realRef, copyrightAcceptedRefs);
+      if (wrapper == null || wrapper.getBase() == null) {
+         throw new EntityNotDefinedException(ref.getReference());
+      }
+      else {
+         Reference realRef = EntityManager.newReference(wrapper.getBase().getReference());
+         EntityProducer producer = realRef.getEntityProducer();
+         producer.getHttpAccess().handleAccess(req, res, realRef, copyrightAcceptedRefs);
+      }
    }
 
    protected ReferenceParser createParser(Reference ref) {
