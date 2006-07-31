@@ -46,6 +46,9 @@ public class AgentWrapper extends IdentifiableObject implements Agent {
    private StructuredArtifact profile = null;
    private SecurityBase securityBase;
 
+   public AgentWrapper() {
+   	logger.info("An AgentWrapper was created without any parameters");
+   }
    public AgentWrapper(Id id, Id eid, User sakaiUser, StructuredArtifact profile, SecurityBase securityBase) {
       this.id = id;
       this.eid = eid;
