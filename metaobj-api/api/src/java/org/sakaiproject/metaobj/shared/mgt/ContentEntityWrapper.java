@@ -169,14 +169,4 @@ public class ContentEntityWrapper implements ContentResource
 	{
 		return base.getInheritedGroups();
 	}
-
-	public boolean isAvailable() 
-	{
-		return base.isAvailable();
-	}
-
-	public boolean isHidden() 
-	{
-		return base.isHidden();
-	}
 }
