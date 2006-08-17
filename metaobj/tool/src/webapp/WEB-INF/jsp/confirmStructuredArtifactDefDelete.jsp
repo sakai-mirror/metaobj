@@ -28,7 +28,6 @@
 <fmt:setLocale value="${locale}"/>
 <fmt:setBundle basename = "messages"/>
 
-<div class ="chefPortletContent">
 
 <form method="POST" action="confirmSADDelete.osp">
 <osp:form/>
@@ -46,13 +45,12 @@
    </spring:hasBindErrors>
 
 <fieldset>
-<legend><fmt:message key="legend_confirm"/></legend>
+<h3><fmt:message key="legend_confirm_delete"/></h3>
 
-<div class="chefPageviewTitle">
+<div class="instruction">
 <fmt:message key="confirm_delete"/>
 </div>
 
-</fieldset>
 
 <p class="act">
 <input name="delete" type="submit" value="<fmt:message key="button_yes"/>"/>
