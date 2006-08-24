@@ -4,8 +4,6 @@
 <fmt:setLocale value="${locale}"/>
 <fmt:setBundle basename = "messages"/>
 
-<div class ="chefPortletContent">
-
 <form method="POST" action="confirmSADPublish.osp">
 <osp:form/>
 
@@ -21,25 +19,23 @@
 </div>
    </spring:hasBindErrors>
 
-<fieldset>
-<legend><fmt:message key="legend_confirm"/></legend>
+<h3><fmt:message key="legend_confirm_publish"/></h3>
 
-<div class="chefPageviewTitle">
+<div class="instruction">
 <spring:bind path="bean.action">
-<input type="hidden" name="<c:out value="${status.expression}"/>" value="<c:out value="${status.value}"/>"/>
-<c:choose>
-<c:when test="${status.value == 'site_publish'}">
-<fmt:message key="confirm_publish"/>
-</c:when>
-<c:when test="${status.value == 'global_publish'}">
-<fmt:message key="confirm_globalPublish"/>
-</c:when>
-<c:when test="${status.value == 'suggest_global_publish'}">
-<fmt:message key="confirm_requestGlobalPublish"/>
-</c:when>
-</c:choose>
+	<input type="hidden" name="<c:out value="${status.expression}"/>" value="<c:out value="${status.value}"/>"/>
+	<c:choose>
+	<c:when test="${status.value == 'site_publish'}">
+	<fmt:message key="confirm_publish"/>
+	</c:when>
+	<c:when test="${status.value == 'global_publish'}">
+	<fmt:message key="confirm_globalPublish"/>
+	</c:when>
+	<c:when test="${status.value == 'suggest_global_publish'}">
+	<fmt:message key="confirm_requestGlobalPublish"/>
+	</c:when>
+	</c:choose>
 </spring:bind>
-</div>
 
 <spring:bind path="bean.description">
    <c:if test="${status.error}">
@@ -50,7 +46,6 @@
    </c:if>
 </spring:bind>
 
-</fieldset>
 
 <p class="act">
 <input name="publish" type="submit" value="<fmt:message key="button_yes"/>"/>

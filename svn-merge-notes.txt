@@ -1,0 +1,22 @@
+Skipped merges:
+
+Revision: 13361
+
+Author: jimeng@umich.edu
+
+Date: 9:32:57 PM, Thursday, August 03, 2006
+
+Message:
+
+SAK-5739
+Updated ContentEntityWrapper to match api.
+
+----
+
+Modified : /metaobj/trunk/metaobj-api/api/src/java/org/sakaiproject/metaobj/shared/mgt/ContentEntityWrapper.java
+
+
+
+
+
+
