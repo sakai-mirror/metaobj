@@ -440,7 +440,7 @@ public class StructuredArtifactDefinitionBean extends IdentifiableObject impleme
          return "";
       }
 
-      return "(" + site.getTitle() + ")";
+      return " (" + site.getTitle() + ")";
    }
 
    public void setDecoratedDescription(String decoratedDescription) {
