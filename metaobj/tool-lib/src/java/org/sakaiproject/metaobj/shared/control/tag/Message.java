@@ -29,10 +29,9 @@ import javax.servlet.jsp.tagext.BodyContent;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.taglibs.standard.lang.support.ExpressionEvaluatorManager;
 import org.apache.taglibs.standard.tag.common.core.Util;
 import org.apache.taglibs.standard.tag.common.fmt.MessageSupport;
-import org.apache.taglibs.standard.tag.el.fmt.MessageTag;
+import org.apache.taglibs.standard.tag.rt.fmt.MessageTag;
 import org.sakaiproject.metaobj.shared.model.OspException;
 
 public class Message extends MessageTag {
@@ -76,7 +75,7 @@ public class Message extends MessageTag {
          if (varValue.startsWith(MessageSupport.UNDEFINED_KEY) &&
                varValue.endsWith(MessageSupport.UNDEFINED_KEY) &&
                text != null) {
-            varValue = (String) ExpressionEvaluatorManager.evaluate("text", text, String.class, this, pageContext);
+            varValue = text;
             pageContext.setAttribute(localVar, varValue, localScope);
          }
       }
@@ -86,7 +85,7 @@ public class Message extends MessageTag {
          if (contentValue.startsWith(MessageSupport.UNDEFINED_KEY) &&
                contentValue.endsWith(MessageSupport.UNDEFINED_KEY) &&
                text != null) {
-            contentValue = (String) ExpressionEvaluatorManager.evaluate("text", text, String.class, this, pageContext);
+            contentValue = text;
          }
 
          pageContext.popBody();

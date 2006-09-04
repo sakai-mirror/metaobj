@@ -32,7 +32,7 @@ import javax.servlet.jsp.tagext.BodyContent;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.taglibs.standard.tag.el.core.UrlTag;
+import org.apache.taglibs.standard.tag.rt.core.UrlTag;
 import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.metaobj.shared.mgt.PortalParamManager;
 import org.sakaiproject.metaobj.shared.model.OspException;
