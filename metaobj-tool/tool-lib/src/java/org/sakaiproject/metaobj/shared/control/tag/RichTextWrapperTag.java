@@ -74,8 +74,16 @@ public class RichTextWrapperTag extends BodyTagSupport {
             String collectionId = ContentHostingService.getSiteCollection(ToolManager.getCurrentPlacement().getContext());
             String tagFocus = ServerConfigurationService.getString("tags.focus");
             writer.write("<script type=\"text/javascript\" src=\"/library/editor/FCKeditor/sakai_fckconfig.js\"></script>\n");
-            writer.write("<script type=\"text/javascript\" defer=\"1\">chef_setupfcktextarea('"+
-                  textAreaId+"', 450, 50, '" + collectionId + "', '" + tagFocus + "');\n");
+            writer.write("<script type=\"text/javascript\" defer=\"1\">\n");
+            writer.write("\t\tvar inputArea = document.getElementById('"+textAreaId+"');\n");
+            writer.write("\t\tvar cols = document.getElementById('"+textAreaId+"').cols;\n");
+            writer.write("\t\tvar rows = document.getElementById('"+textAreaId+"').rows;\n");
+            writer.write("\t\tvar width = 450 * cols / 80;\n");
+            writer.write("\t\tvar height = 50 * rows / 4;\n");
+            
+            
+            writer.write("\t\tchef_setupfcktextarea('"+
+                  textAreaId+"', width, height, '" + collectionId + "', '" + tagFocus + "');\n");
             writer.write("\t\tvar f = document.getElementById('"+textAreaId+"').form;\n" +
                "\t\tif (typeof f.onsubmit != \"function\") f.onsubmit = function() {};\n");
             writer.write("</script>");
