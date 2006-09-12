@@ -22,5 +22,27 @@
       <property name="instruction" type="text"/>
       <property name="schemaHash" column="schema_hash" type="string"/>
    </class>
+   
+   
+   <query name="findGlobalHomes">
+      from StructuredArtifactDefinitionBean where ((siteId is null and (globalState = ? or owner = ?)) or globalState = 1)
+   </query>
+   
+   <query name="findHomes">   
+   	from StructuredArtifactDefinitionBean where globalState = ? or (siteId = ? and (owner = ? or siteState = ? )) 
+	</query>
+	
+   <query name="loadHomeByExternalType">   	
+		from StructuredArtifactDefinitionBean a where externalType=? AND (globalState=? OR siteId=?)
+	</query>
 
+   <query name="findByNullSchemaHash">   	
+		from StructuredArtifactDefinitionBean a where schemaHash is null
+	</query>
+
+   <query name="findBean">   	
+		from StructuredArtifactDefinitionBean where (globalState = ? or (siteState = ?  and siteId = ?)) and schema_hash = ?
+	</query>
+
+	
 </hibernate-mapping>

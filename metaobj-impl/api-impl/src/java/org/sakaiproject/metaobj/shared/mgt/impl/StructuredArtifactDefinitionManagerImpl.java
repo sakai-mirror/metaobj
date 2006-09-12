@@ -130,13 +130,13 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
 
       if (includeGlobal) {
          query = "from StructuredArtifactDefinitionBean where owner = ? or globalState = ? or (siteState = ?  and siteId in (";
-         params = new Object[]{getAuthManager().getAgent().getId().getValue(),
+         params = new Object[]{getAuthManager().getAgent(),
                                new Integer(StructuredArtifactDefinitionBean.STATE_PUBLISHED),
                                new Integer(StructuredArtifactDefinitionBean.STATE_PUBLISHED)};
       }
       else {
          query = "from StructuredArtifactDefinitionBean where owner != ? and (siteState = ?  and siteId in (";
-         params = new Object[]{getAuthManager().getAgent().getId().getValue(),
+         params = new Object[]{getAuthManager().getAgent(),
                                new Integer(StructuredArtifactDefinitionBean.STATE_PUBLISHED)};
       }
 
@@ -155,10 +155,9 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
     * @return list of all published globals or global sad owned by current user or waiting for approval
     */
    public List findGlobalHomes() {
-      String query = "from StructuredArtifactDefinitionBean where ((siteId is null and (globalState = ? or owner = ?)) or globalState = 1)";
       Object[] params = new Object[]{new Integer(StructuredArtifactDefinitionBean.STATE_PUBLISHED),
                                      getAuthManager().getAgent().getId().getValue()};
-      return getHibernateTemplate().find(query, params);
+      return getHibernateTemplate().findByNamedQuery("findGlobalHomes", params);
    }
 
    /**
@@ -167,12 +166,11 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
     *         currentWorksiteId owned by current user
     */
    public List findHomes(Id currentWorksiteId) {
-      String query = "from StructuredArtifactDefinitionBean where globalState = ? or (siteId = ? and (owner = ? or siteState = ? )) ";
       Object[] params = new Object[]{new Integer(StructuredArtifactDefinitionBean.STATE_PUBLISHED),
                                      currentWorksiteId.getValue(),
-                                     getAuthManager().getAgent().getId().getValue(),
+                                     getAuthManager().getAgent(),
                                      new Integer(StructuredArtifactDefinitionBean.STATE_PUBLISHED)};
-      return getHibernateTemplate().find(query, params);
+      return getHibernateTemplate().findByNamedQuery("findHomes", params);
    }
 
    public StructuredArtifactDefinitionBean loadHome(String type) {
@@ -184,8 +182,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
    }
 
    public StructuredArtifactDefinitionBean loadHomeByExternalType(String externalType, Id worksiteId) {
-      List homes = (List) getHibernateTemplate().find("from StructuredArtifactDefinitionBean a where externalType=? AND " +
-            "(globalState=? OR siteId=?)", new Object[]{
+      List homes = (List) getHibernateTemplate().findByNamedQuery("loadHomeByExternalType", new Object[]{
                externalType, new Integer(StructuredArtifactDefinitionBean.STATE_PUBLISHED),
                worksiteId.getValue()});
 
@@ -562,8 +559,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
    }
 
    protected void updateSchemaHash() {
-      List forms = getHibernateTemplate().find("from StructuredArtifactDefinitionBean a where " +
-            "schema_hash is null");
+      List forms = getHibernateTemplate().findByNamedQuery("findByNullSchemaHash");
 
       for (Iterator i = forms.iterator(); i.hasNext();) {
          StructuredArtifactDefinitionBean bean = (StructuredArtifactDefinitionBean) i.next();
@@ -769,13 +765,10 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
    }
 
    protected StructuredArtifactDefinitionBean findBean(StructuredArtifactDefinitionBean bean) {
-      String query = "from StructuredArtifactDefinitionBean where (globalState = ? or " +
-            "(siteState = ?  and siteId = ?)) and schema_hash = ?";
-
       Object[] params = new Object[]{new Integer(StructuredArtifactDefinitionBean.STATE_PUBLISHED),
                                      new Integer(StructuredArtifactDefinitionBean.STATE_PUBLISHED),
                                      bean.getSiteId(), bean.getSchemaHash()};
-      List beans = getHibernateTemplate().find(query, params);
+      List beans = getHibernateTemplate().findByNamedQuery("findBean", params);
 
       if (beans.size() > 0) {
          return (StructuredArtifactDefinitionBean) beans.get(0);
