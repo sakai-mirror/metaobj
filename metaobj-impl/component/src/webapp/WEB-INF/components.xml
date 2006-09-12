@@ -275,7 +275,7 @@
          <ref bean="org.sakaiproject.entity.api.EntityManager"/>
       </property>
       <property name="httpAccess">
-         <ref bean="org.sakaiproject.service.legacy.entity.HttpAccess.metaobj"/>
+         <ref bean="org.sakaiproject.entity.api.HttpAccess.metaobj"/>
       </property>
       <property name="structuredArtifactDefinitionManager">
          <ref bean="structuredArtifactDefinitionManager"/>
