@@ -255,7 +255,7 @@
       </property>
    </bean>
 
-   <bean id="org.sakaiproject.service.legacy.entity.HttpAccess.metaobj"
+   <bean id="org.sakaiproject.entity.api.HttpAccess.metaobj"
       class="org.sakaiproject.metaobj.shared.mgt.impl.MetaobjHttpAccess"
       singleton="true" init-method="init">
       <property name="structuredArtifactDefinitionManager">
@@ -266,7 +266,7 @@
       </property>
    </bean>
 
-   <bean id="org.sakaiproject.service.legacy.entity.EntityProducer.metaobj"
+   <bean id="org.sakaiproject.entity.api.EntityProducer.metaobj"
       class="org.sakaiproject.metaobj.shared.mgt.impl.MetaobjEntityProducer"
       init-method="init"
       destroy-method="destroy"

@@ -81,15 +81,6 @@ public class AddStructuredArtifactDefinitionController extends AbstractStructure
          return new ModelAndView("pickSchema");
       }
 
-      String action = "";
-      Object actionObj = request.get("action");
-      if (actionObj instanceof String) {
-         action = (String) actionObj;
-      }
-      else if (actionObj instanceof String[]) {
-         action = ((String[]) actionObj)[0];
-      }
-
       if (request.get("systemOnly") == null) {
          sad.setSystemOnly(false);
       }
