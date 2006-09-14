@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="tool-lib/src/java"/>
 	<classpathentry kind="src" path="tool/src/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="MAVEN_REPO/org.springframework/jars/spring-1.2.8.jar"/>
@@ -18,5 +17,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/content-api"/>
 	<classpathentry kind="var" path="MAVEN_REPO/taglibs/jars/standard-1.1.2.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/util-util"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/metaobj-util"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
