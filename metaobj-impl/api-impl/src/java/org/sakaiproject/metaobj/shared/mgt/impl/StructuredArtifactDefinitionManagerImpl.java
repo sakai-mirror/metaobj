@@ -343,7 +343,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
 
       if (sad.getId() != null) {
          query += " and id != ? ";
-         params.add(sad.getId().getValue());
+         params.add(sad.getId());
       }
 
       if (sad.getSiteId() != null) {
