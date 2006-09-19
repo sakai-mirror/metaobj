@@ -156,7 +156,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
     */
    public List findGlobalHomes() {
       Object[] params = new Object[]{new Integer(StructuredArtifactDefinitionBean.STATE_PUBLISHED),
-                                     getAuthManager().getAgent().getId().getValue()};
+                                     getAuthManager().getAgent()};
       return getHibernateTemplate().findByNamedQuery("findGlobalHomes", params);
    }
 
