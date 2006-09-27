@@ -226,7 +226,7 @@
       </property>
       <property name="mimeTypes">
          <list>
-            <value>text/xml</value>
+            <!-- <value>text/xml</value> -->
          </list>
       </property>
       <property name="acceptedExtensions">
