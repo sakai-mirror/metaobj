@@ -65,7 +65,16 @@ public abstract class EntityProducerBase implements EntityProducer {
 
    public boolean parseEntityReference(String reference, Reference ref) {
       if (reference.startsWith(getContext())) {
-         ref.set(getLabel(), null, reference, null, "");
+    	  
+          // removing our label, we expose the wrapped Entity reference
+          String wrappedRef = reference.substring(getLabel().length() + 1);
+
+          // make a reference for this
+          Reference wrapped = entityManager.newReference(wrappedRef);
+
+          // use the wrapped id, container and context - our own type (no subtype)
+         ref.set(getLabel(), null, wrapped.getId(), wrapped.getContainer(), wrapped.getContext());
+
          return true;
       }
       return false;
