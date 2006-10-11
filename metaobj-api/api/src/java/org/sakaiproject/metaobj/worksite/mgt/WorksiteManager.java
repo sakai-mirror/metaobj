@@ -22,6 +22,7 @@
 package org.sakaiproject.metaobj.worksite.mgt;
 
 import java.util.List;
+import java.util.Map;
 
 import org.sakaiproject.authz.api.AuthzGroup;
 import org.sakaiproject.metaobj.shared.model.Id;
@@ -36,6 +37,11 @@ public interface WorksiteManager {
     * @return list of all sites the current user belongs to
     */
    public List getUserSites();
+   
+   /**
+    * @return list of all sites the current user belongs to
+    */
+   public List getUserSites(Map properties, List siteTypes);
 
    public Id getCurrentWorksiteId();
 
