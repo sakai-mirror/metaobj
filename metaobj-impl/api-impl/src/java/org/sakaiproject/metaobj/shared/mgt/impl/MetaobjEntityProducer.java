@@ -49,6 +49,7 @@ public class MetaobjEntityProducer extends EntityProducerBase implements EntityT
    }
 
    public void init() {
+      logger.info("init()");
       try {
          getEntityManager().registerEntityProducer(this, Entity.SEPARATOR + MetaobjEntityManager.METAOBJ_ENTITY_PREFIX);
       }

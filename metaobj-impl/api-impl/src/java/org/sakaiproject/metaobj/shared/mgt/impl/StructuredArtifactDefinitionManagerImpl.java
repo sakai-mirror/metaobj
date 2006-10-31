@@ -562,6 +562,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
    }
 
    protected void init() throws Exception {
+      logger.info("init()");
       // register functions
       FunctionManager.registerFunction(SharedFunctionConstants.CREATE_ARTIFACT_DEF);
       FunctionManager.registerFunction(SharedFunctionConstants.EDIT_ARTIFACT_DEF);

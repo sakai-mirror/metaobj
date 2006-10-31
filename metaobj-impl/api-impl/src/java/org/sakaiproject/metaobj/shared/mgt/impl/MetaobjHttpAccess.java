@@ -103,7 +103,7 @@ public class MetaobjHttpAccess extends HttpAccessBase {
    }
 
    public void init() {
-
+      logger.info("init()");
       try {
          URL url = getClass().getResource(getXsltLocation());
          String urlPath = url.toString();
