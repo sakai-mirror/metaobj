@@ -151,6 +151,20 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       return getHibernateTemplate().find(query, params);
    }
 
+
+   public List findBySchema(ContentResource resource) {
+      try {
+         //String id = getContentHosting().resolveUuid(fileId.getValue());
+         //ContentResource resource = getContentHosting().getResource(id);
+         
+         Object[] params = new Object[]{resource.getContent()};
+         return getHibernateTemplate().findByNamedQuery("findBySchema", params);
+      } catch (ServerOverloadException e) {
+         
+      } 
+      return new ArrayList();
+   }
+
    /**
     * @return list of all published globals or global sad owned by current user or waiting for approval
     */

@@ -22,6 +22,7 @@
 package org.sakaiproject.metaobj.shared.mgt;
 
 import org.jdom.Element;
+import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.exception.*;
 import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactHomeInterface;
 import org.sakaiproject.metaobj.shared.model.Id;
@@ -59,6 +60,13 @@ public interface StructuredArtifactDefinitionManager {
     *         currentWorksiteId owned by current user
     */
    public List findHomes(Id currentWorksiteId);
+   
+   /**
+    * 
+    * @param resource The ContentResource of a file in resources that is the xsd file
+    * @return A list of StructuredArtifactDefinitionBean objects
+    */
+   public List findBySchema(ContentResource resource);
 
    public StructuredArtifactDefinitionBean loadHome(String type);
 
