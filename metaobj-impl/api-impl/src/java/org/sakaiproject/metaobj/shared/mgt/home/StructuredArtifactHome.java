@@ -28,6 +28,7 @@ import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Date;
 
 import org.jdom.CDATA;
 import org.jdom.Element;
@@ -37,10 +38,7 @@ import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.mgt.PresentableObjectHome;
 import org.sakaiproject.metaobj.shared.mgt.StreamableObjectHome;
-import org.sakaiproject.metaobj.shared.model.Artifact;
-import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.metaobj.shared.model.PersistenceException;
-import org.sakaiproject.metaobj.shared.model.StructuredArtifact;
+import org.sakaiproject.metaobj.shared.model.*;
 import org.sakaiproject.metaobj.utils.Config;
 import org.sakaiproject.metaobj.utils.xml.SchemaNode;
 import org.sakaiproject.metaobj.worksite.intf.WorksiteAware;
@@ -200,7 +198,7 @@ public class StructuredArtifactHome extends XmlElementHome
       StructuredArtifact sa = (StructuredArtifact) art;
 
       Element root = new Element("artifact");
-      root.addContent(getRepositoryHelper().getArtifactAsXml(art));
+      root.addContent(getMetadata(sa));
 
       Element data = new Element("structuredData");
       Element baseElement = (Element) sa.getBaseElement().detach();
@@ -215,6 +213,32 @@ public class StructuredArtifactHome extends XmlElementHome
       return root;
    }
 
+   protected Element getMetadata(Artifact art) {
+      Element root = new Element("metaData");
+
+      if (art.getId() != null) {
+         root.addContent(createNode("id", art.getId().getValue()));
+      }
+      root.addContent(createNode("displayName", art.getDisplayName()));
+
+      Element type = new Element("type");
+      root.addContent(type);
+
+      type.addContent(createNode("id", "file"));
+      type.addContent(createNode("description", "file"));
+
+      Element repositoryNode = new Element("repositoryNode");
+      root.addContent(repositoryNode);
+
+      return root;
+   }
+
+   protected Element createNode(String name, String value) {
+      Element newNode = new Element(name);
+      newNode.addContent(value);
+      return newNode;
+   }
+
    protected Element createInstructions() {
       Element instructions = new Element("instructions");
       instructions.setContent(new CDATA(getInstruction()));
@@ -224,10 +248,11 @@ public class StructuredArtifactHome extends XmlElementHome
    protected Element addAnnotations(SchemaNode schema) {
       Element schemaElement = new Element("element");
       schemaElement.setAttribute("name", schema.getName());
-      schemaElement.setAttribute("type", schema.getType().getBaseType());
+      if (schema.getType() != null && schema.getType().getBaseType() != null) {
+         schemaElement.setAttribute("type", schema.getType().getBaseType());
+      }
       schemaElement.setAttribute("minOccurs", schema.getMinOccurs() + "");
       schemaElement.setAttribute("maxOccurs", schema.getMaxOccurs() + "");
-
       Element annotation = schema.getSchemaElement().getChild("annotation", schema.getSchemaElement().getNamespace());
 
       if (annotation != null) {

@@ -40,6 +40,7 @@ public class StructuredArtifact extends ElementBean implements Artifact {
    private Id id = null;
    private StructuredArtifactHomeInterface home = null;
    private IdManager idManager = null;
+   private String parentFolder = null;
 
    private static String ID_PARAMETER_NAME = "id";
    private static String ARTIFACT_ID_PARAMETER_NAME = "artifactId";
@@ -168,5 +169,13 @@ public class StructuredArtifact extends ElementBean implements Artifact {
 
    public void setOwner(Agent owner) {
       this.owner = owner;
+   }
+
+   public String getParentFolder() {
+      return parentFolder;
+   }
+
+   public void setParentFolder(String parentFolder) {
+      this.parentFolder = parentFolder;
    }
 }

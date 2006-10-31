@@ -26,7 +26,7 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * any derived class should use the generator in the hibernate xml definitian:
- *     org.theospi.portfolio.shared.model.IdentifiableIdGenerator
+ *     org.sakaiproject.metaobj.shared.IdentifiableIdGenerator
  * This way the newId field will be supported when creating 
  * new objects with predetermined ids.
  * 

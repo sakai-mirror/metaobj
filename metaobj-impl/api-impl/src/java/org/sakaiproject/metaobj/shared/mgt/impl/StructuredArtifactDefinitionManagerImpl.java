@@ -906,6 +906,10 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
    public Element createFormViewXml(String formId, String returnUrl) {
       formId = getContentHosting().getUuid(formId);
       Artifact art = getArtifactFinder().load(getIdManager().getId(formId));
+      return createFormViewXml(art, returnUrl);
+   }
+
+   public Element createFormViewXml(Artifact art, String returnUrl) {
       Element root = new Element("formView");
       Element data = new Element("formData");
 

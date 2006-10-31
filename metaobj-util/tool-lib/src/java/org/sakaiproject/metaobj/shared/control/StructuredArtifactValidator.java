@@ -22,6 +22,7 @@
 package org.sakaiproject.metaobj.shared.control;
 
 import org.sakaiproject.metaobj.shared.model.ElementBean;
+import org.sakaiproject.metaobj.shared.model.StructuredArtifact;
 import org.springframework.validation.Errors;
 
 /**
@@ -38,8 +39,7 @@ public class StructuredArtifactValidator extends XmlValidator {
       if (super.supports(clazz)) {
          return true;
       }
-      //return (StructuredArtifact.class.isAssignableFrom(clazz));
-      return true;
+      return (StructuredArtifact.class.isAssignableFrom(clazz));
    }
 
    public void validate(Object obj, Errors errors) {
@@ -48,15 +48,15 @@ public class StructuredArtifactValidator extends XmlValidator {
    }
 
    protected void validateInternal(Object obj, Errors errors) {
-//      if (obj instanceof StructuredArtifact) {
-//         StructuredArtifact artifact = (StructuredArtifact) obj;
-//
-//         if (artifact.getDisplayName() == null ||
-//            artifact.getDisplayName().length() == 0) {
-//            errors.rejectValue("displayName", "required value {0}", new Object[]{"displayName"},
-//               "required value displayName");
-//         }
-//      }
+      if (obj instanceof StructuredArtifact) {
+         StructuredArtifact artifact = (StructuredArtifact) obj;
+
+         if (artifact.getDisplayName() == null ||
+            artifact.getDisplayName().length() == 0) {
+            errors.rejectValue("displayName", "required value {0}", new Object[]{"displayName"},
+               "required value displayName");
+         }
+      }
    }
 
    public void validate(Object obj, Errors errors, boolean checkListNumbers) {
@@ -64,18 +64,4 @@ public class StructuredArtifactValidator extends XmlValidator {
       super.validate(obj, errors, checkListNumbers);
    }
 
-   protected void validateDisplayName(ElementBean elementBean, Errors errors) {
-//      if (elementBean instanceof StructuredArtifact) {
-//
-//         String displayName = (String)elementBean.get("displayName");
-//
-//         if (getFileNameValidator() != null && displayName != null) {
-//            if (!getFileNameValidator().validFileName(displayName)) {
-//               errors.rejectValue("displayName", "Invalid display name {0}",
-//                  new Object[]{displayName},
-//                  MessageFormat.format("Invalid display name {0}", new Object[]{displayName}));
-//            }
-//         }
-//      }
-   }
 }
