@@ -11,6 +11,7 @@ import org.jdom.Document;
 import org.sakaiproject.content.api.ResourceEditingHelper;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
 import org.sakaiproject.metaobj.shared.model.Artifact;
+import org.sakaiproject.metaobj.shared.model.ElementBean;
 import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.cover.SessionManager;
@@ -22,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 import java.util.List;
 import java.util.Iterator;
+import java.util.StringTokenizer;
 
 /**
  * Created by IntelliJ IDEA.
@@ -40,10 +42,23 @@ public class XsltArtifactView extends AbstractXsltView {
 
       WebApplicationContext context = getWebApplicationContext();
       ToolSession toolSession = SessionManager.getCurrentToolSession();
-      Artifact artifact = (Artifact) map.get("bean");
+      ElementBean bean = (ElementBean) map.get("bean");
 
-      Element root = getStructuredArtifactDefinitionManager().createFormViewXml(
-         artifact, null);
+      Element root;
+
+      if (bean instanceof Artifact) {
+         root = getStructuredArtifactDefinitionManager().createFormViewXml(
+            (Artifact) bean, null);
+      }
+      else {
+         EditedArtifactStorage sessionBean = (EditedArtifactStorage)httpServletRequest.getSession().getAttribute(
+            EditedArtifactStorage.EDITED_ARTIFACT_STORAGE_SESSION_KEY);
+
+         root = getStructuredArtifactDefinitionManager().createFormViewXml(
+            (Artifact) sessionBean.getRootArtifact(), null);
+
+         replaceNodes(root, bean, sessionBean);
+      }
 
       Errors errors = (Errors) map.get("org.springframework.validation.BindException.bean");
       if (errors.hasErrors()) {
@@ -78,6 +93,32 @@ public class XsltArtifactView extends AbstractXsltView {
 
       Document doc = new Document(root);
       return new JDOMSource(doc);
+   }
+
+   protected void replaceNodes(Element root, ElementBean bean, EditedArtifactStorage sessionBean) {
+      Element structuredData = root.getChild("formData").getChild("artifact").getChild("structuredData");
+      structuredData.removeContent();
+      structuredData.addContent((Element)bean.getBaseElement().clone());
+
+      Element schema = root.getChild("formData").getChild("artifact").getChild("schema");
+      Element schemaRoot = schema.getChild("element");
+      StringTokenizer st = new StringTokenizer(sessionBean.getCurrentPath(), "/");
+      Element newRoot = schemaRoot;
+
+      while (st.hasMoreTokens()) {
+         String schemaName = st.nextToken();
+         List children = newRoot.getChild("children").getChildren("element");
+         for (Iterator i=children.iterator();i.hasNext();) {
+            Element schemaElement = (Element) i.next();
+            if (schemaName.equals(schemaElement.getAttributeValue("name"))) {
+               newRoot = schemaElement;
+               break;
+            }
+         }
+      }
+
+      schema.removeChild("element");
+      schema.addContent(newRoot.detach());
    }
 
    protected StructuredArtifactDefinitionManager getStructuredArtifactDefinitionManager() {

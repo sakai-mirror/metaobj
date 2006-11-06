@@ -61,6 +61,7 @@ public class ElementBean extends HashMap implements TypedMap {
    private SchemaNode currentSchema;
    private Map wrappedInstances = new HashMap();
    private boolean deferValidation = true;
+   private ElementListBean parent;
 
    public static final String FIELD_DATA_TAG = "FIELD_DATA";
 
@@ -467,4 +468,20 @@ public class ElementBean extends HashMap implements TypedMap {
       }
       return values;
    }
+
+   public ElementListBean getParent() {
+      return parent;
+   }
+
+   public void setParent(ElementListBean parent) {
+      this.parent = parent;
+   }
+
+   public int getIndex() {
+      if (parent != null) {
+         return getParent().indexOf(this);
+      }
+      return 0;
+   }
+
 }

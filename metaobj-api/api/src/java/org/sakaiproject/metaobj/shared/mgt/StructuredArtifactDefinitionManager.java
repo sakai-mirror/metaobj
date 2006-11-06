@@ -28,6 +28,7 @@ import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactHomeInterface;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.shared.model.Artifact;
+import org.sakaiproject.metaobj.shared.model.ElementBean;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -124,4 +125,7 @@ public interface StructuredArtifactDefinitionManager {
    public Element createFormViewXml(String formId, String returnUrl);
 
    public Element createFormViewXml(Artifact art, String returnUrl);
+
+   public Element createFormViewXml(ElementBean bean, String returnUrl);
+
 }

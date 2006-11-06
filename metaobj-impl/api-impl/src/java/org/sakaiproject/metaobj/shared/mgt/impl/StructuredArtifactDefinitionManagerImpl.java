@@ -963,6 +963,42 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       return root;
    }
 
+   public Element createFormViewXml(ElementBean bean, String returnUrl) {
+      Element root = new Element("formView");
+      Element data = new Element("formData");
+
+      //data.addContent(((PresentableObjectHome) home).getArtifactAsXml(art));
+
+      root.addContent(data);
+
+      if (returnUrl != null) {
+         Element returnUrlElement = new Element("returnUrl");
+         returnUrlElement.addContent(new CDATA(returnUrl));
+         root.addContent(returnUrlElement);
+      }
+
+      Element css = new Element("css");
+      String skin = null;
+      try {
+         skin = getCurrentSite().getSkin();
+      }
+      catch (NullPointerException npe) {
+         //Couldn't find the site, just use default skin
+      }
+      if (skin == null || skin.length() == 0) {
+         skin = ServerConfigurationService.getString("skin.default");
+      }
+      String skinRepo = ServerConfigurationService.getString("skin.repo");
+      Element uri = new Element("uri");
+      uri.setText(skinRepo + "/tool_base.css");
+      css.addContent(uri);
+      uri = new Element("uri");
+      uri.setText(skinRepo + "/" + skin + "/tool.css");
+      css.addContent(uri);
+      root.addContent(css);
+      return root;
+   }
+
    public ArtifactFinder getArtifactFinder() {
       return artifactFinder;
    }

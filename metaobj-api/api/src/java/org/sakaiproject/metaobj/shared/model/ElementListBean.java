@@ -23,6 +23,7 @@ package org.sakaiproject.metaobj.shared.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -59,6 +60,10 @@ public class ElementListBean extends ArrayList {
       this.parentElement = parentElement;
       this.schema = schema;
       this.deferValidation = deferValidation;
+      for (Iterator i=iterator();i.hasNext();) {
+         ElementBean bean = (ElementBean) i.next();
+         bean.setParent(this);
+      }
    }
 
    public ElementListBean(List elements, SchemaNode schema) {
@@ -104,6 +109,8 @@ public class ElementListBean extends ArrayList {
       ElementBean bean = (ElementBean) o;
 
       parentElement.addContent(bean.getBaseElement());
+
+      bean.setParent(this);
 
       return super.add(o);
    }
