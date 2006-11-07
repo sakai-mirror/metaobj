@@ -2,6 +2,7 @@ package org.sakaiproject.metaobj.shared.control;
 
 import org.springframework.web.servlet.view.xslt.AbstractXsltView;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.util.WebUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.FieldError;
@@ -15,15 +16,14 @@ import org.sakaiproject.metaobj.shared.model.ElementBean;
 import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.cover.SessionManager;
+import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.util.ResourceLoader;
+import org.sakaiproject.util.Web;
 
 import javax.xml.transform.Source;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
-import java.util.List;
-import java.util.Iterator;
-import java.util.StringTokenizer;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -36,6 +36,8 @@ public class XsltArtifactView extends AbstractXsltView {
 
    private ResourceLoader resourceLoader = new ResourceLoader();
    private String bundleLocation;
+   private static final String IS_SUB_FORM = "org.sakaiproject.metaobj.shared.control.XsltArtifactView.isSubForm";
+
 
    protected Source createXsltSource(Map map, String string, HttpServletRequest httpServletRequest,
                                      HttpServletResponse httpServletResponse) throws Exception {
@@ -58,6 +60,7 @@ public class XsltArtifactView extends AbstractXsltView {
             (Artifact) sessionBean.getRootArtifact(), null);
 
          replaceNodes(root, bean, sessionBean);
+         httpServletRequest.setAttribute(IS_SUB_FORM, "true");
       }
 
       Errors errors = (Errors) map.get("org.springframework.validation.BindException.bean");
@@ -119,6 +122,20 @@ public class XsltArtifactView extends AbstractXsltView {
 
       schema.removeChild("element");
       schema.addContent(newRoot.detach());
+   }
+
+   protected Map getParameters(HttpServletRequest request) {
+      Map params = super.getParameters(request);
+
+      if (params == null) {
+         params = new Hashtable();
+      }
+
+      params.put("panelId", Web.escapeJavascript("Main" + ToolManager.getCurrentPlacement().getId()));
+      if (request.getAttribute(IS_SUB_FORM) != null) {
+         params.put("subForm", "true");
+      }
+      return params;
    }
 
    protected StructuredArtifactDefinitionManager getStructuredArtifactDefinitionManager() {

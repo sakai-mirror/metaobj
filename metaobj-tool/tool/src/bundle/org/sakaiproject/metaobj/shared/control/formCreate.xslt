@@ -12,6 +12,9 @@
       </formView>
    </xsl:template-->
 
+   <xsl:param name="panelId"/>
+   <xsl:param name="subForm"/>
+
    <xsl:template match="formView">
 
 
@@ -27,8 +30,12 @@
                   </xsl:attribute>
                </link>
             </xsl:for-each>
+            <script type="text/javascript" language="JavaScript" src="/library/js/headscripts.js"></script>
          </head>
          <body>
+            <xsl:attribute name="onLoad">
+               setMainFrameHeight('<xsl:value-of select="$panelId"/>');setFocus(focus_path);
+            </xsl:attribute>
             <div class="portletBody">
                <p class="instruction">
                   <xsl:value-of disable-output-escaping="yes" select="formData/artifact/schema/instructions"/>
@@ -56,8 +63,16 @@
                   <input type="hidden" name="removeButton" value="" />
                   <div>
                      <!-- todo i18n -->
-                     <input type="submit" name="submitButton" alignment="center" value="Save"/>
-                     <input type="submit" name="cancel" value="Cancel"/>
+                     <xsl:choose>
+                        <xsl:when test="$subForm = 'true'">
+                           <input type="submit" name="updateNestedButton" alignment="center" value="Update"/>
+                           <input type="submit" name="cancelNestedButton" value="Cancel" />
+                        </xsl:when>
+                        <xsl:otherwise>
+                           <input type="submit" name="submitButton" alignment="center" value="Save"/>
+                           <input type="submit" name="cancel" value="Cancel"/>
+                        </xsl:otherwise>
+                     </xsl:choose>
                   </div>
                </form>
             </div>
@@ -91,57 +106,17 @@
                      <tr>
                         <th scope="col">Action</th>
                         <th scope="col">
-                        Type
-                        </th>
-                        <th scope="col">
-                        Email
                         </th>
                      </tr>
                   </thead>
                   <tbody>
-                     <tr>
-                        <td>
-
-            <a href="javascript:document.forms[0].childPath.value='emails';
-                      document.forms[0].editButton.value='Edit';document.forms[0].removeButton.value='';
-                      document.forms[0].childIndex.value='0';document.forms[0].submit();">
-               edit</a>
-
-            <a href="javascript:document.forms[0].childPath.value='emails';
-                      document.forms[0].removeButton.value='Remove';document.forms[0].editButton.value='';
-                      document.forms[0].childIndex.value='0';document.forms[0].submit();">
-               remove</a>
-
-
-         </td>
-                        <td>
-            home
-         </td>
-                        <td>
-            jellis@alumni.creighton.edu
-         </td>
-                     </tr>
-                     <tr>
-                        <td>
-
-            <a href="javascript:document.forms[0].childPath.value='emails';
-                      document.forms[0].editButton.value='Edit';document.forms[0].removeButton.value='';
-                      document.forms[0].childIndex.value='1';document.forms[0].submit();">
-               edit</a>
-            <a href="javascript:document.forms[0].childPath.value='emails';
-                      document.forms[0].removeButton.value='Remove';document.forms[0].editButton.value='';
-                      document.forms[0].childIndex.value='1';document.forms[0].submit();">
-               remove</a>
-
-
-         </td>
-                        <td>
-            work
-         </td>
-                        <td>
-            john.ellis@rsmart.com
-         </td>
-                     </tr>
+                     <xsl:for-each select="$currentParent/node()[$name=name()]">
+                        <xsl:call-template name="subListRow">
+                           <xsl:with-param name="index" select="position() - 1"/>
+                           <xsl:with-param name="fieldName" select="$name"/>
+                           <xsl:with-param name="dataNode" select="."/>
+                        </xsl:call-template>
+                     </xsl:for-each>
                   </tbody>
                </table>
                <div class="chefButtonRow">
@@ -163,6 +138,31 @@
             </div>
          </xsl:otherwise>
       </xsl:choose>
+   </xsl:template>
+
+   <xsl:template name="subListRow">
+      <xsl:param name="index"/>
+      <xsl:param name="fieldName"/>
+      <xsl:param name="dataNode"/>
+      <tr>
+         <td>
+            <a>
+               <xsl:attribute name="href">javascript:document.forms[0].childPath.value='<xsl:value-of
+                  select="$fieldName"/>';document.forms[0].editButton.value='Edit';document.forms[0].removeButton.value='';document.forms[0].childIndex.value='<xsl:value-of
+                  select="$index"/>';document.forms[0].submit();</xsl:attribute>
+               edit
+            </a>
+            <a>
+               <xsl:attribute name="href">javascript:document.forms[0].childPath.value='<xsl:value-of
+                  select="$fieldName"/>';document.forms[0].removeButton.value='Remove';document.forms[0].editButton.value='';document.forms[0].childIndex.value='<xsl:value-of
+                  select="$index"/>';document.forms[0].submit();</xsl:attribute>
+               remove
+            </a>
+         </td>
+         <td>
+            <xsl:value-of select="$dataNode"/>
+         </td>
+      </tr>
    </xsl:template>
 
    <xsl:template name="produce-label">
