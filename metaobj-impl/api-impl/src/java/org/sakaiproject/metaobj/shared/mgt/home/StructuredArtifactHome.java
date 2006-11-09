@@ -207,7 +207,7 @@ public class StructuredArtifactHome extends XmlElementHome
 
       Element schemaData = new Element("schema");
       schemaData.addContent(createInstructions());
-      schemaData.addContent(addAnnotations(getRootSchema()));
+      schemaData.addContent(addSchemaInfo(getRootSchema()));
       root.addContent(schemaData);
 
       return root;
@@ -245,7 +245,7 @@ public class StructuredArtifactHome extends XmlElementHome
       return instructions;
    }
 
-   protected Element addAnnotations(SchemaNode schema) {
+   protected Element addSchemaInfo(SchemaNode schema) {
       Element schemaElement = new Element("element");
       schemaElement.setAttribute("name", schema.getName());
       if (schema.getType() != null && schema.getType().getBaseType() != null) {
@@ -259,11 +259,17 @@ public class StructuredArtifactHome extends XmlElementHome
          schemaElement.addContent(annotation.detach());
       }
 
+      Element simpleType = schema.getSchemaElement().getChild("simpleType", schema.getSchemaElement().getNamespace());
+
+      if (simpleType != null) {
+         schemaElement.addContent(simpleType.detach());
+      }
+
       List children = schema.getChildren();
       Element childElement = new Element("children");
       boolean found = false;
       for (Iterator i = children.iterator(); i.hasNext();) {
-         childElement.addContent(addAnnotations((SchemaNode) i.next()));
+         childElement.addContent(addSchemaInfo((SchemaNode) i.next()));
          found = true;
       }
 

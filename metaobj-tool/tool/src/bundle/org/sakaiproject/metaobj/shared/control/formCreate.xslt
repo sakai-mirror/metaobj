@@ -14,6 +14,8 @@
 
    <xsl:param name="panelId"/>
    <xsl:param name="subForm"/>
+   <xsl:output method="html" version="4.0" cdata-section-elements="textarea"
+      encoding="iso-8859-1" indent="yes"/>
 
    <xsl:template match="formView">
 
@@ -33,9 +35,8 @@
             <script type="text/javascript" language="JavaScript" src="/library/js/headscripts.js"></script>
          </head>
          <body>
-            <xsl:attribute name="onLoad">
-               setMainFrameHeight('<xsl:value-of select="$panelId"/>');setFocus(focus_path);
-            </xsl:attribute>
+            <xsl:attribute name="onLoad">setMainFrameHeight('<xsl:value-of
+               select="$panelId"/>');setFocus(focus_path);</xsl:attribute>
             <div class="portletBody">
                <p class="instruction">
                   <xsl:value-of disable-output-escaping="yes" select="formData/artifact/schema/instructions"/>
@@ -47,11 +48,18 @@
                </xsl:for-each>
                <form method="post">
                   Display Name:
-                  <input type="text" name="displayName" size="50" maxlength="1024">
-                     <xsl:attribute name="value">
+                  <xsl:choose>
+                     <xsl:when test="$subForm = 'true'">
                         <xsl:value-of select="formData/artifact/metaData/displayName"/>
-                     </xsl:attribute>
-                  </input>
+                     </xsl:when>
+                     <xsl:otherwise>
+                        <input type="text" name="displayName" size="50" maxlength="1024">
+                           <xsl:attribute name="value">
+                              <xsl:value-of select="formData/artifact/metaData/displayName"/>
+                           </xsl:attribute>
+                        </input>
+                     </xsl:otherwise>
+                  </xsl:choose>
                   <xsl:apply-templates select="formData/artifact/schema/element">
                      <xsl:with-param name="currentParent" select="formData/artifact/structuredData"/>
                      <xsl:with-param name="rootNode" select="'true'"/>
@@ -83,61 +91,145 @@
    <!-- todo provide specail handling templates for
    certain element types -->
 
+   <xsl:template match="element[children]">
+      <xsl:param name="currentParent"/>
+      <xsl:param name="rootNode"/>
+      <xsl:variable name="name" select="@name"/>
+      <xsl:variable name="currentNode" select="$currentParent/node()[$name=name()]"/>
+      <xsl:if test="$rootNode = 'true'">
+         <xsl:call-template name="produce-fields">
+            <xsl:with-param name="currentSchemaNode" select="."/>
+            <xsl:with-param name="currentNode" select="$currentNode"/>
+            <xsl:with-param name="rootNode" select="$rootNode"/>
+         </xsl:call-template>
+      </xsl:if>
+      <xsl:if test="$rootNode='false'">
+         <xsl:call-template name="produce-label">
+            <xsl:with-param name="currentSchemaNode" select="."/>
+         </xsl:call-template>
+         <table class="chefFlatListViewTable">
+            <thead>
+               <tr>
+                  <th scope="col">Action</th>
+                  <th scope="col">
+                  </th>
+               </tr>
+            </thead>
+            <tbody>
+               <xsl:for-each select="$currentParent/node()[$name=name()]">
+                  <xsl:call-template name="subListRow">
+                     <xsl:with-param name="index" select="position() - 1"/>
+                     <xsl:with-param name="fieldName" select="$name"/>
+                     <xsl:with-param name="dataNode" select="."/>
+                  </xsl:call-template>
+               </xsl:for-each>
+            </tbody>
+         </table>
+         <div class="chefButtonRow">
+            <input type="submit" name="addButton" alignment="center" value="Add New">
+               <xsl:attribute name="onClick">this.form.childPath.value='<xsl:value-of select="$name"/>';return true</xsl:attribute>
+            </input>
+         </div>
+      </xsl:if>
+   </xsl:template>
+
+   <xsl:template match="element[@type = 'xs:date']">
+      <xsl:param name="currentParent"/>
+      <xsl:param name="rootNode"/>
+      <xsl:variable name="name" select="@name"/>
+      <xsl:variable name="currentNode" select="$currentParent/node()[$name=name()]"/>
+      <div class="shorttext indnt1">
+         <xsl:call-template name="produce-label">
+            <xsl:with-param name="currentSchemaNode" select="."/>
+         </xsl:call-template>
+         <xsl:comment>date field</xsl:comment>
+         <!--input type="text">
+            <xsl:attribute name="name"><xsl:value-of select="$name"/></xsl:attribute>
+            <xsl:attribute name="value"><xsl:value-of select="$currentNode"/></xsl:attribute>
+         </input-->
+      </div>
+   </xsl:template>
+
+   <xsl:template match="element[@type = 'xs:boolean']">
+      <xsl:param name="currentParent"/>
+      <xsl:param name="rootNode"/>
+      <xsl:variable name="name" select="@name"/>
+      <xsl:variable name="currentNode" select="$currentParent/node()[$name=name()]"/>
+      <div class="shorttext indnt1">
+         <xsl:call-template name="produce-label">
+            <xsl:with-param name="currentSchemaNode" select="."/>
+         </xsl:call-template>
+         <input type="checkbox" value="true">
+            <xsl:attribute name="name"><xsl:value-of select="$name"/>_checkbox</xsl:attribute>
+            <xsl:if test="$currentNode = 'true'">
+               <xsl:attribute name="checked"/>
+            </xsl:if>
+            <xsl:attribute name="onChange">form['<xsl:value-of
+               select="$name"/>'].value=this.checked</xsl:attribute>
+         </input>
+         <input type="hidden">
+            <xsl:attribute name="name"><xsl:value-of select="$name"/></xsl:attribute>
+            <xsl:attribute name="value"><xsl:value-of select="$currentNode"/></xsl:attribute>
+         </input>
+      </div>
+   </xsl:template>
+
+   <xsl:template match="element[xs:annotation/xs:documentation
+      [@source='ospi.isRichText' or @source='sakai.isRichText'] = 'true']">
+      <xsl:param name="currentParent"/>
+      <xsl:param name="rootNode"/>
+      <xsl:variable name="name" select="@name"/>
+      <xsl:variable name="currentNode" select="$currentParent/node()[$name=name()]"/>
+      <div class="shorttext indnt1">
+         <xsl:call-template name="produce-label">
+            <xsl:with-param name="currentSchemaNode" select="."/>
+         </xsl:call-template>
+         <xsl:comment>rich text placeholder</xsl:comment>
+      </div>
+   </xsl:template>
+
+   <xsl:template match="element[@type = 'xs:anyURI']">
+      <xsl:param name="currentParent"/>
+      <xsl:param name="rootNode"/>
+      <xsl:variable name="name" select="@name"/>
+      <xsl:variable name="currentNode" select="$currentParent/node()[$name=name()]"/>
+      <div class="shorttext indnt1">
+         <xsl:call-template name="produce-label">
+            <xsl:with-param name="currentSchemaNode" select="."/>
+         </xsl:call-template>
+         <xsl:comment>anyUri</xsl:comment>
+      </div>
+   </xsl:template>
+
    <xsl:template match="element">
       <xsl:param name="currentParent"/>
       <xsl:param name="rootNode"/>
       <xsl:variable name="name" select="@name"/>
       <xsl:variable name="currentNode" select="$currentParent/node()[$name=name()]"/>
-      <xsl:choose>
-         <xsl:when test="children">
-            <xsl:if test="$rootNode = 'true'">
-               <xsl:call-template name="produce-fields">
-                  <xsl:with-param name="currentSchemaNode" select="."/>
-                  <xsl:with-param name="currentNode" select="$currentNode"/>
-                  <xsl:with-param name="rootNode" select="$rootNode"/>
-               </xsl:call-template>
-            </xsl:if>
-            <xsl:if test="$rootNode='false'">
-               <xsl:call-template name="produce-label">
-                  <xsl:with-param name="currentSchemaNode" select="."/>
-               </xsl:call-template>
-               <table class="chefFlatListViewTable">
-                  <thead>
-                     <tr>
-                        <th scope="col">Action</th>
-                        <th scope="col">
-                        </th>
-                     </tr>
-                  </thead>
-                  <tbody>
-                     <xsl:for-each select="$currentParent/node()[$name=name()]">
-                        <xsl:call-template name="subListRow">
-                           <xsl:with-param name="index" select="position() - 1"/>
-                           <xsl:with-param name="fieldName" select="$name"/>
-                           <xsl:with-param name="dataNode" select="."/>
-                        </xsl:call-template>
-                     </xsl:for-each>
-                  </tbody>
-               </table>
-               <div class="chefButtonRow">
-                  <input type="submit" name="addButton" alignment="center" value="Add New">
-                     <xsl:attribute name="onClick">this.form.childPath.value='<xsl:value-of select="$name"/>';return true</xsl:attribute>
-                  </input>
-               </div>
-            </xsl:if>
-         </xsl:when>
-         <xsl:otherwise>
-            <div class="shorttext indnt1">
-               <xsl:call-template name="produce-label">
-                  <xsl:with-param name="currentSchemaNode" select="."/>
-               </xsl:call-template>
-               <input type="text">
-                  <xsl:attribute name="name"><xsl:value-of select="$name"/></xsl:attribute>
-                  <xsl:attribute name="value"><xsl:value-of select="$currentNode"/></xsl:attribute>
-               </input>
-            </div>
-         </xsl:otherwise>
-      </xsl:choose>
+      <div class="shorttext indnt1">
+         <xsl:call-template name="produce-label">
+            <xsl:with-param name="currentSchemaNode" select="."/>
+         </xsl:call-template>
+         <input type="text">
+            <xsl:attribute name="name"><xsl:value-of select="$name"/></xsl:attribute>
+            <xsl:attribute name="value"><xsl:value-of select="$currentNode"/></xsl:attribute>
+         </input>
+      </div>
+   </xsl:template>
+
+   <xsl:template match="element[xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength[@value>999]]">
+      <xsl:param name="currentParent"/>
+      <xsl:param name="rootNode"/>
+      <xsl:variable name="name" select="@name"/>
+      <xsl:variable name="currentNode" select="$currentParent/node()[$name=name()]"/>
+      <div class="shorttext indnt1">
+         <xsl:call-template name="produce-label">
+            <xsl:with-param name="currentSchemaNode" select="."/>
+         </xsl:call-template>
+         <textarea rows="4" cols="60"><xsl:attribute
+            name="name"><xsl:value-of select="$name"/></xsl:attribute><xsl:value-of
+            select="$currentNode"/></textarea>
+      </div>
    </xsl:template>
 
    <xsl:template name="subListRow">

@@ -19,11 +19,18 @@
       </property>
    </bean>
 
+   <bean id="resourceResolver" class="org.sakaiproject.metaobj.utils.xml.ResourceUriResolver">
+      <property name="contentHostingService">
+         <ref bean="org.sakaiproject.content.api.ContentHostingService"/>
+      </property>
+   </bean>
+
+
    <!--
-     - This bean resolves specific types of exception to corresponding error views.
-      - The default behaviour of DispatcherServlet is to propagate all exceptions to the
-      - servlet container: This will happen here with all other types of exception.
-      -->
+  - This bean resolves specific types of exception to corresponding error views.
+   - The default behaviour of DispatcherServlet is to propagate all exceptions to the
+   - servlet container: This will happen here with all other types of exception.
+   -->
    <bean id="exceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
       <property name="exceptionMappings">
          <props>

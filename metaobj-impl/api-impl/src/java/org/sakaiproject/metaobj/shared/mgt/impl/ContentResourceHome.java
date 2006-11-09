@@ -170,7 +170,7 @@ public class ContentResourceHome implements ReadableObjectHome, PresentableObjec
 
       Element schemaData = new Element("schema");
       schemaData.addContent(createInstructions(home));
-      schemaData.addContent(addAnnotations(home.getRootSchema()));
+      schemaData.addContent(addSchemaInfo(home.getRootSchema()));
       root.addContent(schemaData);
    }
 
@@ -180,7 +180,7 @@ public class ContentResourceHome implements ReadableObjectHome, PresentableObjec
       return instructions;
    }
 
-   protected Element addAnnotations(SchemaNode schema) {
+   protected Element addSchemaInfo(SchemaNode schema) {
       Element schemaElement = new Element("element");
       schemaElement.setAttribute("name", schema.getName());
       if (schema.getType() != null && schema.getType().getBaseType() != null) {
@@ -194,11 +194,17 @@ public class ContentResourceHome implements ReadableObjectHome, PresentableObjec
          schemaElement.addContent(annotation.detach());
       }
 
+      Element simpleType = schema.getSchemaElement().getChild("simpleType", schema.getSchemaElement().getNamespace());
+
+      if (simpleType != null) {
+         schemaElement.addContent(simpleType.detach());
+      }
+
       List children = schema.getChildren();
       Element childElement = new Element("children");
       boolean found = false;
       for (Iterator i = children.iterator(); i.hasNext();) {
-         childElement.addContent(addAnnotations((SchemaNode) i.next()));
+         childElement.addContent(addSchemaInfo((SchemaNode) i.next()));
          found = true;
       }
 

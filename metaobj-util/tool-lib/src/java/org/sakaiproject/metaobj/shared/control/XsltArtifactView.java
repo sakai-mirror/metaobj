@@ -2,7 +2,7 @@ package org.sakaiproject.metaobj.shared.control;
 
 import org.springframework.web.servlet.view.xslt.AbstractXsltView;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.util.WebUtils;
+import org.springframework.web.util.NestedServletException;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.FieldError;
@@ -20,7 +20,7 @@ import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.util.ResourceLoader;
 import org.sakaiproject.util.Web;
 
-import javax.xml.transform.Source;
+import javax.xml.transform.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
@@ -37,13 +37,25 @@ public class XsltArtifactView extends AbstractXsltView {
    private ResourceLoader resourceLoader = new ResourceLoader();
    private String bundleLocation;
    private static final String IS_SUB_FORM = "org.sakaiproject.metaobj.shared.control.XsltArtifactView.isSubForm";
+   private static final String STYLESHEET_LOCATION =
+      "org.sakaiproject.metaobj.shared.control.XsltArtifactView.stylesheetLocation";
+   private String uriResolverBeanName;
+   private URIResolver uriResolver;
+   private TransformerFactory transformerFactory = TransformerFactory.newInstance();
 
 
    protected Source createXsltSource(Map map, String string, HttpServletRequest httpServletRequest,
                                      HttpServletResponse httpServletResponse) throws Exception {
 
       WebApplicationContext context = getWebApplicationContext();
+      setUriResolver((URIResolver)context.getBean(uriResolverBeanName));
+
       ToolSession toolSession = SessionManager.getCurrentToolSession();
+
+      // todo get xslt from getStructuredArtifactDefinitionManager
+      httpServletRequest.setAttribute(STYLESHEET_LOCATION,
+         "/group/PortfolioAdmin/system/formCreate.xslt");
+
       ElementBean bean = (ElementBean) map.get("bean");
 
       Element root;
@@ -135,7 +147,69 @@ public class XsltArtifactView extends AbstractXsltView {
       if (request.getAttribute(IS_SUB_FORM) != null) {
          params.put("subForm", "true");
       }
+
+      params.put(STYLESHEET_LOCATION, request.getAttribute(STYLESHEET_LOCATION));
       return params;
+   }
+
+   /**
+    * Perform the actual transformation, writing to the given result.
+    * @param source the Source to transform
+    * @param parameters a Map of parameters to be applied to the stylesheet
+    * @param result the result to write to
+    * @throws Exception we let this method throw any exception; the
+    * AbstractXlstView superclass will catch exceptions
+    */
+   protected void doTransform(Source source, Map parameters, Result result, String encoding)
+         throws Exception {
+
+      String stylesheetLocation = (String) parameters.get(STYLESHEET_LOCATION);
+      try {
+
+         Transformer trans = getTransformer(stylesheetLocation);
+
+         // Explicitly apply URIResolver to every created Transformer.
+         if (getUriResolver() != null) {
+            trans.setURIResolver(getUriResolver());
+         }
+
+         // Apply any subclass supplied parameters to the transformer.
+         if (parameters != null) {
+            for (Iterator it = parameters.entrySet().iterator(); it.hasNext();) {
+               Map.Entry entry = (Map.Entry) it.next();
+               trans.setParameter(entry.getKey().toString(), entry.getValue());
+            }
+            if (logger.isDebugEnabled()) {
+               logger.debug("Added parameters [" + parameters + "] to transformer object");
+            }
+         }
+
+         // Specify default output properties.
+         trans.setOutputProperty(OutputKeys.ENCODING, encoding);
+         trans.setOutputProperty(OutputKeys.INDENT, "yes");
+
+         // Xalan-specific, but won't do any harm in other XSLT engines.
+         trans.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+
+         // Perform the actual XSLT transformation.
+         trans.transform(source, result);
+         if (logger.isDebugEnabled()) {
+            logger.debug("XSLT transformed with stylesheet [" + stylesheetLocation + "]");
+         }
+      }
+      catch (TransformerConfigurationException ex) {
+         throw new NestedServletException("Couldn't create XSLT transformer for stylesheet [" +
+               stylesheetLocation + "] in XSLT view with name [" + getBeanName() + "]", ex);
+      }
+      catch (TransformerException ex) {
+         throw new NestedServletException("Couldn't perform transform with stylesheet [" +
+               stylesheetLocation + "] in XSLT view with name [" + getBeanName() + "]", ex);
+      }
+   }
+
+   protected Transformer getTransformer(String location) throws TransformerException {
+      return getTransformerFactory().newTransformer(
+         getUriResolver().resolve(location, null));
    }
 
    protected StructuredArtifactDefinitionManager getStructuredArtifactDefinitionManager() {
@@ -160,4 +234,28 @@ public class XsltArtifactView extends AbstractXsltView {
       this.resourceLoader = resourceLoader;
    }
 
+   public String getUriResolverBeanName() {
+      return uriResolverBeanName;
+   }
+
+   public void setUriResolverBeanName(String uriResolverBeanName) {
+      this.uriResolverBeanName = uriResolverBeanName;
+   }
+
+   public URIResolver getUriResolver() {
+      return uriResolver;
+   }
+
+   public void setUriResolver(URIResolver uriResolver) {
+      this.uriResolver = uriResolver;
+      getTransformerFactory().setURIResolver(uriResolver);
+   }
+
+   public TransformerFactory getTransformerFactory() {
+      return transformerFactory;
+   }
+
+   public void setTransformerFactory(TransformerFactory transformerFactory) {
+      this.transformerFactory = transformerFactory;
+   }
 }
