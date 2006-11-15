@@ -22,6 +22,8 @@
 package org.sakaiproject.metaobj.shared.control.tag;
 
 import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.ResourceBundle;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
@@ -65,7 +67,16 @@ public class ListScrollTag extends BodyTagSupport {
    public int doEndTag() throws JspException {
       JspWriter writer = pageContext.getOut();
 
+      ResourceBundle myResources = 
+         ResourceBundle.getBundle("org.sakaiproject.metaobj.bundle.Messages");
 
+      String first = myResources.getString("listScroll_first");
+      String previous = myResources.getString("listScroll_previous");
+      String next = myResources.getString("listScroll_next");
+      String last = myResources.getString("listScroll_last");
+      String viewing = MessageFormat.format(myResources.getString("listScroll_viewing"), 
+            new Object[]{listScroll.getFirstItem(), listScroll.getLastItem(), listScroll.getTotal()});
+      
       try {
 
          writer.write("<div ");
@@ -76,7 +87,7 @@ public class ListScrollTag extends BodyTagSupport {
 
          //  <input type="button" value="Next" onclick="window.document.location='url'">
 
-         writer.write("<input type=\"button\" value=\"First\" onclick=\"window.document.location=\'");
+         writer.write("<input type=\"button\" value=\"" + first + "\" onclick=\"window.document.location=\'");
          writer.write(listUrl + "&" + ListScroll.STARTING_INDEX_TAG + "=0");
          writer.write("\'\"");
          if (listScroll.getPrevIndex() == -1) {
@@ -86,7 +97,7 @@ public class ListScrollTag extends BodyTagSupport {
 
          writer.write("&nbsp;");
 
-         writer.write("<input type=\"button\" value=\"Previous\" onclick=\"window.document.location=\'");
+         writer.write("<input type=\"button\" value=\"" + previous + "\" onclick=\"window.document.location=\'");
          writer.write(listUrl + "&" + ListScroll.STARTING_INDEX_TAG + "=" + listScroll.getPrevIndex());
          writer.write("\'\"");
          if (listScroll.getPrevIndex() == -1) {
@@ -95,12 +106,11 @@ public class ListScrollTag extends BodyTagSupport {
          writer.write(" >");
 
          writer.write("&nbsp;");
-         writer.write(" viewing " + listScroll.getFirstItem() +
-               " - " +
-               listScroll.getLastItem() + " of " + listScroll.getTotal() + " items ");
+         writer.write(viewing);
+         
          writer.write("&nbsp;");
 
-         writer.write("<input type=\"button\" value=\"Next\" onclick=\"window.document.location=\'");
+         writer.write("<input type=\"button\" value=\"" + next + "\" onclick=\"window.document.location=\'");
          writer.write(listUrl + "&" + ListScroll.STARTING_INDEX_TAG + "=" + listScroll.getNextIndex());
          writer.write("\'\"");
          if (listScroll.getNextIndex() == -1) {
@@ -110,7 +120,7 @@ public class ListScrollTag extends BodyTagSupport {
 
          writer.write("&nbsp;");
 
-         writer.write("<input type=\"button\" value=\"Last\" onclick=\"window.document.location=\'");
+         writer.write("<input type=\"button\" value=\"" + last + "\" onclick=\"window.document.location=\'");
          writer.write(listUrl + "&" + ListScroll.STARTING_INDEX_TAG + "=" + Integer.MAX_VALUE);
          writer.write("\'\"");
          if (listScroll.getNextIndex() == -1) {
