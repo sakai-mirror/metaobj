@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet version="2.0"
    xmlns="http://www.w3.org/1999/xhtml"
+   xmlns:sakaifn="org.sakaiproject.metaobj.utils.xml.XsltFunctions"
    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
    xmlns:xhtml="http://www.w3.org/1999/xhtml"
    xmlns:osp="http://www.osportfolio.org/OspML"
@@ -14,7 +15,7 @@
 
    <xsl:param name="panelId"/>
    <xsl:param name="subForm"/>
-   <xsl:output method="html" version="4.0" cdata-section-elements="textarea"
+   <xsl:output method="html" version="4.0" cdata-section-elements=""
       encoding="iso-8859-1" indent="yes"/>
 
    <xsl:template match="formView">
@@ -32,7 +33,12 @@
                   </xsl:attribute>
                </link>
             </xsl:for-each>
-            <script type="text/javascript" language="JavaScript" src="/library/js/headscripts.js"></script>
+            <script type="text/javascript" language="JavaScript" src="/library/js/headscripts.js">
+               // empty block
+            </script>
+            <script type="text/javascript" language="JavaScript" src="/library/editor/FCKeditor/fckeditor.js">
+               // empty block
+            </script>
          </head>
          <body>
             <xsl:attribute name="onLoad">setMainFrameHeight('<xsl:value-of
@@ -88,9 +94,9 @@
       </html>
    </xsl:template>
 
-   <!-- todo provide specail handling templates for
-   certain element types -->
-
+   <!--
+    sub form
+   -->
    <xsl:template match="element[children]">
       <xsl:param name="currentParent"/>
       <xsl:param name="rootNode"/>
@@ -133,6 +139,9 @@
       </xsl:if>
    </xsl:template>
 
+   <!--
+    date picker todo
+   -->
    <xsl:template match="element[@type = 'xs:date']">
       <xsl:param name="currentParent"/>
       <xsl:param name="rootNode"/>
@@ -150,6 +159,25 @@
       </div>
    </xsl:template>
 
+   <!--
+    file picker todo
+   -->
+   <xsl:template match="element[@type = 'xs:anyURI']">
+      <xsl:param name="currentParent"/>
+      <xsl:param name="rootNode"/>
+      <xsl:variable name="name" select="@name"/>
+      <xsl:variable name="currentNode" select="$currentParent/node()[$name=name()]"/>
+      <div class="shorttext indnt1">
+         <xsl:call-template name="produce-label">
+            <xsl:with-param name="currentSchemaNode" select="."/>
+         </xsl:call-template>
+         <xsl:comment>anyUri</xsl:comment>
+      </div>
+   </xsl:template>
+
+   <!--
+    check box
+   -->
    <xsl:template match="element[@type = 'xs:boolean']">
       <xsl:param name="currentParent"/>
       <xsl:param name="rootNode"/>
@@ -174,8 +202,10 @@
       </div>
    </xsl:template>
 
-   <xsl:template match="element[xs:annotation/xs:documentation
-      [@source='ospi.isRichText' or @source='sakai.isRichText'] = 'true']">
+   <!--
+    long text
+   -->
+   <xsl:template match="element[xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength[@value>99]]">
       <xsl:param name="currentParent"/>
       <xsl:param name="rootNode"/>
       <xsl:variable name="name" select="@name"/>
@@ -184,11 +214,30 @@
          <xsl:call-template name="produce-label">
             <xsl:with-param name="currentSchemaNode" select="."/>
          </xsl:call-template>
-         <xsl:comment>rich text placeholder</xsl:comment>
+         <xsl:if test="xs:annotation/xs:documentation[@source='ospi.isRichText' or @source='sakai.isRichText']">
+            <xsl:comment>
+               <xsl:value-of
+                  select="xs:annotation/xs:documentation[@source='ospi.isRichText' or @source='sakai.isRichText']"/>
+            </xsl:comment>
+         </xsl:if>
+         <textarea rows="4" cols="60"><xsl:attribute
+            name="id"><xsl:value-of select="$name"/></xsl:attribute><xsl:attribute
+            name="name"><xsl:value-of select="$name"/></xsl:attribute><xsl:choose><xsl:when
+            test="string($currentNode) = ''"><xsl:text disable-output-escaping="yes">&amp;nbsp;
+            </xsl:text></xsl:when><xsl:otherwise><xsl:value-of
+            select="$currentNode" disable-output-escaping="yes"/></xsl:otherwise></xsl:choose></textarea>
+         <xsl:if test="string($currentNode) = ''">
+            <script language="JavaScript" type="text/javascript">
+               document.forms[0].<xsl:value-of select="$name"/>.value=""
+            </script>
+         </xsl:if>
       </div>
    </xsl:template>
 
-   <xsl:template match="element[@type = 'xs:anyURI']">
+   <!--
+    rich text todo
+   -->
+   <xsl:template match="element[xs:annotation/xs:documentation[@source='ospi.isRichText' or @source='sakai.isRichText']]">
       <xsl:param name="currentParent"/>
       <xsl:param name="rootNode"/>
       <xsl:variable name="name" select="@name"/>
@@ -197,10 +246,54 @@
          <xsl:call-template name="produce-label">
             <xsl:with-param name="currentSchemaNode" select="."/>
          </xsl:call-template>
-         <xsl:comment>anyUri</xsl:comment>
+         <table><tr><td>
+            <textarea rows="30" cols="80"><xsl:attribute
+               name="id"><xsl:value-of select="$name"/></xsl:attribute><xsl:attribute
+               name="name"><xsl:value-of select="$name"/></xsl:attribute><xsl:choose><xsl:when
+               test="string($currentNode) = ''"><xsl:text disable-output-escaping="yes">&amp;nbsp;
+               </xsl:text></xsl:when><xsl:otherwise><xsl:value-of
+               select="$currentNode" disable-output-escaping="yes"/></xsl:otherwise></xsl:choose></textarea>
+            <xsl:if test="string($currentNode) = ''">
+               <script language="JavaScript" type="text/javascript">
+                  document.forms[0].<xsl:value-of select="$name"/>.value=""
+               </script>
+            </xsl:if>
+            <xsl:value-of select="sakaifn:getRichTextScript($name, .)" disable-output-escaping="yes"/>
+         </td></tr></table>
       </div>
    </xsl:template>
 
+   <!--
+    drop down
+   -->
+   <xsl:template match="element[xs:simpleType/xs:restriction[@base='xs:string']/xs:enumeration]">
+      <xsl:param name="currentParent"/>
+      <xsl:param name="rootNode"/>
+      <xsl:variable name="name" select="@name"/>
+      <xsl:variable name="currentNode" select="$currentParent/node()[$name=name()]"/>
+      <div class="shorttext indnt1">
+         <xsl:call-template name="produce-label">
+            <xsl:with-param name="currentSchemaNode" select="."/>
+         </xsl:call-template>
+         <select>
+            <xsl:attribute name="name"><xsl:value-of select="$name"/></xsl:attribute>
+            <xsl:attribute name="id"><xsl:value-of select="$name"/></xsl:attribute>
+            <xsl:for-each select="xs:simpleType/xs:restriction[@base='xs:string']/xs:enumeration">
+               <option>
+                  <xsl:attribute name="value"><xsl:value-of select="@value"/></xsl:attribute>
+                  <xsl:if test="$currentNode = @value">
+                     <xsl:attribute name="selected">selected</xsl:attribute>
+                  </xsl:if>
+                  <xsl:value-of select="@value"/>
+               </option>
+            </xsl:for-each>
+         </select>
+      </div>
+   </xsl:template>
+
+   <!--
+    catch all todo: length restrictions
+   -->
    <xsl:template match="element">
       <xsl:param name="currentParent"/>
       <xsl:param name="rootNode"/>
@@ -214,21 +307,6 @@
             <xsl:attribute name="name"><xsl:value-of select="$name"/></xsl:attribute>
             <xsl:attribute name="value"><xsl:value-of select="$currentNode"/></xsl:attribute>
          </input>
-      </div>
-   </xsl:template>
-
-   <xsl:template match="element[xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength[@value>999]]">
-      <xsl:param name="currentParent"/>
-      <xsl:param name="rootNode"/>
-      <xsl:variable name="name" select="@name"/>
-      <xsl:variable name="currentNode" select="$currentParent/node()[$name=name()]"/>
-      <div class="shorttext indnt1">
-         <xsl:call-template name="produce-label">
-            <xsl:with-param name="currentSchemaNode" select="."/>
-         </xsl:call-template>
-         <textarea rows="4" cols="60"><xsl:attribute
-            name="name"><xsl:value-of select="$name"/></xsl:attribute><xsl:value-of
-            select="$currentNode"/></textarea>
       </div>
    </xsl:template>
 

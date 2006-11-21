@@ -107,8 +107,4 @@ public class DecimalElementType extends NumberElementType {
             NormalizationException.INVALID_DECIMAL_NUMBER_ERROR_CODE, new Object[]{value});
    }
 
-   public Class getObjectType() {
-      return Double.class;
-   }
-
 }
