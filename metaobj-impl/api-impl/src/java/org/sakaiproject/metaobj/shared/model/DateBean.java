@@ -22,9 +22,13 @@
 package org.sakaiproject.metaobj.shared.model;
 
 import java.text.MessageFormat;
+import java.text.Format;
+import java.text.SimpleDateFormat;
+import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -39,7 +43,10 @@ public class DateBean implements FieldValueWrapper {
    private String hour = "";
    private String minute = "";
    private String second = "";
+   private String fullDate = null;
    boolean nullFlag = true;
+
+   private Format dateFormat = new SimpleDateFormat("MM'/'dd'/'yyyy");
 
    public DateBean() {
    }
@@ -125,8 +132,20 @@ public class DateBean implements FieldValueWrapper {
       return getDate();
    }
 
-   public void validate(Errors errors) {
+   public void validate(List errors) {
       if (nullFlag) {
+         return;
+      }
+
+      if (fullDate != null) {
+         try {
+            setValue(dateFormat.parseObject(getFullDate()));
+         } catch (ParseException e) {
+            errors.add(new ValidationError("fullDate", "invalid date {0}", new Object[]{getFullDate()},
+                  MessageFormat.format("invalid date {0}", new Object[]{getFullDate()})));
+            nullFlag = true;
+         }
+
          return;
       }
 
@@ -134,22 +153,22 @@ public class DateBean implements FieldValueWrapper {
          Integer.parseInt(getYear());
       }
       catch (NumberFormatException e) {
-         errors.rejectValue("year", "invalid year {0}", new Object[]{getYear()},
-               MessageFormat.format("invalid year {0}", new Object[]{getYear()}));
+         errors.add(new ValidationError("year", "invalid year {0}", new Object[]{getYear()},
+               MessageFormat.format("invalid year {0}", new Object[]{getYear()})));
       }
       try {
          Integer.parseInt(getMonth());
       }
       catch (NumberFormatException e) {
-         errors.rejectValue("month", "invalid month {0}", new Object[]{getYear()},
-               MessageFormat.format("invalid month {0}", new Object[]{getYear()}));
+         errors.add(new ValidationError("month", "invalid month {0}", new Object[]{getYear()},
+               MessageFormat.format("invalid month {0}", new Object[]{getYear()})));
       }
       try {
          Integer.parseInt(getDay());
       }
       catch (NumberFormatException e) {
-         errors.rejectValue("day", "invalid day {0}", new Object[]{getYear()},
-               MessageFormat.format("invalid day {0}", new Object[]{getYear()}));
+         errors.add(new ValidationError("day", "invalid day {0}", new Object[]{getYear()},
+               MessageFormat.format("invalid day {0}", new Object[]{getYear()})));
       }
 
       /*
@@ -202,4 +221,14 @@ public class DateBean implements FieldValueWrapper {
    protected void checkFlag(String value) {
       nullFlag = (value == null || value.length() == 0);
    }
+
+   public String getFullDate() {
+      return fullDate;
+   }
+
+   public void setFullDate(String fullDate) {
+      this.fullDate = fullDate;
+      checkFlag(fullDate);
+   }
+
 }

@@ -21,7 +21,7 @@
 
 package org.sakaiproject.metaobj.utils.mvc.intf;
 
-import org.springframework.validation.Errors;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -36,6 +36,6 @@ public interface FieldValueWrapper {
 
    public Object getValue();
 
-   public void validate(Errors errors);
+   public void validate(List errors);
 
 }

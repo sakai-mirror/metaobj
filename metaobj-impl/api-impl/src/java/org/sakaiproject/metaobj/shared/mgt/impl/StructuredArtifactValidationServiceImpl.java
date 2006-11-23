@@ -174,13 +174,23 @@ public class StructuredArtifactValidationServiceImpl implements StructuredArtifa
       return errors;
    }
 
-   protected void validateChildElement(Element childElement, SchemaNode childSchema,
+   protected void validateChildElement(Element parent, Element childElement, SchemaNode childSchema,
                                        Object value, String parentName, List errors) {
-      if (childElement != null) {
-         if (value instanceof FieldValueWrapper) {
-            value = ((FieldValueWrapper) value).getValue();
+      if (value instanceof FieldValueWrapper) {
+         FieldValueWrapper fieldValueWrapper = ((FieldValueWrapper) value);
+         fieldValueWrapper.validate(errors);
+         value = fieldValueWrapper.getValue();
+         if (value != null && childElement == null) {
+            childElement = new Element(childSchema.getName());
+            parent.addContent(childElement);
          }
+      }
+      validateChildElement(childElement, childSchema, value, parentName, errors);
+   }
 
+   protected void validateChildElement(Element childElement, SchemaNode childSchema,
+                                          Object value, String parentName, List errors) {
+      if (childElement != null) {
          String stringValue = null;
          if (value != null && value instanceof String) {
             stringValue = (String) value;
@@ -198,7 +208,7 @@ public class StructuredArtifactValidationServiceImpl implements StructuredArtifa
 
    protected void validateElement(Element rootElement, SchemaNode childSchema,
                                   Object value, String parentName, List errors) {
-      validateChildElement(rootElement.getChild(childSchema.getName()),
+      validateChildElement(rootElement, rootElement.getChild(childSchema.getName()),
             childSchema, value, parentName, errors);
    }
 

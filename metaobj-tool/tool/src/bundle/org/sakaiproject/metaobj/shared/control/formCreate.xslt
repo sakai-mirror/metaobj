@@ -39,6 +39,9 @@
             <script type="text/javascript" language="JavaScript" src="/library/editor/FCKeditor/fckeditor.js">
                // empty block
             </script>
+            <script type="text/javascript" src="/library/calendar/js/calendar2.js">
+               // empty block
+            </script>
          </head>
          <body>
             <xsl:attribute name="onLoad">setMainFrameHeight('<xsl:value-of
@@ -140,7 +143,7 @@
    </xsl:template>
 
    <!--
-    date picker todo
+    date picker
    -->
    <xsl:template match="element[@type = 'xs:date']">
       <xsl:param name="currentParent"/>
@@ -152,10 +155,10 @@
             <xsl:with-param name="currentSchemaNode" select="."/>
          </xsl:call-template>
          <xsl:comment>date field</xsl:comment>
-         <!--input type="text">
-            <xsl:attribute name="name"><xsl:value-of select="$name"/></xsl:attribute>
-            <xsl:attribute name="value"><xsl:value-of select="$currentNode"/></xsl:attribute>
-         </input-->
+         <xsl:call-template name="calendar-widget">
+            <xsl:with-param name="schemaNode" select="."/>
+            <xsl:with-param name="dataNode" select="$currentNode"/>
+         </xsl:call-template>
       </div>
    </xsl:template>
 
@@ -235,7 +238,7 @@
    </xsl:template>
 
    <!--
-    rich text todo
+    rich text
    -->
    <xsl:template match="element[xs:annotation/xs:documentation[@source='ospi.isRichText' or @source='sakai.isRichText']]">
       <xsl:param name="currentParent"/>
@@ -379,6 +382,43 @@
          <label>Modified</label>
          <xsl:value-of select="/formView/formData/artifact/metaData/repositoryNode/modified"/>
       </div>
+   </xsl:template>
+
+   <xsl:template name="calendar-widget">
+      <xsl:param name="schemaNode"/>
+      <xsl:param name="dataNode"/>
+      <xsl:variable name="year" select="sakaifn:dateField($dataNode, 1, 'date')"/>
+      <xsl:variable name="currentYear" select="sakaifn:dateField(sakaifn:currentDate(), 1, 'date')"/>
+      <xsl:variable name="month" select="sakaifn:dateField($dataNode, 2, 'date') + 1"/>
+      <xsl:variable name="day" select="sakaifn:dateField($dataNode, 5, 'date')"/>
+      <xsl:variable name="fieldId" select="generate-id()"/>
+
+      <i>mm/dd/yyyy</i>
+      <input type="text" size="10">
+         <xsl:attribute name="name"><xsl:value-of select="$schemaNode/@name"/>.fullDate</xsl:attribute>
+         <xsl:attribute name="id"><xsl:value-of select="$schemaNode/@name"/></xsl:attribute>
+         <xsl:attribute name="value"><xsl:if test="$year > -1"
+            ><xsl:value-of select="$month"/>/<xsl:value-of select="$day"/>/<xsl:value-of select="$year"
+            /></xsl:if></xsl:attribute>
+      </input>
+      <img width="16" height="16" style="cursor:pointer;" border="0"
+           src="/sakai-jsf-resource/inputDate/images/calendar.gif">
+         <xsl:attribute name="alt"><xsl:value-of select="sakaifn:getMessage('messages', 'date_pick_alt')" /></xsl:attribute>
+         <xsl:attribute name="onclick"
+            >javascript:var cal<xsl:value-of select="$fieldId"/> = new calendar2(document.getElementById('<xsl:value-of select="$schemaNode/@name"/>'));cal<xsl:value-of select="$fieldId"/>.year_scroll = true;cal<xsl:value-of select="$fieldId"/>.time_comp = false;cal<xsl:value-of select="$fieldId"/>.popup('','/sakai-jsf-resource/inputDate/')</xsl:attribute>
+      </img>
+
+   </xsl:template>
+
+   <xsl:template name="month-option">
+      <xsl:param name="selectedMonth"/>
+      <xsl:param name="month"/>
+      <xsl:param name="monthName"/>
+      <option>
+         <xsl:attribute name="value"><xsl:value-of select="$month"/></xsl:attribute>
+         <xsl:if test="$month = $selectedMonth"><xsl:attribute name="selected">true</xsl:attribute></xsl:if>
+         <xsl:value-of select="sakaifn:getMessage('messages', $monthName)" />
+      </option>
    </xsl:template>
 
 </xsl:stylesheet>
