@@ -49,6 +49,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.sakaiproject.metaobj.utils.mvc.intf.Controller;
 import org.sakaiproject.metaobj.utils.mvc.intf.CancelableController;
 import org.sakaiproject.metaobj.utils.mvc.intf.CustomCommandController;
+import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifact;
 import org.sakaiproject.metaobj.shared.model.ElementBean;
 import org.sakaiproject.metaobj.shared.model.Artifact;
@@ -56,6 +57,8 @@ import org.sakaiproject.metaobj.shared.model.PersistenceException;
 import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactHomeInterface;
 import org.sakaiproject.metaobj.shared.mgt.WritableObjectHome;
 import org.sakaiproject.metaobj.shared.FormHelper;
+import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.content.api.FilePickerHelper;
 
 import java.util.Map;
 /**
@@ -74,7 +77,8 @@ public class AddXmlElementController extends XmlControllerBase
    protected final Log logger = LogFactory.getLog(getClass());
 
    public Object formBackingObject(Map request, Map session, Map application) {
-      if (request.get(EditedArtifactStorage.STORED_ARTIFACT_FLAG) == null) {
+      ElementBean returnedBean;
+      if (session.get(EditedArtifactStorage.STORED_ARTIFACT_FLAG) == null) {
          StructuredArtifactHomeInterface home =
             (StructuredArtifactHomeInterface) getHomeFactory().getHome(getSchemaName(session));
          StructuredArtifact bean = (StructuredArtifact)home.createInstance();
@@ -83,13 +87,22 @@ public class AddXmlElementController extends XmlControllerBase
             bean);
          session.put(EditedArtifactStorage.EDITED_ARTIFACT_STORAGE_SESSION_KEY,
             sessionBean);
-         return bean;
+         returnedBean = bean;
       }
       else {
          EditedArtifactStorage sessionBean = (EditedArtifactStorage)session.get(
             EditedArtifactStorage.EDITED_ARTIFACT_STORAGE_SESSION_KEY);
-         return sessionBean.getCurrentElement();
+         returnedBean = sessionBean.getCurrentElement();
+         session.remove(EditedArtifactStorage.STORED_ARTIFACT_FLAG);
       }
+
+      ToolSession toolSession = getSessionManager().getCurrentToolSession();
+      if (toolSession.getAttribute(FilePickerHelper.FILE_PICKER_CANCEL) != null ||
+            toolSession.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS) != null) {
+         retrieveFileAttachments(request, session, returnedBean);
+      }
+
+      return returnedBean;
    }
                 
    public ModelAndView handleRequest(Object requestModel, Map request, Map session,
@@ -135,6 +148,5 @@ public class AddXmlElementController extends XmlControllerBase
 
       return false;
    }
-
 
 }

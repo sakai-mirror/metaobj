@@ -72,6 +72,10 @@ public class WorksiteManagerImpl implements WorksiteManager {
 
       if (currentPlacement == null) {
          currentPlacement = getToolSessionPlacement();
+
+         if (currentPlacement == null) {
+            return null;
+         }
       }
 
       String id = currentPlacement.getContext();
@@ -84,6 +88,11 @@ public class WorksiteManagerImpl implements WorksiteManager {
 
    protected Placement getToolSessionPlacement() {
       ToolSession session = SessionManager.getCurrentToolSession();
+
+      if (session == null) {
+         return null;
+      }
+
       String placementId = session.getPlacementId();
       return getTool(placementId);
    }

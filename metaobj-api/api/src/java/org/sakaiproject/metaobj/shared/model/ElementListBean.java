@@ -24,6 +24,7 @@ package org.sakaiproject.metaobj.shared.model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Iterator;
+import java.util.Collection;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -131,5 +132,19 @@ public class ElementListBean extends ArrayList {
       super.add(index, element);
    }
 
+   public boolean addAll(Collection collection) {
+      for (Iterator i=collection.iterator();i.hasNext();) {
+         ElementBean bean = createBlank();
+         bean.getBaseElement().addContent((String) i.next());
+         add(bean);
+      }
 
+      return true;
+   }
+
+   public void clear() {
+      while (size() > 0) {
+         remove(0);
+      }
+   }
 }

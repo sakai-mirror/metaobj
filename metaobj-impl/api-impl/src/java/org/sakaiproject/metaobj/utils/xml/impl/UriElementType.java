@@ -38,6 +38,8 @@ import org.sakaiproject.metaobj.utils.xml.SchemaNode;
  */
 public class UriElementType extends BaseElementType {
 
+   private static final String SAKAI_REF_SCHEME = "sakairef";
+
    public UriElementType(String typeName, Element schemaElement, SchemaNode parentNode, Namespace xsdNamespace) {
       super(typeName, schemaElement, parentNode, xsdNamespace);
    }
@@ -48,7 +50,12 @@ public class UriElementType extends BaseElementType {
 
    public Object getActualNormalizedValue(String value) {
       try {
-         return new URI(value);
+         if (value.startsWith("/")) {
+            return new URI(SAKAI_REF_SCHEME, value, null);
+         }
+         else {
+            return new URI(value);
+         }
       }
       catch (URISyntaxException e) {
          throw new NormalizationException("Invalid URI", NormalizationException.INVALID_URI, new Object[]{value});
@@ -56,17 +63,19 @@ public class UriElementType extends BaseElementType {
    }
 
    public String getSchemaNormalizedValue(String value) throws NormalizationException {
-      try {
-         return new URI(value).toString();
-      }
-      catch (URISyntaxException e) {
-         throw new NormalizationException("Invalid URI", NormalizationException.INVALID_URI, new Object[]{value});
-      }
+      return getSchemaNormalizedValue(getActualNormalizedValue(value));
    }
 
    public String getSchemaNormalizedValue(Object value) throws NormalizationException {
       if (value != null) {
-         return ((URI) value).toString();
+
+         URI uri = (URI) value;
+         if (uri.getScheme().equals(SAKAI_REF_SCHEME)) {
+            return uri.getSchemeSpecificPart();
+         }
+         else {
+            return uri.toString();
+         }
       }
       else {
          return null;

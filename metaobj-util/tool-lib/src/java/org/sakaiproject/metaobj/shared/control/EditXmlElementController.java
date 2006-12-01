@@ -76,7 +76,7 @@ public class EditXmlElementController extends XmlControllerBase
       return home.createInstance();
    }
    public Object fillBackingObject(Object incomingModel, Map request, Map session, Map application) throws Exception {
-      if (request.get(EditedArtifactStorage.STORED_ARTIFACT_FLAG) == null) {
+      if (session.get(EditedArtifactStorage.STORED_ARTIFACT_FLAG) == null) {
          StructuredArtifactHomeInterface home =
             (StructuredArtifactHomeInterface) getHomeFactory().getHome(getSchemaName(session));
          StructuredArtifact bean = (StructuredArtifact)incomingModel;

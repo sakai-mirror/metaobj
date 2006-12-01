@@ -189,6 +189,7 @@
          <bean class="org.sakaiproject.metaobj.shared.control.AddXmlElementController">
             <property name="homeFactory"><ref bean="homeFactory"/></property>
             <property name="validator"><ref bean="structuredArtifactValidator"/></property>
+            <property name="sessionManager"><ref bean="org.sakaiproject.tool.api.SessionManager" /></property>
          </bean>
       </property>
       <property name="screenMappings">
@@ -196,6 +197,7 @@
             <prop key="edit">editXmlElementRedirect</prop>
             <prop key="subList">addXmlElementRedirect</prop>
             <prop key="success">finishFormHelper</prop>
+            <prop key="fileHelper">xmlArtifactFileHelper</prop>
          </props>
       </property>
       <property name="commandName"><value>bean</value></property>
@@ -215,6 +217,7 @@
          <props>
             <prop key="subList">editXmlElementRedirect</prop>
             <prop key="success">finishFormHelper</prop>
+            <prop key="fileHelper">xmlArtifactFileHelper</prop>
          </props>
       </property>
       <property name="commandName"><value>bean</value></property>

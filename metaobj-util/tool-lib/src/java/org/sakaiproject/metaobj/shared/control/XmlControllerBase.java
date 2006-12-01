@@ -52,20 +52,30 @@ import org.sakaiproject.metaobj.shared.model.ElementBean;
 import org.sakaiproject.metaobj.shared.model.ElementListBean;
 import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
 import org.sakaiproject.content.api.ResourceEditingHelper;
+import org.sakaiproject.content.api.FilePickerHelper;
+import org.sakaiproject.content.cover.ContentHostingService;
+import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.tool.api.SessionManager;
+import org.sakaiproject.entity.api.Reference;
+import org.sakaiproject.entity.cover.EntityManager;
 
-import java.util.Hashtable;
-import java.util.Map;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class XmlControllerBase {
    protected final Log logger = LogFactory.getLog(getClass());
    private HomeFactory homeFactory;
    private XmlValidator validator = null;
+   private SessionManager sessionManager;
+   private static final String FILE_ATTACHMENTS_FIELD =
+      "org.sakaiproject.metaobj.shared.control.XmlControllerBase.field";
 
    protected ModelAndView handleNonSubmit(ElementBean bean, Map request,
-                                  Map session, Map application, Errors errors) {
+                                          Map session, Map application, Errors errors) {
       EditedArtifactStorage sessionBean = (EditedArtifactStorage)session.get(
          EditedArtifactStorage.EDITED_ARTIFACT_STORAGE_SESSION_KEY);
+
+      session.put(EditedArtifactStorage.STORED_ARTIFACT_FLAG,
+         "true");
 
       if (sessionBean == null) {
          StructuredArtifact artifact = (StructuredArtifact)bean;
@@ -74,8 +84,6 @@ public class XmlControllerBase {
          session.put(EditedArtifactStorage.EDITED_ARTIFACT_STORAGE_SESSION_KEY,
             sessionBean);
       }
-
-      boolean isRoot = false;
 
       if ((request.get("editButton") != null &&
          request.get("editButton").toString().length() > 0)||
@@ -89,7 +97,6 @@ public class XmlControllerBase {
       else if (request.get("cancelNestedButton") != null) {
          sessionBean.popCurrentElement(true);
          sessionBean.popCurrentPath();
-         isRoot = (sessionBean.getCurrentElement() instanceof StructuredArtifact);
       }
       else if (request.get("updateNestedButton") != null) {
          getValidator().validate(sessionBean.getCurrentElement(), errors, true);
@@ -98,7 +105,9 @@ public class XmlControllerBase {
          }
          sessionBean.popCurrentElement();
          sessionBean.popCurrentPath();
-         isRoot = (sessionBean.getCurrentElement() instanceof StructuredArtifact);
+      }
+      else if (request.get("fileHelper") != null) {
+         return processFileAttachments(request, session, bean, errors);
       }
 
       Map map = new Hashtable();
@@ -212,6 +221,121 @@ public class XmlControllerBase {
    public ModelAndView processCancel(Map request, Map session, Map application,
                                      Object command, Errors errors) throws Exception {
       return handleNonSubmit((ElementBean)command, request, session, application, errors);
+   }
+
+   public ModelAndView processFileAttachments(Map request, Map session, ElementBean currentBean, Errors errors) {
+      String fieldName = (String) request.get("childPath");
+      session.put(FILE_ATTACHMENTS_FIELD, fieldName);
+
+      //ToolSession toolSession = getSessionManager().getCurrentToolSession();
+      List attachmentRefs = new ArrayList();
+
+      session.put(FilePickerHelper.FILE_PICKER_MAX_ATTACHMENTS,
+         FilePickerHelper.CARDINALITY_SINGLE);
+      if (List.class.isAssignableFrom(currentBean.getType(fieldName))) {
+         List currentIds = (List) currentBean.get(fieldName);
+         attachmentRefs.addAll(convertToRefList(currentIds));
+         session.put(FilePickerHelper.FILE_PICKER_MAX_ATTACHMENTS,
+            FilePickerHelper.CARDINALITY_MULTIPLE);
+      }
+      else if (currentBean.get(fieldName) != null) {
+         attachmentRefs.add(convertToRef(currentBean.get(fieldName).toString()));
+      }
+
+      session.put(FilePickerHelper.FILE_PICKER_ATTACHMENTS, attachmentRefs);
+
+      return new ModelAndView("fileHelper");
+   }
+
+   public void retrieveFileAttachments(Map request, Map session, ElementBean currentBean) {
+      String fieldName = (String) session.get(FILE_ATTACHMENTS_FIELD);
+
+      ToolSession toolSession = getSessionManager().getCurrentToolSession();
+      if (toolSession.getAttribute(FilePickerHelper.FILE_PICKER_CANCEL) == null &&
+            toolSession.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS) != null) {
+
+         List refs = (List) toolSession.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
+         List ids = convertRefs(refs);
+         // we may convert later, for now, leave backward compatible.
+         // convertToGuidList(refs);
+
+         if (List.class.isAssignableFrom(currentBean.getType(fieldName))) {
+            List refList = (List) currentBean.get(fieldName);
+            refList.clear();
+            refList.addAll(ids);
+         }
+         else {
+            if (refs.size() > 0) {
+               currentBean.put(fieldName, ids.get(0));
+            }
+            else {
+               currentBean.put(fieldName, "");
+            }
+         }
+      }
+
+      toolSession.removeAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
+      toolSession.removeAttribute(FilePickerHelper.FILE_PICKER_CANCEL);
+   }
+
+   protected List convertRefs(List refs) {
+      List ret = new ArrayList();
+      for (Iterator<Reference> i=refs.iterator();i.hasNext();) {
+         ret.add(convertRef(i.next()));
+      }
+      return ret;
+   }
+
+   protected String convertRef(Reference reference) {
+      return reference.getId();
+   }
+
+   /**
+    * not currently used... will use if we move to storing id rather than ref in the
+    * xml form data
+    * @param refs
+    * @return list of converted guids
+    */
+   protected List convertToGuidList(List refs) {
+      List idList = new ArrayList();
+
+      for (Iterator i=refs.iterator();i.hasNext();) {
+         Reference ref = (Reference) i.next();
+
+         idList.add(ContentHostingService.getUuid(ref.getId()));
+      }
+
+      return idList;
+   }
+
+   /**
+    * @param id string
+    * @return ref
+    */
+   protected Reference convertToRef(String id) {
+      return EntityManager.newReference(ContentHostingService.getReference(id));
+   }
+
+   /**
+    * @param refs
+    * @return list of refs
+    */
+   protected List convertToRefList(List refs) {
+      List refList = new ArrayList();
+
+      for (Iterator<ElementBean> i=refs.iterator();i.hasNext();) {
+         refList.add(convertToRef(i.next().getBaseElement().getTextTrim()));
+      }
+
+      return refList;
+   }
+
+   public SessionManager getSessionManager() {
+      return sessionManager;
+   }
+
+   public void setSessionManager(SessionManager sessionManager) {
+      this.sessionManager = sessionManager;
    }
 
 }

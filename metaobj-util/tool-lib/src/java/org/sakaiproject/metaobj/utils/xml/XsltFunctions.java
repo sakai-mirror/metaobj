@@ -9,6 +9,8 @@ import org.sakaiproject.content.cover.ContentHostingService;
 import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.util.Xml;
 import org.sakaiproject.util.ResourceLoader;
+import org.sakaiproject.entity.api.Reference;
+import org.sakaiproject.entity.cover.EntityManager;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -158,6 +160,19 @@ public class XsltFunctions {
 
    public static void registerLoader(String key, ResourceLoader loader) {
       resourceLoaders.put(key, loader);
+   }
+
+   public static String getReferenceName(String idString) {
+      String refString = ContentHostingService.getReference(idString);
+      Reference ref = EntityManager.newReference(refString);
+      String prop = ref.getEntity().getProperties().getNamePropDisplayName();
+      return ref.getEntity().getProperties().getProperty(prop);
+   }
+
+   public static String getReferenceUrl(String idString) {
+      String refString = ContentHostingService.getReference(idString);
+      Reference ref = EntityManager.newReference(refString);
+      return ref.getUrl();
    }
 
 }

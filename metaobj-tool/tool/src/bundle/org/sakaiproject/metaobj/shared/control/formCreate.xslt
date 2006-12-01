@@ -76,6 +76,7 @@
 
                   <input type="hidden" name="childPath" value=""/>
                   <input type="hidden" name="childIndex" value=""/>
+                  <input type="hidden" name="fileHelper" value="" />
                   <input type="hidden" name="editButton" value="" />
                   <input type="hidden" name="removeButton" value="" />
                   <div>
@@ -98,7 +99,7 @@
    </xsl:template>
 
    <!--
-    sub form
+    sub form todo UI
    -->
    <xsl:template match="element[children]">
       <xsl:param name="currentParent"/>
@@ -163,7 +164,7 @@
    </xsl:template>
 
    <!--
-    file picker todo
+    file picker todo UI
    -->
    <xsl:template match="element[@type = 'xs:anyURI']">
       <xsl:param name="currentParent"/>
@@ -174,7 +175,23 @@
          <xsl:call-template name="produce-label">
             <xsl:with-param name="currentSchemaNode" select="."/>
          </xsl:call-template>
-         <xsl:comment>anyUri</xsl:comment>
+
+         <xsl:for-each select="$currentParent/node()[$name=name()]">
+            <input type="hidden">
+               <xsl:attribute name="name"><xsl:value-of select="$name"/></xsl:attribute>
+               <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
+            </input>
+            <a target="_new">
+               <xsl:attribute name="href"><xsl:value-of select="sakaifn:getReferenceUrl(.)"/></xsl:attribute>
+               <xsl:value-of select="sakaifn:getReferenceName(.)"/>
+            </a>
+         </xsl:for-each>
+
+         <a>
+            <xsl:attribute name="href">javascript:document.forms[0].childPath.value='<xsl:value-of
+               select="$name"/>';document.forms[0].fileHelper.value='true';document.forms[0].onsubmit();document.forms[0].submit();</xsl:attribute>
+            Manage Attachment(s)
+         </a>
       </div>
    </xsl:template>
 
@@ -322,13 +339,13 @@
             <a>
                <xsl:attribute name="href">javascript:document.forms[0].childPath.value='<xsl:value-of
                   select="$fieldName"/>';document.forms[0].editButton.value='Edit';document.forms[0].removeButton.value='';document.forms[0].childIndex.value='<xsl:value-of
-                  select="$index"/>';document.forms[0].submit();</xsl:attribute>
+                  select="$index"/>';document.forms[0].onsubmit();document.forms[0].submit();</xsl:attribute>
                edit
             </a>
             <a>
                <xsl:attribute name="href">javascript:document.forms[0].childPath.value='<xsl:value-of
                   select="$fieldName"/>';document.forms[0].removeButton.value='Remove';document.forms[0].editButton.value='';document.forms[0].childIndex.value='<xsl:value-of
-                  select="$index"/>';document.forms[0].submit();</xsl:attribute>
+                  select="$index"/>';document.forms[0].onsubmit();document.forms[0].submit();</xsl:attribute>
                remove
             </a>
          </td>

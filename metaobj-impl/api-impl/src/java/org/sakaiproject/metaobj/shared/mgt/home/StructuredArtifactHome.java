@@ -32,6 +32,8 @@ import java.util.Date;
 
 import org.jdom.CDATA;
 import org.jdom.Element;
+import org.jdom.JDOMException;
+import org.jdom.xpath.XPath;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 import org.sakaiproject.component.cover.ComponentManager;
@@ -39,6 +41,7 @@ import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.mgt.PresentableObjectHome;
 import org.sakaiproject.metaobj.shared.mgt.StreamableObjectHome;
 import org.sakaiproject.metaobj.shared.model.*;
+import org.sakaiproject.metaobj.shared.ArtifactFinder;
 import org.sakaiproject.metaobj.utils.Config;
 import org.sakaiproject.metaobj.utils.xml.SchemaNode;
 import org.sakaiproject.metaobj.worksite.intf.WorksiteAware;
@@ -66,6 +69,7 @@ public class StructuredArtifactHome extends XmlElementHome
    private PresentableObjectHome repositoryHelper;
    private IdManager idManager;
    private String siteId;
+   private ArtifactFinder artifactFinder;
 
    private static final MessageFormat format =
          new MessageFormat("<META HTTP-EQUIV=\"Refresh\" CONTENT=\"0;URL={0}/member/viewArtifact.osp?artifactId={1}&artifactType={2}&pid={3}\">");
@@ -208,9 +212,54 @@ public class StructuredArtifactHome extends XmlElementHome
       Element schemaData = new Element("schema");
       schemaData.addContent(createInstructions());
       schemaData.addContent(addSchemaInfo(getRootSchema()));
+
+      // for now, don't call this... we may add this when
+      // we need to store id rather than ref... for now, keep
+      // this backward compatible with existing templates
+      // replaceFileRefs(schemaData, data);
+
       root.addContent(schemaData);
 
       return root;
+   }
+
+   protected void replaceFileRefs(Element schemaData, Element data) {
+      try {
+         XPath fileAttachPath = XPath.newInstance(".//element[@type='xs:anyURI']");
+         List fileElements = fileAttachPath.selectNodes(schemaData);
+         for (Iterator i=fileElements.iterator();i.hasNext();) {
+            processFileElement((Element)i.next(), data);
+         }
+      } catch (JDOMException e) {
+         throw new RuntimeException(e);
+      }
+   }
+
+   protected void processFileElement(Element element, Element data) throws JDOMException {
+      String path = "";
+
+      while (element != null) {
+         if (path.length() > 0) {
+            path = "/" + path;
+         }
+         path = element.getAttributeValue("name") + path;
+         element = element.getParentElement();
+         if (element != null) {
+            element = element.getParentElement();
+         }
+      }
+
+      List fileElements = XPath.selectNodes(data, path);
+
+      for (Iterator i=fileElements.iterator();i.hasNext();) {
+         Element filePath = (Element) i.next();
+         String fileId = filePath.getTextTrim();
+         Artifact fileArt = getArtifactFinder().load(getIdManager().getId(fileId));
+         PresentableObjectHome home = (PresentableObjectHome) fileArt.getHome();
+         Element file = home.getArtifactAsXml(fileArt);
+         file.setName("artifact");
+         filePath.addContent(file);
+      }
    }
 
    protected Element getMetadata(Artifact art) {
@@ -308,6 +357,9 @@ public class StructuredArtifactHome extends XmlElementHome
    }
 
    public IdManager getIdManager() {
+      if (idManager == null) {
+         setIdManager((IdManager) ComponentManager.get("idManager"));
+      }
       return idManager;
    }
 
@@ -341,6 +393,18 @@ public class StructuredArtifactHome extends XmlElementHome
 
    protected WorksiteManager getWorksiteManager() {
       return (WorksiteManager) ComponentManager.getInstance().get(WorksiteManager.class.getName());
+   }
+
+   public ArtifactFinder getArtifactFinder() {
+      if (artifactFinder == null) {
+         setArtifactFinder((ArtifactFinder) ComponentManager.get(
+            "org.sakaiproject.metaobj.shared.ArtifactFinder.fileArtifact"));
+      }
+      return artifactFinder;
+   }
+
+   public void setArtifactFinder(ArtifactFinder artifactFinder) {
+      this.artifactFinder = artifactFinder;
    }
 
 }
