@@ -43,6 +43,10 @@
    <query name="findBean">   	
 		from StructuredArtifactDefinitionBean where (globalState = ? or (siteState = ?  and siteId = ?)) and schema_hash = ?
 	</query>
+	
+	<query name="findBySchema">   	
+		from StructuredArtifactDefinitionBean a where schema is ?
+	</query>
 
 	
 </hibernate-mapping>
