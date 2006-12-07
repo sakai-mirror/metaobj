@@ -119,18 +119,7 @@ public class AddXmlElementController extends XmlControllerBase
       Artifact newArtifact;
 
       try {
-         if (hasChild(artifact)) {
-            throw new PersistenceException("Artifact exists {0}",
-               new Object[]{artifact.getDisplayName()}, "displayName");
-         }
          WritableObjectHome home = (WritableObjectHome) getHomeFactory().getHome(getSchemaName(session));
-         if (artifact.getId() != null &&
-            artifact.getId().getValue() != null &&
-            home.load(artifact.getId()) != null) {
-            errors.rejectValue("artifactId", "duplicateId",
-               new Object[]{(String) bean.get("artifactId")}, "A element with id: {0} already exists.");
-            return null;
-         }
          newArtifact = home.store(artifact);
          session.put(FormHelper.RETURN_REFERENCE_TAG, newArtifact.getId().getValue());
          session.put(FormHelper.RETURN_ACTION_TAG, FormHelper.RETURN_ACTION_SAVE);
@@ -140,13 +129,6 @@ public class AddXmlElementController extends XmlControllerBase
       }
       return new ModelAndView("success", "artifactType",
          getSchemaName(session));
-   }
-
-
-   /* for dupe name test?? */
-   protected boolean hasChild(StructuredArtifact artifact) {
-
-      return false;
    }
 
 }

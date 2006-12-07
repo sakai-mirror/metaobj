@@ -46,6 +46,11 @@ import org.sakaiproject.metaobj.utils.Config;
 import org.sakaiproject.metaobj.utils.xml.SchemaNode;
 import org.sakaiproject.metaobj.worksite.intf.WorksiteAware;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
+import org.sakaiproject.entity.api.ResourcePropertiesEdit;
+import org.sakaiproject.entity.api.ResourceProperties;
+import org.sakaiproject.content.cover.ContentHostingService;
+import org.sakaiproject.content.api.ContentResourceEdit;
+import org.sakaiproject.exception.*;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -148,16 +153,43 @@ public class StructuredArtifactHome extends XmlElementHome
    }
 
    protected Artifact addArtifact(Artifact object) throws PersistenceException {
-      /**
-       NodeMetadata node = getNodeMetadataService().getNode(
-       object.getDisplayName(), this.getType());
+      StructuredArtifact artifact = (StructuredArtifact) object;
+      String newFileId = artifact.getParentFolder() + "/" + object.getDisplayName();
 
-       long size = getStreamStore().store(node, RepositoryNode.TECH_MD_TYPE, getInfoStream(object));
-       node.setSize(size);
-       getNodeMetadataService().store(node);
-       return new LightweightArtifact(this, node);
-       */
-      return null;
+      try {
+         ContentResourceEdit resource = ContentHostingService.addResource(newFileId);
+         ResourcePropertiesEdit resourceProperties = resource.getPropertiesEdit();
+         resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, object.getDisplayName());
+         resourceProperties.addProperty (ResourceProperties.PROP_DESCRIPTION, object.getDisplayName());
+         resourceProperties.addProperty(ResourceProperties.PROP_CONTENT_ENCODING, "UTF-8");
+         resourceProperties.addProperty(ResourceProperties.PROP_STRUCTOBJ_TYPE, getTypeId());
+         resourceProperties.addProperty(ResourceProperties.PROP_IS_COLLECTION, Boolean.FALSE.toString());
+         resourceProperties.addProperty(ContentHostingService.PROP_ALTERNATE_REFERENCE,
+            org.sakaiproject.metaobj.shared.mgt.MetaobjEntityManager.METAOBJ_ENTITY_PREFIX);
+
+         resource.setContent(getInfoBytes(artifact));
+         ContentHostingService.commitResource(resource);
+         artifact.setId(getIdManager().getId(ContentHostingService.getUuid(newFileId)));
+         return object;
+      } catch (PermissionException e) {
+         throw new PersistenceException("No permission to write file",
+            null, null);
+      } catch (IdUsedException e) {
+         throw new PersistenceException("Resource exists {0}",
+            new Object[]{artifact.getDisplayName()}, "displayName");
+      } catch (IdInvalidException e) {
+         throw new PersistenceException("Invalid name {0}",
+            new Object[]{artifact.getDisplayName()}, "displayName");
+      } catch (InconsistentException e) {
+         throw new PersistenceException("Invalid name {0}",
+            new Object[]{artifact.getDisplayName()}, "displayName");
+      } catch (ServerOverloadException e) {
+         throw new PersistenceException("Unknown file error",
+            null, null);
+      } catch (OverQuotaException e) {
+         throw new PersistenceException("Over quota",
+            null, null);
+      }
    }
 
    /**
@@ -175,7 +207,7 @@ public class StructuredArtifactHome extends XmlElementHome
     * }
     */
 
-   protected InputStream getInfoStream(Artifact object) throws PersistenceException {
+   protected byte[] getInfoBytes(Artifact object) throws PersistenceException {
 
       XMLOutputter outputter = new XMLOutputter();
       StructuredArtifact xmlObject = (StructuredArtifact) object;
@@ -186,13 +218,16 @@ public class StructuredArtifactHome extends XmlElementHome
          outputter.setFormat(format);
          outputter.output(xmlObject.getBaseElement(),
                os);
-         return new ByteArrayInputStream(os.toByteArray());
+         return os.toByteArray();
       }
       catch (IOException e) {
          throw new PersistenceException(e, "Unable to write object", null, null);
       }
    }
 
+   protected InputStream getInfoStream(Artifact object) throws PersistenceException {
+      return new ByteArrayInputStream(getInfoBytes(object));
+   }
 
    public String getHostBaseUrl() {
       return Config.getInstance().getProperties().getProperty("baseUrl");
