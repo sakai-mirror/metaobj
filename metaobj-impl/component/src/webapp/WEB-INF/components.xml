@@ -54,6 +54,22 @@
    </bean>
 
    <bean id="org.sakaiproject.metaobj.shared.ArtifactFinder.default"
+      class="org.sakaiproject.metaobj.shared.mgt.impl.WrappedStructuredArtifactFinder">
+      <property name="contentHostingService">
+         <ref bean="org.sakaiproject.content.api.ContentHostingService"/>
+      </property>
+      <property name="agentManager">
+         <ref bean="agentManager"/>
+      </property>
+      <property name="idManager">
+         <ref bean="idManager"/>
+      </property>
+      <property name="contentResourceHome">
+         <ref bean="org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome.contentResource"/>
+      </property>
+   </bean>
+
+   <bean id="org.sakaiproject.metaobj.shared.ArtifactFinder.structuredArtifacts"
       class="org.sakaiproject.metaobj.shared.mgt.impl.StructuredArtifactFinder">
       <property name="contentHostingService">
          <ref bean="org.sakaiproject.content.api.ContentHostingService"/>
@@ -67,6 +83,7 @@
       <property name="contentResourceHome">
          <ref bean="org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome.contentResource"/>
       </property>
+      <property name="homeFactory"><ref bean="homeFactory"/></property>
    </bean>
 
    <bean id="artifactFinderManager" class="org.sakaiproject.metaobj.shared.mgt.ArtifactFinderManagerImpl">

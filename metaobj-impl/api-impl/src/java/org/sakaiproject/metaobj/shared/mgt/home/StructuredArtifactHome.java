@@ -28,11 +28,12 @@ import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Date;
 
 import org.jdom.CDATA;
 import org.jdom.Element;
 import org.jdom.JDOMException;
+import org.jdom.Document;
+import org.jdom.input.SAXBuilder;
 import org.jdom.xpath.XPath;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
@@ -40,6 +41,7 @@ import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.mgt.PresentableObjectHome;
 import org.sakaiproject.metaobj.shared.mgt.StreamableObjectHome;
+import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.model.*;
 import org.sakaiproject.metaobj.shared.ArtifactFinder;
 import org.sakaiproject.metaobj.utils.Config;
@@ -50,6 +52,7 @@ import org.sakaiproject.entity.api.ResourcePropertiesEdit;
 import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.content.cover.ContentHostingService;
 import org.sakaiproject.content.api.ContentResourceEdit;
+import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.exception.*;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -91,18 +94,65 @@ public class StructuredArtifactHome extends XmlElementHome
    }
 
    protected Artifact updateArtifact(Artifact object) throws PersistenceException {
-      /** todo
-       NodeMetadata node = getNodeMetadataService().getNode(object.getId());
-       node.setName(object.getDisplayName());
-       getNodeMetadataService().store(node);
-
-       long size = getStreamStore().store(node, RepositoryNode.TECH_MD_TYPE, getInfoStream(object));
-       node.setSize(size);
-
-       getNodeMetadataService().store(node);
-       */
+      StructuredArtifact artifact = (StructuredArtifact) object;
+      String resourceId = ContentHostingService.resolveUuid(artifact.getId().getValue());
+      try {
+         ContentResourceEdit resourceEdit = ContentHostingService.editResource(resourceId);
+         resourceEdit.setContent(getInfoBytes(object));
+         resourceEdit.getProperties().addProperty(
+            ResourceProperties.PROP_DISPLAY_NAME, object.getDisplayName());
+         ContentHostingService.commitResource(resourceEdit);
+      } catch (PermissionException e) {
+         throw new PersistenceException(e, "Unknown file error",
+            null, null);
+      } catch (IdUnusedException e) {
+         throw new PersistenceException(e, "Unknown file error",
+            null, null);
+      } catch (TypeException e) {
+         throw new PersistenceException(e, "Unknown file error",
+            null, null);
+      } catch (InUseException e) {
+         throw new PersistenceException(e, "Unknown file error",
+            null, null);
+      } catch (ServerOverloadException e) {
+         throw new PersistenceException(e, "Unknown file error",
+            null, null);
+      } catch (OverQuotaException e) {
+         throw new PersistenceException(e, "Over quota",
+            null, null);
+      }
 
       return object;
+   }
+
+   public StructuredArtifact load(ContentResource resource) {
+      try {
+         Agent resourceOwner = getAgentManager().getAgent(
+            resource.getProperties().getProperty(ResourceProperties.PROP_CREATOR));
+         Id resourceId = getIdManager().getId(ContentHostingService.getUuid(resource.getId()));
+
+         SAXBuilder builder = new SAXBuilder();
+         Document doc = builder.build(resource.streamContent());
+
+         StructuredArtifact xmlObject =
+            new StructuredArtifact(doc.getRootElement(), getSchema().getChild(getRootNode()));
+
+         xmlObject.setId(resourceId);
+         xmlObject.setDisplayName(
+            (String) resource.getProperties().get(
+               resource.getProperties().getNamePropDisplayName()));
+         xmlObject.setHome(this);
+         xmlObject.setOwner(resourceOwner);
+
+         return xmlObject;
+      }
+      catch (Exception e) {
+         throw new PersistenceException(e, "", null, null);
+      }
+   }
+
+   private AgentManager getAgentManager() {
+      return (AgentManager) ComponentManager.get("agentManager");
    }
 
    public Artifact load(Id id) throws PersistenceException {
@@ -154,7 +204,7 @@ public class StructuredArtifactHome extends XmlElementHome
 
    protected Artifact addArtifact(Artifact object) throws PersistenceException {
       StructuredArtifact artifact = (StructuredArtifact) object;
-      String newFileId = artifact.getParentFolder() + "/" + object.getDisplayName();
+      String newFileId = artifact.getParentFolder() + object.getDisplayName();
 
       try {
          ContentResourceEdit resource = ContentHostingService.addResource(newFileId);
@@ -184,7 +234,7 @@ public class StructuredArtifactHome extends XmlElementHome
          throw new PersistenceException("Invalid name {0}",
             new Object[]{artifact.getDisplayName()}, "displayName");
       } catch (ServerOverloadException e) {
-         throw new PersistenceException("Unknown file error",
+         throw new PersistenceException(e, "Unknown file error",
             null, null);
       } catch (OverQuotaException e) {
          throw new PersistenceException("Over quota",

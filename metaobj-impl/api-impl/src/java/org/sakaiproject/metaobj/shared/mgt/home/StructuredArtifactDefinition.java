@@ -129,6 +129,7 @@ public class StructuredArtifactDefinition extends StructuredArtifactHome impleme
       this.setExternalType(bean.getExternalType());
       this.setInstruction(bean.getInstruction());
       this.decoratedDescription = bean.getDecoratedDescription();
+      this.setTypeId(getId().getValue());
    }
 
    public boolean equals(Object o) {

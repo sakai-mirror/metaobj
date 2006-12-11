@@ -55,7 +55,7 @@
                      <xsl:value-of select="message"/>
                   </div>
                </xsl:for-each>
-               <form method="post">
+               <form method="post" onsubmit="a=1;">
                   Display Name:
                   <xsl:choose>
                      <xsl:when test="$subForm = 'true'">

@@ -50,6 +50,7 @@ import org.sakaiproject.metaobj.utils.xml.SchemaFactory;
 import org.sakaiproject.metaobj.utils.xml.SchemaInvalidException;
 import org.sakaiproject.metaobj.utils.xml.SchemaNode;
 import org.sakaiproject.tool.cover.ToolManager;
+import org.sakaiproject.content.api.ContentResource;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.ResourceLoader;
@@ -171,8 +172,9 @@ public class XmlElementHome implements StructuredArtifactHomeInterface, Initiali
    }
 
    public String getExternalType() {
-      if(getSchema() == null)
+      if (getSchema() == null) {
          return "";
+      }
       return getSchema().getTargetNamespace().getURI() + "?" + getRootNode();
    }
 
@@ -182,6 +184,10 @@ public class XmlElementHome implements StructuredArtifactHomeInterface, Initiali
 
    public Artifact load(Id id) throws PersistenceException {
       return load(id.getValue());
+   }
+
+   public StructuredArtifact load(ContentResource resource) {
+      return null;
    }
 
    protected Artifact load(String id) throws PersistenceException {

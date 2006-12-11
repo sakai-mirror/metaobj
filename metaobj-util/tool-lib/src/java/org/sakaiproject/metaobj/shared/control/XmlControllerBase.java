@@ -1,46 +1,23 @@
-/*
- * The Open Source Portfolio Initiative Software is Licensed under the Educational Community License Version 1.0:
+/*******************************************************************************
+ * $URL$
+ * $Id$
+ * **********************************************************************************
  *
- * This Educational Community License (the "License") applies to any original work of authorship
- * (the "Original Work") whose owner (the "Licensor") has placed the following notice immediately
- * following the copyright notice for the Original Work:
+ *  Copyright (c) 2004, 2005, 2006 The Sakai Foundation.
  *
- * Copyright (c) 2004 Trustees of Indiana University and r-smart Corporation
+ *  Licensed under the Educational Community License, Version 1.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- * This Original Work, including software, source code, documents, or other related items, is being
- * provided by the copyright holder(s) subject to the terms of the Educational Community License.
- * By obtaining, using and/or copying this Original Work, you agree that you have read, understand,
- * and will comply with the following terms and conditions of the Educational Community License:
+ *       http://www.opensource.org/licenses/ecl1.php
  *
- * Permission to use, copy, modify, merge, publish, distribute, and sublicense this Original Work and
- * its documentation, with or without modification, for any purpose, and without fee or royalty to the
- * copyright holder(s) is hereby granted, provided that you include the following on ALL copies of the
- * Original Work or portions thereof, including modifications or derivatives, that you make:
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  *
- * - The full text of the Educational Community License in a location viewable to users of the
- * redistributed or derivative work.
- *
- * - Any pre-existing intellectual property disclaimers, notices, or terms and conditions.
- *
- * - Notice of any changes or modifications to the Original Work, including the date the changes were made.
- *
- * - Any modifications of the Original Work must be distributed in such a manner as to avoid any confusion
- *  with the Original Work of the copyright holders.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
- * NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
- * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
- * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
- * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- *
- * The name and trademarks of copyright holder(s) may NOT be used in advertising or publicity pertaining
- * to the Original or Derivative Works without specific, written prior permission. Title to copyright
- * in the Original Work and any associated documentation will at all times remain with the copyright holders.
- *
- * $Header: /root/osp/src/portfolio/org/theospi/portfolio/shared/control/XmlControllerBase.java,v 1.8 2005/08/29 18:24:53 jellis Exp $
- * $Revision$
- * $Date$
- */
+ ******************************************************************************/
 package org.sakaiproject.metaobj.shared.control;
 
 import org.apache.commons.logging.Log;
@@ -65,7 +42,6 @@ public class XmlControllerBase {
    protected final Log logger = LogFactory.getLog(getClass());
    private HomeFactory homeFactory;
    private XmlValidator validator = null;
-   private SessionManager sessionManager;
    private static final String FILE_ATTACHMENTS_FIELD =
       "org.sakaiproject.metaobj.shared.control.XmlControllerBase.field";
 
@@ -173,6 +149,9 @@ public class XmlControllerBase {
    protected String getSchemaName(Map session) {
       Object schemaName = session.get(ResourceEditingHelper.CREATE_SUB_TYPE);
 
+      if (schemaName == null) {
+         return null;
+      }
       if (schemaName instanceof String) {
          return (String)schemaName;
       }
@@ -250,11 +229,10 @@ public class XmlControllerBase {
    public void retrieveFileAttachments(Map request, Map session, ElementBean currentBean) {
       String fieldName = (String) session.get(FILE_ATTACHMENTS_FIELD);
 
-      ToolSession toolSession = getSessionManager().getCurrentToolSession();
-      if (toolSession.getAttribute(FilePickerHelper.FILE_PICKER_CANCEL) == null &&
-            toolSession.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS) != null) {
+      if (session.get(FilePickerHelper.FILE_PICKER_CANCEL) == null &&
+            session.get(FilePickerHelper.FILE_PICKER_ATTACHMENTS) != null) {
 
-         List refs = (List) toolSession.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
+         List refs = (List) session.get(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
          List ids = convertRefs(refs);
          // we may convert later, for now, leave backward compatible.
          // convertToGuidList(refs);
@@ -274,8 +252,8 @@ public class XmlControllerBase {
          }
       }
 
-      toolSession.removeAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
-      toolSession.removeAttribute(FilePickerHelper.FILE_PICKER_CANCEL);
+      session.remove(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
+      session.remove(FilePickerHelper.FILE_PICKER_CANCEL);
    }
 
    protected List convertRefs(List refs) {
@@ -328,14 +306,6 @@ public class XmlControllerBase {
       }
 
       return refList;
-   }
-
-   public SessionManager getSessionManager() {
-      return sessionManager;
-   }
-
-   public void setSessionManager(SessionManager sessionManager) {
-      this.sessionManager = sessionManager;
    }
 
 }

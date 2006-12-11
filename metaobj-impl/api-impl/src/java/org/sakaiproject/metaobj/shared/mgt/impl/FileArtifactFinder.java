@@ -76,17 +76,18 @@ public class FileArtifactFinder implements ArtifactFinder {
 
       for (Iterator i = artifacts.iterator(); i.hasNext();) {
          ContentResource resource = (ContentResource) i.next();
-         ContentResourceArtifact resourceArtifact = createArtifact(resource);
+         Artifact resourceArtifact = createArtifact(resource);
          returned.add(resourceArtifact);
       }
 
       return returned;
    }
 
-   protected ContentResourceArtifact createArtifact(ContentResource resource) {
+   protected Artifact createArtifact(ContentResource resource) {
       Agent resourceOwner = getAgentManager().getAgent(resource.getProperties().getProperty(ResourceProperties.PROP_CREATOR));
       Id resourceId = getIdManager().getId(getContentHostingService().getUuid(resource.getId()));
       ContentResourceArtifact resourceArtifact = new ContentResourceArtifact(resource, resourceId, resourceOwner);
+      resourceArtifact.setHome(getContentResourceHome());
       return resourceArtifact;
    }
 
@@ -112,7 +113,6 @@ public class FileArtifactFinder implements ArtifactFinder {
       try {
          ContentResource resource = getContentHostingService().getResource(resourceId);
          Artifact returned = createArtifact(resource);
-         returned.setHome(getContentResourceHome());
          return returned;
       }
       catch (PermissionException e) {

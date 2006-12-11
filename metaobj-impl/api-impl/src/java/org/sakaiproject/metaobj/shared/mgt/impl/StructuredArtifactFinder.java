@@ -31,10 +31,9 @@ import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
-import org.sakaiproject.metaobj.shared.model.Agent;
-import org.sakaiproject.metaobj.shared.model.ContentResourceArtifact;
-import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.metaobj.shared.model.MimeType;
+import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
+import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactHomeInterface;
+import org.sakaiproject.metaobj.shared.model.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -43,77 +42,26 @@ import org.sakaiproject.metaobj.shared.model.MimeType;
  * Time: 2:33:51 PM
  * To change this template use File | Settings | File Templates.
  */
-public class StructuredArtifactFinder extends FileArtifactFinder {
+public class StructuredArtifactFinder extends WrappedStructuredArtifactFinder {
 
-   private ContentHostingService contentHostingService;
-   private AgentManager agentManager;
-   private IdManager idManager;
+   private HomeFactory homeFactory;
 
-   public Collection findByOwnerAndType(Id owner, String type) {
-      List artifacts = getContentHostingService().findResources(type,
-            null, null);
+   protected Artifact createArtifact(ContentResource resource) {
+      String formType = (String) resource.getProperties().get(
+         resource.getProperties().getNamePropStructObjType());
 
-      Collection returned = new ArrayList();
+      StructuredArtifactHomeInterface home =
+         (StructuredArtifactHomeInterface) getHomeFactory().getHome(formType);
 
-      for (Iterator i = artifacts.iterator(); i.hasNext();) {
-         ContentResource resource = (ContentResource) i.next();
-         Agent resourceOwner = getAgentManager().getAgent(resource.getProperties().getProperty(ResourceProperties.PROP_CREATOR));
-         Id resourceId = getIdManager().getId(getContentHostingService().getUuid(resource.getId()));
-         returned.add(new ContentResourceArtifact(resource, resourceId, resourceOwner));
-      }
-
-      return returned;
+      return home.load(resource);
    }
 
-   public Collection findByOwnerAndType(Id owner, String type, MimeType mimeType) {
-      return null;
+   public HomeFactory getHomeFactory() {
+      return homeFactory;
    }
 
-   public Collection findByOwner(Id owner) {
-      return null;
+   public void setHomeFactory(HomeFactory homeFactory) {
+      this.homeFactory = homeFactory;
    }
 
-   public Collection findByWorksiteAndType(Id worksiteId, String type) {
-      return null;
-   }
-
-   public Collection findByWorksite(Id worksiteId) {
-      return null;
-   }
-
-   public Collection findByType(String type) {
-      return null;
-   }
-
-   public boolean getLoadArtifacts() {
-      return false;
-   }
-
-   public void setLoadArtifacts(boolean loadArtifacts) {
-
-   }
-
-   public ContentHostingService getContentHostingService() {
-      return contentHostingService;
-   }
-
-   public void setContentHostingService(ContentHostingService contentHostingService) {
-      this.contentHostingService = contentHostingService;
-   }
-
-   public AgentManager getAgentManager() {
-      return agentManager;
-   }
-
-   public void setAgentManager(AgentManager agentManager) {
-      this.agentManager = agentManager;
-   }
-
-   public IdManager getIdManager() {
-      return idManager;
-   }
-
-   public void setIdManager(IdManager idManager) {
-      this.idManager = idManager;
-   }
 }

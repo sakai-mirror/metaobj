@@ -27,7 +27,9 @@ import org.sakaiproject.metaobj.shared.mgt.CloneableObjectHome;
 import org.sakaiproject.metaobj.shared.mgt.PresentableObjectHome;
 import org.sakaiproject.metaobj.shared.mgt.WritableObjectHome;
 import org.sakaiproject.metaobj.shared.model.Type;
+import org.sakaiproject.metaobj.shared.model.StructuredArtifact;
 import org.sakaiproject.metaobj.utils.xml.SchemaNode;
+import org.sakaiproject.content.api.ContentResource;
 
 /**
  * marker for structured artifact home
@@ -48,4 +50,8 @@ public interface StructuredArtifactHomeInterface extends WritableObjectHome, Clo
 
    public SchemaNode getSchema();
 
+   public StructuredArtifact load(ContentResource resource);
+
+   public String getTypeId();
+   
 }
