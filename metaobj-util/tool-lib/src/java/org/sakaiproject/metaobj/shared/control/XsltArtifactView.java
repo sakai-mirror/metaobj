@@ -63,7 +63,7 @@ public class XsltArtifactView extends AbstractXsltView {
    private String uriResolverBeanName;
    private URIResolver uriResolver;
    private TransformerFactory transformerFactory = TransformerFactory.newInstance();
-
+   private boolean readOnly;
 
    protected Source createXsltSource(Map map, String string, HttpServletRequest httpServletRequest,
                                      HttpServletResponse httpServletResponse) throws Exception {
@@ -97,7 +97,7 @@ public class XsltArtifactView extends AbstractXsltView {
       }
 
       Errors errors = (Errors) map.get("org.springframework.validation.BindException.bean");
-      if (errors.hasErrors()) {
+      if (errors != null && errors.hasErrors()) {
          Element errorsElement = new Element("errors");
 
          List errorsList = errors.getAllErrors();
@@ -164,7 +164,10 @@ public class XsltArtifactView extends AbstractXsltView {
          params = new Hashtable();
       }
 
-      params.put("panelId", Web.escapeJavascript("Main" + ToolManager.getCurrentPlacement().getId()));
+      if (ToolManager.getCurrentPlacement() != null) {
+         params.put("panelId", Web.escapeJavascript("Main" + ToolManager.getCurrentPlacement().getId()));
+      }
+
       if (request.getAttribute(IS_SUB_FORM) != null) {
          params.put("subForm", "true");
       }
@@ -278,5 +281,13 @@ public class XsltArtifactView extends AbstractXsltView {
 
    public void setTransformerFactory(TransformerFactory transformerFactory) {
       this.transformerFactory = transformerFactory;
+   }
+
+   public boolean isReadOnly() {
+      return readOnly;
+   }
+
+   public void setReadOnly(boolean readOnly) {
+      this.readOnly = readOnly;
    }
 }

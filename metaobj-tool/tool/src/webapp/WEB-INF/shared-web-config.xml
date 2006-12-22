@@ -171,8 +171,11 @@
    <bean id="formViewController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
       <property name="controller">
          <bean class="org.sakaiproject.metaobj.shared.control.FormViewController">
-            <property name="structuredArtifactDefinitionManager">
-               <ref bean="structuredArtifactDefinitionManager"/>
+            <property name="artifactFinder">
+                 <ref bean="org.sakaiproject.metaobj.shared.ArtifactFinder.structuredArtifacts"/>
+            </property>
+            <property name="idManager">
+               <ref bean="idManager"/>
             </property>
          </bean>
       </property>

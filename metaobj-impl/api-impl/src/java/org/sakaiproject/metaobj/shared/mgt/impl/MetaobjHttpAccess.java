@@ -48,6 +48,14 @@ import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.metaobj.shared.mgt.HttpAccessBase;
 import org.sakaiproject.metaobj.shared.mgt.ReferenceParser;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
+import org.sakaiproject.tool.api.ActiveTool;
+import org.sakaiproject.tool.api.Tool;
+import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.tool.api.ToolException;
+import org.sakaiproject.tool.cover.ActiveToolManager;
+import org.sakaiproject.tool.cover.SessionManager;
+import org.sakaiproject.util.Web;
+import org.sakaiproject.content.api.ResourceEditingHelper;
 
 /**
  * Created by IntelliJ IDEA.
@@ -66,27 +74,29 @@ public class MetaobjHttpAccess extends HttpAccessBase {
 
    public void handleAccess(HttpServletRequest req, HttpServletResponse res, Reference ref,
                             Collection copyrightAcceptedRefs) throws EntityPermissionException, EntityNotDefinedException, EntityAccessOverloadException, EntityCopyrightException {
-      res.setContentType("text/html; charset=UTF-8");
-      res.addDateHeader("Expires", System.currentTimeMillis() - (1000L * 60L * 60L * 24L * 365L));
-      res.addDateHeader("Last-Modified", System.currentTimeMillis());
-      res.addHeader("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0, post-check=0, pre-check=0");
-      res.addHeader("Pragma", "no-cache");
+      String helperId = "sakai.metaobj.formView";
 
-      Element root = getStructuredArtifactDefinitionManager().createFormViewXml(ref.getEntity().getId(), null);
-      Document doc = new Document(root);
+      ToolSession toolSession = SessionManager.getCurrentToolSession();
 
-      try {
-         Transformer transformer = templates.newTransformer();
-         transformer.clearParameters();
-         transformer.transform(new JDOMSource(doc), new StreamResult(res.getOutputStream()));
-      }
-      catch (TransformerException e) {
-         throw new RuntimeException(e);
-      }
-      catch (IOException e) {
-         throw new RuntimeException(e);
+      if (toolSession == null) {
+         toolSession = SessionManager.getCurrentSession().getToolSession(req.getSession(true).hashCode() + "");
+         SessionManager.setCurrentToolSession(toolSession);
       }
 
+      ActiveTool helperTool = ActiveToolManager.getActiveTool(helperId);
+      toolSession.setAttribute(helperTool.getId() + Tool.HELPER_DONE_URL,
+         "javascript:alert('hi')");
+
+      toolSession.setAttribute(ResourceEditingHelper.ATTACHMENT_ID, ref.getId());
+
+      String context = req.getContextPath() + req.getServletPath();
+      String toolPath = "/formView.osp";
+       try {
+          helperTool.help(req, res, context, toolPath);
+       }
+       catch (ToolException e) {
+          throw new RuntimeException(e);
+       }
    }
 
    protected void checkSource(Reference ref, ReferenceParser parser)

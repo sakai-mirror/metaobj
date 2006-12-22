@@ -48,7 +48,7 @@ public class ResourceUriResolver implements URIResolver {
       try {
          ContentResource resource = getContentHostingService().getResource(string);
          return new StreamSource(resource.streamContent(),
-            "jar:file:/Users/johnellis/devel/3rdParty/sakai2.2-apache/shared/lib/sakai-metaobj-api-dev.jar!" +
+            "jar:file:sakai-metaobj-api-dev.jar!" +
                "/org/sakaiproject/metaobj/shared/control/");
       } catch (PermissionException e) {
          throw new TransformerException(e);

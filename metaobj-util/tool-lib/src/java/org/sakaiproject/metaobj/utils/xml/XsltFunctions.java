@@ -33,14 +33,8 @@ import org.sakaiproject.util.ResourceLoader;
 import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.entity.cover.EntityManager;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Map;
-import java.util.Hashtable;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.Format;
-import java.text.SimpleDateFormat;
+import java.util.*;
+import java.text.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -68,7 +62,10 @@ public class XsltFunctions {
 
       String editor = ServerConfigurationService.getString("wysiwyg.editor");
       String twinpeaks = ServerConfigurationService.getString("wysiwyg.twinpeaks");
-      String collectionId = ContentHostingService.getSiteCollection(ToolManager.getCurrentPlacement().getContext());
+      String collectionId = "/";
+      if (ToolManager.getCurrentPlacement() != null) {
+         collectionId = ContentHostingService.getSiteCollection(ToolManager.getCurrentPlacement().getContext());
+      }
 
       if (editor.equalsIgnoreCase("FCKeditor")) {
          script += "\t<script type=\"text/javascript\" language=\"JavaScript\">\n" +
@@ -167,6 +164,45 @@ public class XsltFunctions {
       ResourceLoader loader = getLoader(loaderKey);
 
       return (String) loader.get(key);
+   }
+
+   public static String formatMessage(String loaderKey, String key, Object arg1) {
+      return formatMessageInternal(loaderKey, key, arg1);
+   }
+
+   public static String formatMessage(String loaderKey, String key, Object arg1, Object arg2) {
+      return formatMessageInternal(loaderKey, key, arg1, arg2);
+   }
+
+   public static String formatMessage(String loaderKey, String key, Object arg1, Object arg2, Object arg3) {
+      return formatMessageInternal(loaderKey, key, arg1, arg2, arg3);
+   }
+
+   public static String formatMessage(String loaderKey, String key, Object arg1, Object arg2, Object arg3,
+                                      Object arg4) {
+      return formatMessageInternal(loaderKey, key, arg1, arg2, arg3, arg4);
+   }
+
+   public static String formatMessage(String loaderKey, String key, Object arg1, Object arg2, Object arg3,
+                                      Object arg4, Object arg5) {
+      return formatMessageInternal(loaderKey, key, arg1, arg2, arg3, arg4, arg5);
+   }
+
+   public static String formatMessage(String loaderKey, String key, Object arg1, Object arg2, Object arg3,
+                                      Object arg4, Object arg5, Object arg6) {
+      return formatMessageInternal(loaderKey, key, arg1, arg2, arg3, arg4, arg5, arg6);
+   }
+
+   public static String formatMessage(String loaderKey, String key, Object arg1, Object arg2, Object arg3,
+                                      Object arg4, Object arg5, Object arg6, Object arg7) {
+      return formatMessageInternal(loaderKey, key, arg1, arg2, arg3, arg4, arg5, arg6, arg7);
+   }
+
+   public static String formatMessageInternal(String loaderKey, String key, Object... arguments) {
+      ResourceLoader loader = getLoader(loaderKey);
+
+      String format =  (String) loader.get(key);
+      return MessageFormat.format(format, arguments);
    }
 
    public static ResourceLoader getLoader(String loaderKey) {
