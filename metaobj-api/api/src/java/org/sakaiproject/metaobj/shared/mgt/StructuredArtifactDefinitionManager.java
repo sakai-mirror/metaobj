@@ -128,4 +128,6 @@ public interface StructuredArtifactDefinitionManager {
 
    public Element createFormViewXml(ElementBean bean, String returnUrl);
 
+   public InputStream getTransformer(String type, boolean readOnly);
+
 }

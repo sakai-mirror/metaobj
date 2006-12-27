@@ -42,9 +42,11 @@ import org.sakaiproject.util.ResourceLoader;
 import org.sakaiproject.util.Web;
 
 import javax.xml.transform.*;
+import javax.xml.transform.stream.StreamSource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
+import java.io.InputStream;
 
 /**
  * Created by IntelliJ IDEA.
@@ -68,14 +70,13 @@ public class XsltArtifactView extends AbstractXsltView {
    protected Source createXsltSource(Map map, String string, HttpServletRequest httpServletRequest,
                                      HttpServletResponse httpServletResponse) throws Exception {
 
+      httpServletResponse.setContentType(getContentType());
       WebApplicationContext context = getWebApplicationContext();
       setUriResolver((URIResolver)context.getBean(uriResolverBeanName));
 
       ToolSession toolSession = SessionManager.getCurrentToolSession();
 
-      // todo get xslt from getStructuredArtifactDefinitionManager
-      httpServletRequest.setAttribute(STYLESHEET_LOCATION,
-         "/group/PortfolioAdmin/system/formCreate.xslt");
+      String homeType;
 
       ElementBean bean = (ElementBean) map.get("bean");
 
@@ -84,6 +85,7 @@ public class XsltArtifactView extends AbstractXsltView {
       if (bean instanceof Artifact) {
          root = getStructuredArtifactDefinitionManager().createFormViewXml(
             (Artifact) bean, null);
+         homeType = ((Artifact)bean).getHome().getType().getId().getValue();
       }
       else {
          EditedArtifactStorage sessionBean = (EditedArtifactStorage)httpServletRequest.getSession().getAttribute(
@@ -94,7 +96,11 @@ public class XsltArtifactView extends AbstractXsltView {
 
          replaceNodes(root, bean, sessionBean);
          httpServletRequest.setAttribute(IS_SUB_FORM, "true");
+         homeType = sessionBean.getRootArtifact().getHome().getType().getId().getValue();
       }
+
+      httpServletRequest.setAttribute(STYLESHEET_LOCATION,
+         getStructuredArtifactDefinitionManager().getTransformer(homeType, readOnly));
 
       Errors errors = (Errors) map.get("org.springframework.validation.BindException.bean");
       if (errors != null && errors.hasErrors()) {
@@ -187,7 +193,7 @@ public class XsltArtifactView extends AbstractXsltView {
    protected void doTransform(Source source, Map parameters, Result result, String encoding)
          throws Exception {
 
-      String stylesheetLocation = (String) parameters.get(STYLESHEET_LOCATION);
+      InputStream stylesheetLocation = (InputStream) parameters.get(STYLESHEET_LOCATION);
       try {
 
          Transformer trans = getTransformer(stylesheetLocation);
@@ -231,9 +237,8 @@ public class XsltArtifactView extends AbstractXsltView {
       }
    }
 
-   protected Transformer getTransformer(String location) throws TransformerException {
-      return getTransformerFactory().newTransformer(
-         getUriResolver().resolve(location, null));
+   protected Transformer getTransformer(InputStream transformer) throws TransformerException {
+      return getTransformerFactory().newTransformer(new StreamSource(transformer));
    }
 
    protected StructuredArtifactDefinitionManager getStructuredArtifactDefinitionManager() {

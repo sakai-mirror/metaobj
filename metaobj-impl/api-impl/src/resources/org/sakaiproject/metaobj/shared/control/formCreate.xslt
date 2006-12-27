@@ -25,9 +25,9 @@
 
       <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
          <head>
-            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-            <meta http-equiv="Content-Style-Type" content="text/css"/>
-            <title></title>
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <meta http-equiv="Content-Style-Type" content="text/css" />
+            <title>blank</title>
             <xsl:for-each select="css/uri">
                <link type="text/css" rel="stylesheet" media="all">
                   <xsl:attribute name="href">

@@ -45,6 +45,12 @@
 
       <dependency>
          <groupId>sakaiproject</groupId>
+         <artifactId>sakai-event-api</artifactId>
+         <version>${sakai.version}</version>
+      </dependency>
+
+      <dependency>
+         <groupId>sakaiproject</groupId>
          <artifactId>sakai-content-api</artifactId>
          <version>${sakai.version}</version>
       </dependency>
@@ -210,6 +216,12 @@
             <directory>src/bundle</directory>
             <includes>
                <include>**/*.properties</include>
+            </includes>
+         </resource>
+         <resource>
+            <directory>src/resources</directory>
+            <includes>
+               <include>**/*.xslt</include>
             </includes>
          </resource>
          <resource>

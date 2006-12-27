@@ -32,6 +32,8 @@ import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentResource;
+import org.sakaiproject.content.api.ContentResourceEdit;
+import org.sakaiproject.content.api.ContentCollectionEdit;
 import org.sakaiproject.exception.*;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.security.AuthorizationFacade;
@@ -52,6 +54,10 @@ import org.sakaiproject.service.legacy.resource.DuplicatableToolService;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.tool.api.Placement;
 import org.sakaiproject.tool.api.ToolManager;
+import org.sakaiproject.tool.cover.SessionManager;
+import org.sakaiproject.event.cover.NotificationService;
+import org.sakaiproject.entity.api.ResourcePropertiesEdit;
+import org.sakaiproject.entity.api.ResourceProperties;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import javax.xml.transform.TransformerException;
@@ -68,6 +74,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       implements StructuredArtifactDefinitionManager, DuplicatableToolService, DownloadableManager {
 
    static final private String DOWNLOAD_FORM_ID_PARAM = "formId";
+   private static final String SYSTEM_COLLECTION_ID = "/system/";
 
    private AuthorizationFacade authzManager = null;
    private IdManager idManager;
@@ -78,6 +85,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
    private List globalSiteTypes;
    private ArtifactFinder artifactFinder;
    private int expressionMax = 999;
+   private boolean replaceViews = true;
 
    public StructuredArtifactDefinitionManagerImpl() {
    }
@@ -571,6 +579,27 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       FunctionManager.registerFunction(SharedFunctionConstants.PUBLISH_ARTIFACT_DEF);
       FunctionManager.registerFunction(SharedFunctionConstants.SUGGEST_GLOBAL_PUBLISH_ARTIFACT_DEF);
       updateSchemaHash();
+
+      org.sakaiproject.tool.api.Session sakaiSession = SessionManager.getCurrentSession();
+      String userId = sakaiSession.getUserId();
+      sakaiSession.setUserId("admin");
+      sakaiSession.setUserEid("admin");
+
+      try {
+         createResource("/org/sakaiproject/metaobj/shared/control/formCreate.xslt", "formCreate.xslt",
+            "used for default rendering of form add and update", "text/xml", isReplaceViews());
+
+         createResource("/org/sakaiproject/metaobj/shared/control/formFieldTemplate.xslt", "formFieldTemplate.xslt",
+            "used for default rendering of form fields", "text/xml", isReplaceViews());
+
+         createResource("/org/sakaiproject/metaobj/shared/control/formView.xslt", "formView.xslt",
+            "used for default rendering of form viewing", "text/xml", isReplaceViews());
+      }
+      finally{
+         sakaiSession.setUserEid(userId);
+         sakaiSession.setUserId(userId);
+      }
+
    }
 
    protected void updateSchemaHash() {
@@ -999,6 +1028,24 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       return root;
    }
 
+   public InputStream getTransformer(String type, boolean readOnly) {
+      try {
+         String viewLocation = "/group/PortfolioAdmin/system/formCreate.xslt";
+         if (readOnly) {
+            viewLocation = "/group/PortfolioAdmin/system/formView.xslt";
+         }
+         return getContentHosting().getResource(viewLocation).streamContent();
+      } catch (ServerOverloadException e) {
+         throw new RuntimeException(e);
+      } catch (PermissionException e) {
+         throw new RuntimeException(e);
+      } catch (IdUnusedException e) {
+         throw new RuntimeException(e);
+      } catch (TypeException e) {
+         throw new RuntimeException(e);
+      }
+   }
+
    public ArtifactFinder getArtifactFinder() {
       return artifactFinder;
    }
@@ -1015,4 +1062,129 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       this.expressionMax = expressionMax;
    }
 
+   protected ByteArrayOutputStream loadResource(String name) {
+      ByteArrayOutputStream bos = new ByteArrayOutputStream();
+      InputStream is = getClass().getResourceAsStream(name);
+
+      try {
+         int c = is.read();
+         while (c != -1) {
+            bos.write(c);
+            c = is.read();
+         }
+         bos.flush();
+      }
+      catch (IOException e) {
+         throw new RuntimeException(e);
+      } finally {
+         try {
+            is.close();
+         }
+         catch (IOException e) {
+            //can't do anything now..
+            if (logger.isDebugEnabled()) {
+                logger.debug(e);
+            }
+         }
+      }
+      return bos;
+   }
+
+   protected String createResource(String resourceLocation, String name,
+                                   String description, String type, boolean replace) {
+      ByteArrayOutputStream bos = loadResource(resourceLocation);
+      ContentResource resource;
+      ResourcePropertiesEdit resourceProperties = getContentHosting().newResourceProperties();
+      resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, name);
+      resourceProperties.addProperty (ResourceProperties.PROP_DESCRIPTION, description);
+      resourceProperties.addProperty(ResourceProperties.PROP_CONTENT_ENCODING, "UTF-8");
+
+      String folder = "/group/PortfolioAdmin" + SYSTEM_COLLECTION_ID;
+
+      try {
+         //TODO use the bean org.theospi.portfolio.admin.model.IntegrationOption.siteOption
+         // in common/components to get the name and id for this site.
+
+         ContentCollectionEdit groupCollection = getContentHosting().addCollection("/group/PortfolioAdmin");
+         groupCollection.getPropertiesEdit().addProperty(ResourceProperties.PROP_DISPLAY_NAME, "Portfolio Admin");
+         getContentHosting().commitCollection(groupCollection);
+      }
+      catch (IdUsedException e) {
+         // ignore... it is already there.
+          if (logger.isDebugEnabled()) {
+              logger.debug(e);
+          }
+      }
+      catch (Exception e) {
+         throw new RuntimeException(e);
+      }
+
+      try {
+         ContentCollectionEdit collection = getContentHosting().addCollection(folder);
+         collection.getPropertiesEdit().addProperty(ResourceProperties.PROP_DISPLAY_NAME, "system");
+         getContentHosting().commitCollection(collection);
+
+      }
+      catch (IdUsedException e) {
+         // ignore... it is already there.
+         if (logger.isDebugEnabled()) {
+             logger.debug(e);
+         }
+      }
+      catch (Exception e) {
+         throw new RuntimeException(e);
+      }
+
+      try {
+         String id = folder + name;
+         if (!replace) {
+            ContentResource testResource = getContentHosting().getResource(id);
+            if (testResource != null) {
+               return testResource.getId();
+            }
+         }
+         getContentHosting().removeResource(id);
+      }
+      catch (TypeException e) {
+         // ignore, must be new
+         if (logger.isDebugEnabled()) {
+             logger.debug(e);
+         }
+      }
+      catch (IdUnusedException e) {
+         // ignore, must be new
+         if (logger.isDebugEnabled()) {
+             logger.debug(e);
+         }
+      }
+      catch (PermissionException e) {
+         // ignore, must be new
+         if (logger.isDebugEnabled()) {
+             logger.debug(e);
+         }
+      }
+      catch (InUseException e) {
+         // ignore, must be new
+         if (logger.isDebugEnabled()) {
+             logger.debug(e);
+         }
+      }
+
+      try {
+         resource = getContentHosting().addResource(name, folder, 100, type,
+                     bos.toByteArray(), resourceProperties, NotificationService.NOTI_NONE);
+      }
+      catch (Exception e) {
+         throw new RuntimeException(e);
+      }
+      return resource.getId();
+   }
+
+   public boolean isReplaceViews() {
+      return replaceViews;
+   }
+
+   public void setReplaceViews(boolean replaceViews) {
+      this.replaceViews = replaceViews;
+   }
 }

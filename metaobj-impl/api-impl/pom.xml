@@ -48,13 +48,20 @@
       <version>${sakai.version}</version>
       <scope>provided</scope>
     </dependency>
-    <dependency>
-      
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-entity-api</artifactId>
-      <version>${sakai.version}</version>
-      <scope>provided</scope>
-    </dependency>
+     <dependency>
+
+       <groupId>org.sakaiproject</groupId>
+       <artifactId>sakai-entity-api</artifactId>
+       <version>${sakai.version}</version>
+       <scope>provided</scope>
+     </dependency>
+     <dependency>
+
+       <groupId>org.sakaiproject</groupId>
+       <artifactId>sakai-event-api</artifactId>
+       <version>${sakai.version}</version>
+       <scope>provided</scope>
+     </dependency>
     <dependency>
       
       <groupId>org.sakaiproject</groupId>
@@ -237,6 +244,12 @@
           <include>**/*.properties</include>
         </includes>
       </resource>
+       <resource>
+          <directory>src/resources</directory>
+          <includes>
+             <include>**/*.xslt</include>
+          </includes>
+       </resource>
       <resource>
         <directory>src/java</directory>
         <includes>
