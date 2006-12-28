@@ -15,6 +15,7 @@
 
    <xsl:param name="panelId"/>
    <xsl:param name="subForm"/>
+   <xsl:param name="preview"/>
    <xsl:output method="html" version="4.0" cdata-section-elements=""
       encoding="iso-8859-1" indent="yes"/>
 
@@ -59,6 +60,11 @@
                      <xsl:value-of select="message"/>
                   </div>
                </xsl:for-each>
+               <xsl:for-each select="/formView/success">
+                  <div class="success">
+                     <xsl:value-of select="sakaifn:getMessage('messages', @messageKey)"/>
+                  </div>
+               </xsl:for-each>
                <form method="post" onsubmit="a=1;">
 
                   <label for="displayName"><xsl:value-of
@@ -96,6 +102,16 @@
                            <input type="submit" name="cancelNestedButton" >
                               <xsl:attribute name="value"><xsl:value-of
                                  select="sakaifn:getMessage('messages', 'button_cancel')" /></xsl:attribute>
+                           </input>
+                        </xsl:when>
+                        <xsl:when test="$preview = 'true'">
+                           <input type="submit" name="submitButton" alignment="center">
+                              <xsl:attribute name="value"><xsl:value-of
+                                 select="sakaifn:getMessage('messages', 'button_validate')" /></xsl:attribute>
+                           </input>
+                           <input type="submit" name="cancel">
+                              <xsl:attribute name="value"><xsl:value-of
+                                 select="sakaifn:getMessage('messages', 'button_return')" /></xsl:attribute>
                            </input>
                         </xsl:when>
                         <xsl:otherwise>

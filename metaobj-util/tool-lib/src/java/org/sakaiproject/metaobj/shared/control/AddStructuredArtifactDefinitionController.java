@@ -29,6 +29,7 @@ import org.sakaiproject.content.api.FilePickerHelper;
 import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.metaobj.security.AuthorizationFailedException;
 import org.sakaiproject.metaobj.shared.SharedFunctionConstants;
+import org.sakaiproject.metaobj.shared.FormHelper;
 import org.sakaiproject.metaobj.shared.model.PersistenceException;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.utils.mvc.intf.CustomCommandController;
@@ -96,6 +97,12 @@ public class AddStructuredArtifactDefinitionController extends AbstractStructure
             errors.rejectValue("schemaFile", errorMessage, errorMessage);
             return new ModelAndView("failure");
          }
+      }
+
+      if ("preview".equals(request.get("previewAction"))) {
+         session.put(SAD_SESSION_TAG, sad);
+         session.put(FormHelper.PREVIEW_HOME_TAG, sad);
+         return new ModelAndView("preview");
       }
 
       try {

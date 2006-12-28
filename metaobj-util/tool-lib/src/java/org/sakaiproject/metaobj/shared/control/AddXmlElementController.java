@@ -39,6 +39,8 @@ import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.content.api.FilePickerHelper;
 
 import java.util.Map;
+import java.util.Hashtable;
+
 /**
  * Created by IntelliJ IDEA.
  * <p/>
@@ -57,8 +59,7 @@ public class AddXmlElementController extends XmlControllerBase
    public Object formBackingObject(Map request, Map session, Map application) {
       ElementBean returnedBean;
       if (session.get(EditedArtifactStorage.STORED_ARTIFACT_FLAG) == null) {
-         StructuredArtifactHomeInterface home =
-            (StructuredArtifactHomeInterface) getHomeFactory().getHome(getSchemaName(session));
+         StructuredArtifactHomeInterface home = getSchema(session);
          StructuredArtifact bean = (StructuredArtifact)home.createInstance();
          bean.setParentFolder((String)session.get(FormHelper.PARENT_ID_TAG));
          EditedArtifactStorage sessionBean = new EditedArtifactStorage(bean.getCurrentSchema(),
@@ -71,7 +72,6 @@ public class AddXmlElementController extends XmlControllerBase
          EditedArtifactStorage sessionBean = (EditedArtifactStorage)session.get(
             EditedArtifactStorage.EDITED_ARTIFACT_STORAGE_SESSION_KEY);
          returnedBean = sessionBean.getCurrentElement();
-         session.remove(EditedArtifactStorage.STORED_ARTIFACT_FLAG);
       }
 
       if (session.get(FilePickerHelper.FILE_PICKER_CANCEL) != null ||
@@ -81,12 +81,14 @@ public class AddXmlElementController extends XmlControllerBase
 
       return returnedBean;
    }
-                
+
    public ModelAndView handleRequest(Object requestModel, Map request, Map session,
                                      Map application, Errors errors) {
       ElementBean bean = (ElementBean)requestModel;
       if (request.get("cancel") != null) {
          session.put(FormHelper.RETURN_ACTION_TAG, FormHelper.RETURN_ACTION_CANCEL);
+         session.remove(FormHelper.PREVIEW_HOME_TAG);
+         session.remove(EditedArtifactStorage.STORED_ARTIFACT_FLAG);
          return new ModelAndView("success");
       }
       if (request.get("submitButton") == null) {
@@ -99,8 +101,15 @@ public class AddXmlElementController extends XmlControllerBase
       StructuredArtifact artifact = (StructuredArtifact)bean;
       Artifact newArtifact;
 
+      if (session.get(FormHelper.PREVIEW_HOME_TAG) != null) {
+         request.remove("fileHelper");
+         Map model = new Hashtable();
+         model.put("success", "validationSuccessful");
+         return handleNonSubmit(bean, request, session, application, errors, model);
+      }
+
       try {
-         WritableObjectHome home = (WritableObjectHome) getHomeFactory().getHome(getSchemaName(session));
+         WritableObjectHome home = getSchema(session);
          newArtifact = home.store(artifact);
          session.put(FormHelper.RETURN_REFERENCE_TAG, newArtifact.getId().getValue());
          session.put(FormHelper.RETURN_ACTION_TAG, FormHelper.RETURN_ACTION_SAVE);
@@ -108,8 +117,8 @@ public class AddXmlElementController extends XmlControllerBase
          errors.rejectValue(e.getField(), e.getErrorCode(), e.getErrorInfo(),
             e.getDefaultMessage());
       }
-      return new ModelAndView("success", "artifactType",
-         getSchemaName(session));
+      session.remove(EditedArtifactStorage.STORED_ARTIFACT_FLAG);
+      return new ModelAndView("success");
    }
 
 }

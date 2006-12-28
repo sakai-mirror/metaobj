@@ -39,5 +39,9 @@ public interface FormHelper {
    public static final String RETURN_ACTION_CANCEL = "metaobj.cancel";
 
    public static final String RETURN_REFERENCE_TAG = "metaobj.returnReference";
+
+   public static final String PREVIEW_HOME_TAG = "metaobj.previewHome";
+
+   public static final String PREVIEW_TRANSFORM_STREAM_TAG = "metaobj.previewTransform";
    
 }

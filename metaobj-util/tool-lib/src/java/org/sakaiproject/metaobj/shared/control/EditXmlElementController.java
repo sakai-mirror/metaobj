@@ -64,8 +64,7 @@ public class EditXmlElementController extends XmlControllerBase
       ElementBean returnedBean;
       if (session.get(EditedArtifactStorage.STORED_ARTIFACT_FLAG) == null) {
          if (getSchemaName(session) != null) {
-            StructuredArtifactHomeInterface home =
-               (StructuredArtifactHomeInterface) getHomeFactory().getHome(getSchemaName(session));
+            StructuredArtifactHomeInterface home = getSchema(session);
             StructuredArtifact bean = (StructuredArtifact)home.createInstance();
             bean.setParentFolder((String)session.get(FormHelper.PARENT_ID_TAG));
             EditedArtifactStorage sessionBean = new EditedArtifactStorage(bean.getCurrentSchema(),
@@ -111,7 +110,6 @@ public class EditXmlElementController extends XmlControllerBase
       else {
          EditedArtifactStorage sessionBean = (EditedArtifactStorage)session.get(
             EditedArtifactStorage.EDITED_ARTIFACT_STORAGE_SESSION_KEY);
-         session.remove(EditedArtifactStorage.STORED_ARTIFACT_FLAG);
          return sessionBean.getCurrentElement();
       }           
    }
@@ -120,6 +118,7 @@ public class EditXmlElementController extends XmlControllerBase
 
       if (request.get("cancel") != null) {
          session.put(FormHelper.RETURN_ACTION_TAG, FormHelper.RETURN_ACTION_CANCEL);
+         session.remove(EditedArtifactStorage.STORED_ARTIFACT_FLAG);
          return new ModelAndView("success");
       }
       else if (request.get("submitButton") == null) {
@@ -129,7 +128,7 @@ public class EditXmlElementController extends XmlControllerBase
       if (errors.hasErrors()) {
          return null;
       }
-      WritableObjectHome home = (WritableObjectHome) getHomeFactory().getHome(getSchemaName(session));
+      WritableObjectHome home = getSchema(session);
       try {
          home.store((StructuredArtifact)bean);
       } catch (PersistenceException e) {
@@ -138,6 +137,7 @@ public class EditXmlElementController extends XmlControllerBase
       }
       session.put(FormHelper.RETURN_REFERENCE_TAG, ((StructuredArtifact)bean).getId().getValue());
       session.put(FormHelper.RETURN_ACTION_TAG, FormHelper.RETURN_ACTION_SAVE);
+      session.remove(EditedArtifactStorage.STORED_ARTIFACT_FLAG);
       return new ModelAndView("success", "schema",
          getSchemaName(session));
    }

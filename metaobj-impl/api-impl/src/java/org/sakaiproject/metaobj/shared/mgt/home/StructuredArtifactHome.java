@@ -29,10 +29,7 @@ import java.text.MessageFormat;
 import java.util.Iterator;
 import java.util.List;
 
-import org.jdom.CDATA;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.Document;
+import org.jdom.*;
 import org.jdom.input.SAXBuilder;
 import org.jdom.xpath.XPath;
 import org.jdom.output.Format;
@@ -290,7 +287,7 @@ public class StructuredArtifactHome extends XmlElementHome
       root.addContent(getMetadata(sa));
 
       Element data = new Element("structuredData");
-      Element baseElement = (Element) sa.getBaseElement().detach();
+      Element baseElement = (Element) sa.getBaseElement().clone();
       data.addContent(baseElement);
       root.addContent(data);
 
@@ -390,13 +387,13 @@ public class StructuredArtifactHome extends XmlElementHome
       Element annotation = schema.getSchemaElement().getChild("annotation", schema.getSchemaElement().getNamespace());
 
       if (annotation != null) {
-         schemaElement.addContent(annotation.detach());
+         schemaElement.addContent((Content) annotation.clone());
       }
 
       Element simpleType = schema.getSchemaElement().getChild("simpleType", schema.getSchemaElement().getNamespace());
 
       if (simpleType != null) {
-         schemaElement.addContent(simpleType.detach());
+         schemaElement.addContent((Content) simpleType.clone());
       }
 
       List children = schema.getChildren();

@@ -34,6 +34,7 @@ import org.sakaiproject.content.api.ResourceEditingHelper;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
 import org.sakaiproject.metaobj.shared.model.Artifact;
 import org.sakaiproject.metaobj.shared.model.ElementBean;
+import org.sakaiproject.metaobj.shared.FormHelper;
 import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.cover.SessionManager;
@@ -59,7 +60,8 @@ public class XsltArtifactView extends AbstractXsltView {
 
    private ResourceLoader resourceLoader = new ResourceLoader();
    private String bundleLocation;
-   private static final String IS_SUB_FORM = "org.sakaiproject.metaobj.shared.control.XsltArtifactView.isSubForm";
+   private static final String STYLESHEET_PARAMS =
+      "org.sakaiproject.metaobj.shared.control.XsltArtifactView.paramsMap";
    private static final String STYLESHEET_LOCATION =
       "org.sakaiproject.metaobj.shared.control.XsltArtifactView.stylesheetLocation";
    private String uriResolverBeanName;
@@ -81,11 +83,16 @@ public class XsltArtifactView extends AbstractXsltView {
       ElementBean bean = (ElementBean) map.get("bean");
 
       Element root;
+      Map paramsMap = new Hashtable();
+      httpServletRequest.setAttribute(STYLESHEET_PARAMS, paramsMap);
+      if (toolSession.getAttribute(FormHelper.PREVIEW_HOME_TAG) != null) {
+         paramsMap.put("preview", "true");
+      }
 
       if (bean instanceof Artifact) {
          root = getStructuredArtifactDefinitionManager().createFormViewXml(
             (Artifact) bean, null);
-         homeType = ((Artifact)bean).getHome().getType().getId().getValue();
+         homeType = getHomeType((Artifact) bean);
       }
       else {
          EditedArtifactStorage sessionBean = (EditedArtifactStorage)httpServletRequest.getSession().getAttribute(
@@ -95,8 +102,8 @@ public class XsltArtifactView extends AbstractXsltView {
             (Artifact) sessionBean.getRootArtifact(), null);
 
          replaceNodes(root, bean, sessionBean);
-         httpServletRequest.setAttribute(IS_SUB_FORM, "true");
-         homeType = sessionBean.getRootArtifact().getHome().getType().getId().getValue();
+         paramsMap.put("subForm", "true");
+         homeType = getHomeType(sessionBean.getRootArtifact());
       }
 
       httpServletRequest.setAttribute(STYLESHEET_LOCATION,
@@ -127,6 +134,12 @@ public class XsltArtifactView extends AbstractXsltView {
          root.addContent(errorsElement);
       }
 
+      if (httpServletRequest.getParameter("success") != null) {
+         Element success = new Element("success");
+         success.setAttribute("messageKey", httpServletRequest.getParameter("success"));
+         root.addContent(success);
+      }
+
       if (toolSession.getAttribute(ResourceEditingHelper.CUSTOM_CSS) != null) {
          Element uri = new Element("uri");
          uri.setText((String) toolSession.getAttribute(ResourceEditingHelper.CUSTOM_CSS));
@@ -135,6 +148,16 @@ public class XsltArtifactView extends AbstractXsltView {
 
       Document doc = new Document(root);
       return new JDOMSource(doc);
+   }
+
+   protected String getHomeType(Artifact bean) {
+      if (bean.getHome().getType() == null) {
+         return "new bean";
+      }
+      else if (bean.getHome().getType().getId() == null) {
+         return "new bean";
+      }
+      return bean.getHome().getType().getId().getValue();
    }
 
    protected void replaceNodes(Element root, ElementBean bean, EditedArtifactStorage sessionBean) {
@@ -174,9 +197,7 @@ public class XsltArtifactView extends AbstractXsltView {
          params.put("panelId", Web.escapeJavascript("Main" + ToolManager.getCurrentPlacement().getId()));
       }
 
-      if (request.getAttribute(IS_SUB_FORM) != null) {
-         params.put("subForm", "true");
-      }
+      params.putAll((Map) request.getAttribute(STYLESHEET_PARAMS));
 
       params.put(STYLESHEET_LOCATION, request.getAttribute(STYLESHEET_LOCATION));
       return params;

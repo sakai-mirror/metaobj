@@ -192,6 +192,9 @@
          <bean class="org.sakaiproject.metaobj.shared.control.AddXmlElementController">
             <property name="homeFactory"><ref bean="homeFactory"/></property>
             <property name="validator"><ref bean="structuredArtifactValidator"/></property>
+            <property name="structuredArtifactDefinitionManager">
+               <ref bean="structuredArtifactDefinitionManager"/>
+            </property>
          </bean>
       </property>
       <property name="screenMappings">
@@ -219,7 +222,10 @@
             <property name="idManager">
                <ref bean="idManager"/>
             </property>
-           </bean>
+            <property name="structuredArtifactDefinitionManager">
+               <ref bean="structuredArtifactDefinitionManager"/>
+            </property>
+         </bean>
       </property>
       <property name="screenMappings">
          <props>

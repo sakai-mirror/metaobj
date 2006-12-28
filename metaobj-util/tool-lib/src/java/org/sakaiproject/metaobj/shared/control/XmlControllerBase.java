@@ -27,7 +27,11 @@ import org.springframework.web.servlet.ModelAndView;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifact;
 import org.sakaiproject.metaobj.shared.model.ElementBean;
 import org.sakaiproject.metaobj.shared.model.ElementListBean;
+import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
+import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
+import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactHomeInterface;
+import org.sakaiproject.metaobj.shared.FormHelper;
 import org.sakaiproject.content.api.ResourceEditingHelper;
 import org.sakaiproject.content.api.FilePickerHelper;
 import org.sakaiproject.content.cover.ContentHostingService;
@@ -42,11 +46,17 @@ public class XmlControllerBase {
    protected final Log logger = LogFactory.getLog(getClass());
    private HomeFactory homeFactory;
    private XmlValidator validator = null;
+   private StructuredArtifactDefinitionManager structuredArtifactDefinitionManager;
    private static final String FILE_ATTACHMENTS_FIELD =
       "org.sakaiproject.metaobj.shared.control.XmlControllerBase.field";
 
    protected ModelAndView handleNonSubmit(ElementBean bean, Map request,
                                           Map session, Map application, Errors errors) {
+      return handleNonSubmit(bean, request, session, application, errors, new Hashtable());
+   }
+
+   protected ModelAndView handleNonSubmit(ElementBean bean, Map request,
+                                             Map session, Map application, Errors errors, Map model) {
       EditedArtifactStorage sessionBean = (EditedArtifactStorage)session.get(
          EditedArtifactStorage.EDITED_ARTIFACT_STORAGE_SESSION_KEY);
 
@@ -86,16 +96,13 @@ public class XmlControllerBase {
          return processFileAttachments(request, session, bean, errors);
       }
 
-      Map map = new Hashtable();
-
-      map.put(EditedArtifactStorage.STORED_ARTIFACT_FLAG,
+      model.put(EditedArtifactStorage.STORED_ARTIFACT_FLAG,
          "true");
 
-      map.put("artifactType", getSchemaName(session));
       if (request.get("parentId") != null) {
-         map.put("parentId", getParentId(request));
+         model.put("parentId", getParentId(request));
       }
-      return new ModelAndView("subList", map);
+      return new ModelAndView("subList", model);
    }
 
    protected void handleRemove(ElementBean bean, EditedArtifactStorage sessionBean, Map request,
@@ -160,6 +167,16 @@ public class XmlControllerBase {
       }
       else {
          return schemaName.toString();
+      }
+   }
+
+   protected StructuredArtifactHomeInterface getSchema(Map session) {
+      if (session.get(FormHelper.PREVIEW_HOME_TAG) != null) {
+         return getStructuredArtifactDefinitionManager().convertToHome(
+            (StructuredArtifactDefinitionBean)session.get(FormHelper.PREVIEW_HOME_TAG));
+      }
+      else {
+         return (StructuredArtifactHomeInterface) getHomeFactory().getHome(getSchemaName(session));
       }
    }
 
@@ -306,6 +323,14 @@ public class XmlControllerBase {
       }
 
       return refList;
+   }
+
+   public StructuredArtifactDefinitionManager getStructuredArtifactDefinitionManager() {
+      return structuredArtifactDefinitionManager;
+   }
+
+   public void setStructuredArtifactDefinitionManager(StructuredArtifactDefinitionManager structuredArtifactDefinitionManager) {
+      this.structuredArtifactDefinitionManager = structuredArtifactDefinitionManager;
    }
 
 }
