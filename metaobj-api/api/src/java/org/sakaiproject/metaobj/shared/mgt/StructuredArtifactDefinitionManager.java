@@ -48,6 +48,8 @@ public interface StructuredArtifactDefinitionManager {
     */
    public Map getWorksiteHomes(Id worksiteId);
 
+   public Map getWorksiteHomes(Id worksiteId, boolean includeHidden);
+
    public List findHomes();
 
    /**
@@ -61,7 +63,16 @@ public interface StructuredArtifactDefinitionManager {
     *         currentWorksiteId owned by current user
     */
    public List findHomes(Id currentWorksiteId);
-   
+
+   /**
+    *
+    * @param currentWorksiteId
+    * @param includeHidden include forms marked as hidden when created
+    * @return list of globally published sads or published sad in currentWorksiteId or sads in
+    *         currentWorksiteId owned by current user
+    */
+   public List findHomes(Id currentWorksiteId, boolean includeHidden);
+
    /**
     * 
     * @param resource The ContentResource of a file in resources that is the xsd file

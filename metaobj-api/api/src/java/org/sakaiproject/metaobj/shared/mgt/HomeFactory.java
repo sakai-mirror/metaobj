@@ -69,6 +69,8 @@ public interface HomeFactory {
     */
    public Map getWorksiteHomes(Id worksiteId);
 
+   public Map getWorksiteHomes(Id worksiteId, boolean includeHidden);
+
    /**
     * Map of all homes.  This map will map the object type as a String to the home as a ReadableObjectHome.
     * The home may support more features.  This can be determined by checking instanceof on other home interfaces

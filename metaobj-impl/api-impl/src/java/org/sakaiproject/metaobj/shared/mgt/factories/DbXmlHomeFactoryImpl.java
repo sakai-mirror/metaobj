@@ -62,6 +62,10 @@ public class DbXmlHomeFactoryImpl extends HomeFactoryBase implements HomeFactory
       return createHomes(getStructuredArtifactDefinitionManager().getWorksiteHomes(worksiteId));
    }
 
+   public Map getWorksiteHomes(Id worksiteId, boolean includeHidden) {
+      return createHomes(getStructuredArtifactDefinitionManager().getWorksiteHomes(worksiteId, true));
+   }
+
    public Map getHomes() {
       return createHomes(getStructuredArtifactDefinitionManager().getHomes());
    }

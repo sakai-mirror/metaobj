@@ -106,9 +106,13 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
     * @return a map with all worksite and global homes
     */
    public Map getWorksiteHomes(Id worksiteId) {
+      return getWorksiteHomes(worksiteId, false);
+   }
+
+   public Map getWorksiteHomes(Id worksiteId, boolean includeHidden) {
       Map returnMap = new HashMap();
       List list = findGlobalHomes();
-      list.addAll(findHomes(worksiteId));
+      list.addAll(findHomes(worksiteId, includeHidden));
       for (Iterator iter = list.iterator(); iter.hasNext();) {
          StructuredArtifactDefinitionBean sad = (StructuredArtifactDefinitionBean) iter.next();
          returnMap.put(sad.getId().getValue(), sad);
@@ -188,11 +192,20 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
     *         currentWorksiteId owned by current user
     */
    public List findHomes(Id currentWorksiteId) {
+      String queryName = "findHomes";
+      return findHomes(currentWorksiteId, queryName);
+   }
+
+   protected List findHomes(Id currentWorksiteId, String queryName) {
       Object[] params = new Object[]{new Integer(StructuredArtifactDefinitionBean.STATE_PUBLISHED),
                                      currentWorksiteId.getValue(),
                                      getAuthManager().getAgent(),
                                      new Integer(StructuredArtifactDefinitionBean.STATE_PUBLISHED)};
-      return getHibernateTemplate().findByNamedQuery("findHomes", params);
+      return getHibernateTemplate().findByNamedQuery(queryName, params);
+   }
+
+   public List findHomes(Id currentWorksiteId, boolean includeHidden) {
+      return findHomes(currentWorksiteId, "findHomesIncludeHidden");
    }
 
    public StructuredArtifactDefinitionBean loadHome(String type) {
@@ -540,7 +553,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
 
    public void importResources(String fromContext, String toContext, List resourceIds) {
       // select all this worksites forms and create them for the new worksite
-      Map homes = getWorksiteHomes(getIdManager().getId(fromContext));
+      Map homes = getWorksiteHomes(getIdManager().getId(fromContext), true);
 
       for (Iterator i = homes.entrySet().iterator(); i.hasNext();) {
          Map.Entry entry = (Map.Entry) i.next();

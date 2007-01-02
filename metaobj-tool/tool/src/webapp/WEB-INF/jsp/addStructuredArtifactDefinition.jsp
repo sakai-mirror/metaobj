@@ -96,6 +96,15 @@
 </spring:bind>
 </p>
 
+<spring:bind path="bean.systemOnly">
+   <div class="checkbox indnt1">
+      <input type="checkbox" name="<c:out value="${status.expression}"/>" value="true"
+        <c:if test="${status.value}">checked</c:if> />
+      <legend class="checkbox"><fmt:message key="label_hiddenForm"/></legend>
+   </div>
+</spring:bind>
+
+
 <p class="act">
 <c:if test="${empty bean.id}">
 <input name="action" type="submit" class="active" value="<fmt:message key="button_save"/>"/>

@@ -92,4 +92,8 @@ public abstract class HomeFactoryBase implements HomeFactory {
       return getHomes();
    }
 
+   public Map getWorksiteHomes(Id worksiteId, boolean includeHidden) {
+      return getHomes();
+   }
+
 }

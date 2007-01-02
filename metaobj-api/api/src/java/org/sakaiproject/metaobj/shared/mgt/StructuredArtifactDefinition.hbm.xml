@@ -28,11 +28,15 @@
       from StructuredArtifactDefinitionBean where ((siteId is null and (globalState = ? or owner = ?)) or globalState = 1)
    </query>
    
-   <query name="findHomes">   
-   	from StructuredArtifactDefinitionBean where globalState = ? or (siteId = ? and (owner = ? or siteState = ? )) 
+   <query name="findHomes">
+   	from StructuredArtifactDefinitionBean where (globalState = ? or (siteId = ? and (owner = ? or siteState = ? ))) and systemOnly != true
 	</query>
-	
-   <query name="loadHomeByExternalType">   	
+
+   <query name="findHomesIncludeHidden">
+   	from StructuredArtifactDefinitionBean where globalState = ? or (siteId = ? and (owner = ? or siteState = ? ))
+	</query>
+
+   <query name="loadHomeByExternalType">
 		from StructuredArtifactDefinitionBean a where externalType=? AND (globalState=? OR siteId=?)
 	</query>
 
