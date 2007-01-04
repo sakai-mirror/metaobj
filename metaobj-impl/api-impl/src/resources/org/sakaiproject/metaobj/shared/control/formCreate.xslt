@@ -32,7 +32,11 @@
 						</xsl:attribute>
 					</link>
 				</xsl:for-each>
+				<link type="text/css" rel="stylesheet" media="all" href="/sakai-metaobj-tool/css/metaobj.css"></link>
 				<script type="text/javascript" language="JavaScript" src="/library/js/headscripts.js"> // empty
+					block </script>
+				
+				<script type="text/javascript" language="JavaScript" src="/sakai-metaobj-tool/js/nicetitle.js"> // empty
 					block </script>
 				<script type="text/javascript" language="JavaScript"
 					src="/library/editor/FCKeditor/fckeditor.js"> // empty block </script>
@@ -92,36 +96,36 @@
 							<!-- todo i18n -->
 							<xsl:choose>
 								<xsl:when test="$subForm = 'true'">
-									<input type="submit" name="updateNestedButton" class="active">
+									<input type="submit" name="updateNestedButton" class="active" accesskey="s">
 										<xsl:attribute name="value">
 											<xsl:value-of select="sakaifn:getMessage('messages', 'button_update')"/>
 										</xsl:attribute>
 									</input>
-									<input type="submit" name="cancelNestedButton">
+									<input type="submit" name="cancelNestedButton" accesskey="x">
 										<xsl:attribute name="value">
 											<xsl:value-of select="sakaifn:getMessage('messages', 'button_cancel')"/>
 										</xsl:attribute>
 									</input>
 								</xsl:when>
-								<xsl:when test="$preview = 'true'">
+								<xsl:when test="$preview = 'true'" accesskey="v">
 									<input type="submit" name="submitButton" class="active">
 										<xsl:attribute name="value">
 											<xsl:value-of select="sakaifn:getMessage('messages', 'button_validate')"/>
 										</xsl:attribute>
 									</input>
-									<input type="submit" name="cancel">
+									<input type="submit" name="cancel" accesskey="x">
 										<xsl:attribute name="value">
 											<xsl:value-of select="sakaifn:getMessage('messages', 'button_return')"/>
 										</xsl:attribute>
 									</input>
 								</xsl:when>
 								<xsl:otherwise>
-									<input type="submit" name="submitButton" class="active">
+									<input type="submit" name="submitButton" class="active" accesskey="s">
 										<xsl:attribute name="value">
 											<xsl:value-of select="sakaifn:getMessage('messages', 'button_saveEdit')"/>
 										</xsl:attribute>
 									</input>
-									<input type="submit" name="cancel">
+									<input type="submit" name="cancel" accesskey="x">
 										<xsl:attribute name="value">
 											<xsl:value-of select="sakaifn:getMessage('messages', 'button_cancel')"/>
 										</xsl:attribute>
