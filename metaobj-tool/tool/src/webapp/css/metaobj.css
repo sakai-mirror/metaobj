@@ -1,0 +1,31 @@
+div.nicetitle {
+    position: absolute;
+    padding: 4px;
+    top: 0px;
+    left: 0px;
+    color: white;
+    font-weight:bold;
+    width:50%;
+    background: url(../img/ntbg.png); ;
+}
+div.nicetitle p {
+    margin: 0; 
+	 padding: 0 3px;
+}
+div.nicetitle p.destination {
+    font-size: 9px;
+    text-align: left;
+    padding-top: 3px;
+}
+a.nt{
+	font-size: .9em;
+	cursor: help;
+	text-decoration: none !important;
+	padding:0 0 0 5px;
+	border-left:3px solid #fff;
+   background: url(../img/desc-anc.gif) center left no-repeat; 
+}
+a.nt:hover{
+	text-decoration: none !important;
+   background: url(../img/desc-anc-h.gif) center left no-repeat; 
+}
