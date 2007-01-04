@@ -179,4 +179,9 @@ public class ContentEntityWrapper implements ContentResource
 	{
 		return base.isAvailable();
 	}
+
+   public String getResourceType() 
+   {
+      return base.getResourceType();
+   }
 }
