@@ -18,14 +18,14 @@ div.nicetitle p.destination {
     padding-top: 3px;
 }
 a.nt{
-	font-size: .9em;
+	font-size: 1em;
 	cursor: help;
+	padding-right:1em;
 	text-decoration: none !important;
-	padding:0 0 0 5px;
-	border-left:3px solid #fff;
-   background: url(../img/desc-anc.gif) center left no-repeat; 
+   background: url(../img/desc-anc.gif) center right no-repeat; 
 }
 a.nt:hover{
 	text-decoration: none !important;
-   background: url(../img/desc-anc-h.gif) center left no-repeat; 
+	color:orange;
+	background: url(../img/desc-anc-h.gif) center right no-repeat; 
 }
