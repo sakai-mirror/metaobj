@@ -201,10 +201,15 @@
 		<div class="shorttext">
 			<xsl:call-template name="produce-label">
 				<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
-				<xsl:with-param name="noteType" select="longtext" />
 			</xsl:call-template>
-			<a href="javascript:document.forms[0].childPath.value='{$name}';document.forms[0].fileHelper.value='true';document.forms[0].onsubmit();document.forms[0].submit();" title="Add and remove attachments">
-				Manage Attachment(s) </a>
+			<input id="{$name}" type="button" onclick="javascript:document.forms[0].childPath.value='{$name}';document.forms[0].fileHelper.value='true';document.forms[0].onsubmit();document.forms[0].submit();" title="sakaifn:getMessage('messages', 'manage_attachments'_title)" value="sakaifn:getMessage('messages', 'manage_attachments')">
+				<xsl:attribute name="title">
+					<xsl:value-of select="sakaifn:getMessage('messages', 'manage_attachments_title')" />
+				</xsl:attribute>
+				<xsl:attribute name="value">
+					<xsl:value-of select="sakaifn:getMessage('messages', 'manage_attachments')" />
+				</xsl:attribute>
+			</input>
 			<xsl:if test="$currentParent/node()[$name=name()]">
 				<ul class="attachList labelindnt" style="clear:both">
 					<xsl:for-each select="$currentParent/node()[$name=name()]">
@@ -288,28 +293,44 @@
 			<xsl:if test="$nodeType='longtext'">
 				<xsl:attribute name="class">block</xsl:attribute>
 			</xsl:if>
+			<!--output the ospi.descripion as a title in a link (using nicetitle)  -->
 			<xsl:choose>
-				<xsl:when test="$currentSchemaNode/xs:annotation/xs:documentation[@source='sakai.label']">
-					<xsl:value-of select="$currentSchemaNode/xs:annotation/xs:documentation[@source='sakai.label']" />
-				</xsl:when>
-				<xsl:when test="$currentSchemaNode/xs:annotation/xs:documentation[@source='ospi.label']">
-					<xsl:value-of select="$currentSchemaNode/xs:annotation/xs:documentation[@source='ospi.label']" />
+				<xsl:when test="$currentSchemaNode/xs:annotation/xs:documentation[@source='ospi.description']/text()">
+					<a class="nt">
+						<xsl:attribute name="title">
+							<xsl:value-of select="$currentSchemaNode/xs:annotation/xs:documentation[@source='ospi.description']" />
+						</xsl:attribute>
+						<xsl:choose>
+							<xsl:when test="$currentSchemaNode/xs:annotation/xs:documentation[@source='sakai.label']">
+								<xsl:value-of select="$currentSchemaNode/xs:annotation/xs:documentation[@source='sakai.label']" />
+							</xsl:when>
+							<xsl:when test="$currentSchemaNode/xs:annotation/xs:documentation[@source='ospi.label']">
+								<xsl:value-of select="$currentSchemaNode/xs:annotation/xs:documentation[@source='ospi.label']" />
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:for-each select="$currentSchemaNode">
+									<xsl:value-of select="@name" />
+								</xsl:for-each>
+							</xsl:otherwise>
+						</xsl:choose>
+					</a>
 				</xsl:when>
 				<xsl:otherwise>
-					<xsl:for-each select="$currentSchemaNode">
-						<xsl:value-of select="@name" />
-					</xsl:for-each>
+					<xsl:choose>
+						<xsl:when test="$currentSchemaNode/xs:annotation/xs:documentation[@source='sakai.label']">
+							<xsl:value-of select="$currentSchemaNode/xs:annotation/xs:documentation[@source='sakai.label']" />
+						</xsl:when>
+						<xsl:when test="$currentSchemaNode/xs:annotation/xs:documentation[@source='ospi.label']">
+							<xsl:value-of select="$currentSchemaNode/xs:annotation/xs:documentation[@source='ospi.label']" />
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:for-each select="$currentSchemaNode">
+								<xsl:value-of select="@name" />
+							</xsl:for-each>
+						</xsl:otherwise>
+					</xsl:choose>
 				</xsl:otherwise>
 			</xsl:choose>
-			<!--output the ospi.descripion as a title in a link (using nicetitle)  -->
-			<xsl:if test="$currentSchemaNode/xs:annotation/xs:documentation[@source='ospi.description']/text()">
-				<a class="nt">
-					<xsl:attribute name="title">
-						<xsl:value-of select="$currentSchemaNode/xs:annotation/xs:documentation[@source='ospi.description']" />
-					</xsl:attribute>
-					<img src="/sakai-metaobj-tool/img/desc-anc-trans.gif" alt="" />
-				</a>
-			</xsl:if>
 		</label>
 	</xsl:template>
 	<xsl:template name="produce-metadata">

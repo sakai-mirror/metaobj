@@ -69,7 +69,8 @@
 								</h4>
 							</xsl:when>
 							<xsl:otherwise>
-								<div class="shorttext">
+								<div class="shorttext required">
+									<span class="reqStar">*</span>
 									<label for="displayName">
 										<xsl:value-of select="sakaifn:getMessage('messages', 'display.name.label')"/>
 									</label>
