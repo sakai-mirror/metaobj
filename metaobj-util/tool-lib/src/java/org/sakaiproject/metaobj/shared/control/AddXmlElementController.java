@@ -61,6 +61,11 @@ public class AddXmlElementController extends XmlControllerBase
       if (session.get(EditedArtifactStorage.STORED_ARTIFACT_FLAG) == null) {
          StructuredArtifactHomeInterface home = getSchema(session);
          StructuredArtifact bean = (StructuredArtifact)home.createInstance();
+
+         if (session.get(FormHelper.NEW_FORM_DISPLAY_NAME_TAG) != null) {
+            bean.setDisplayName((String) session.get(FormHelper.NEW_FORM_DISPLAY_NAME_TAG));
+         }
+
          bean.setParentFolder((String)session.get(FormHelper.PARENT_ID_TAG));
          EditedArtifactStorage sessionBean = new EditedArtifactStorage(bean.getCurrentSchema(),
             bean);

@@ -43,5 +43,7 @@ public interface FormHelper {
    public static final String PREVIEW_HOME_TAG = "metaobj.previewHome";
 
    public static final String PREVIEW_TRANSFORM_STREAM_TAG = "metaobj.previewTransform";
+
+   public static final String NEW_FORM_DISPLAY_NAME_TAG = "metaobj.displayName";
    
 }
