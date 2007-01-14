@@ -45,7 +45,7 @@
 		<xsl:param name="rootNode" />
 		<xsl:variable name="name" select="$currentSchemaNode/@name" />
 		<xsl:variable name="currentNode" select="$currentParent/node()[$name=name()]" />
-		<div>
+		<div id="{$name}-node">
 			<xsl:choose>
 				<xsl:when test="@minOccurs='1'">
 					<xsl:attribute name="class">shorttext required</xsl:attribute>
@@ -58,8 +58,31 @@
 			<xsl:call-template name="produce-label">
 				<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
 			</xsl:call-template>
-			<input type="text" id="{$name}" name="{$name}" value="{$currentNode}" />
+			<input type="text" id="{$name}" name="{$name}" value="{$currentNode}">
+				<xsl:choose>
+					<xsl:when test="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value">
+						<xsl:attribute name="maxLength">
+							<xsl:value-of select="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value" />
+						</xsl:attribute>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:attribute name="maxLength"> 50 </xsl:attribute>
+					</xsl:otherwise>
+				</xsl:choose>
+			</input>
+			<xsl:if test="not(@maxOccurs='1')">
+				<a href="javascript:addItem('{$name}-node','{$name}');" class="addEl" id="{$name}-addlink">
+					<img src="/sakai-metaobj-tool/img/blank.gif" />
+				</a>
+				<div class="instruction" style="display:inline" id="{$name}-disp">
+					<xsl:text> </xsl:text>
+				</div>
+			</xsl:if>
 		</div>
+		<xsl:if test="not(@maxOccurs='1')">
+			<input id="{$name}-count" type="hidden" value="1" />
+			<input id="{$name}-max" type="hidden" value="{@maxOccurs}" />
+		</xsl:if>
 	</xsl:template>
 	<xsl:template name="select-field">
 		<xsl:param name="currentSchemaNode" />
@@ -67,7 +90,7 @@
 		<xsl:param name="rootNode" />
 		<xsl:variable name="name" select="$currentSchemaNode/@name" />
 		<xsl:variable name="currentNode" select="$currentParent/node()[$name=name()]" />
-		<div>
+		<div id="{$name}-node">
 			<xsl:choose>
 				<xsl:when test="@minOccurs='1'">
 					<xsl:attribute name="class">shorttext required</xsl:attribute>
@@ -90,7 +113,19 @@
 					</option>
 				</xsl:for-each>
 			</select>
+			<xsl:if test="not(@maxOccurs='1')">
+				<a href="javascript:addItem('{$name}-node','{$name}');" class="addEl" id="{$name}-addlink">
+					<img src="/sakai-metaobj-tool/img/blank.gif" />
+				</a>
+				<div class="instruction" style="display:inline" id="{$name}-disp">
+					<xsl:text> </xsl:text>
+				</div>
+			</xsl:if>
 		</div>
+		<xsl:if test="not(@maxOccurs='1')">
+			<input id="{$name}-count" type="hidden" value="1" />
+			<input id="{$name}-max" type="hidden" value="{@maxOccurs}" />
+		</xsl:if>
 	</xsl:template>
 	<xsl:template name="richText-field">
 		<xsl:param name="currentSchemaNode" />
@@ -98,7 +133,8 @@
 		<xsl:param name="rootNode" />
 		<xsl:variable name="name" select="$currentSchemaNode/@name" />
 		<xsl:variable name="currentNode" select="$currentParent/node()[$name=name()]" />
-		<div>
+		<div id="{$name}parent">
+			<!-- todo: do we really want to clone this one? -->
 			<xsl:choose>
 				<xsl:when test="@minOccurs='1'">
 					<xsl:attribute name="class">longtext required</xsl:attribute>
@@ -130,6 +166,12 @@
 							<script language="JavaScript" type="text/javascript"> document.forms[0].<xsl:value-of select="$name" />.value="" </script>
 						</xsl:if>
 						<xsl:value-of select="sakaifn:getRichTextScript($name, $currentSchemaNode)" disable-output-escaping="yes" />
+						<xsl:if test="@maxOccurs='-1'">
+							<a href="javascript:addItem('{$name}parent');" class="addEl">
+								<img src="/sakai-metaobj-tool/img/blank.gif" />
+							</a>
+							<input type="hidden" id="{$name}parenthid" value="0" />
+						</xsl:if>
 					</td>
 				</tr>
 			</table>
@@ -141,7 +183,7 @@
 		<xsl:param name="rootNode" />
 		<xsl:variable name="name" select="$currentSchemaNode/@name" />
 		<xsl:variable name="currentNode" select="$currentParent/node()[$name=name()]" />
-		<div>
+		<div id="{$name}-node">
 			<xsl:choose>
 				<xsl:when test="@minOccurs='1'">
 					<xsl:attribute name="class">longtext required</xsl:attribute>
@@ -155,7 +197,27 @@
 				<xsl:with-param name="nodeType">longtext</xsl:with-param>
 				<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
 			</xsl:call-template>
-			<textarea rows="4" cols="60" id="{$name}" name="{$name}">
+			<textarea id="{$name}" name="{$name}">
+				<xsl:if test="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value">
+					<xsl:choose>
+						<xsl:when test="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value &lt; 600">
+							<xsl:attribute name="rows">3</xsl:attribute>
+							<xsl:attribute name="cols">45</xsl:attribute>
+						</xsl:when>
+						<xsl:when test="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value &lt; 800">
+							<xsl:attribute name="rows">5</xsl:attribute>
+							<xsl:attribute name="cols">45</xsl:attribute>
+						</xsl:when>
+						<xsl:when test="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value &lt; 1000">
+							<xsl:attribute name="rows">7</xsl:attribute>
+							<xsl:attribute name="cols">45</xsl:attribute>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:attribute name="rows">9</xsl:attribute>
+							<xsl:attribute name="cols">45</xsl:attribute>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:if>
 				<xsl:choose>
 					<xsl:when test="string($currentNode) = ''" />
 					<xsl:otherwise>
@@ -163,7 +225,19 @@
 					</xsl:otherwise>
 				</xsl:choose>
 			</textarea>
+			<xsl:if test="not(@maxOccurs='1')">
+				<a href="javascript:addItem('{$name}-node','{$name}');" class="addEl" id="{$name}-addlink">
+					<img src="/sakai-metaobj-tool/img/blank.gif" />
+				</a>
+				<div class="instruction" style="display:inline" id="{$name}-disp">
+					<xsl:text> </xsl:text>
+				</div>
+			</xsl:if>
 		</div>
+		<xsl:if test="not(@maxOccurs='1')">
+			<input id="{$name}-count" type="hidden" value="1" />
+			<input id="{$name}-max" type="hidden" value="{@maxOccurs}" />
+		</xsl:if>
 	</xsl:template>
 	<xsl:template name="checkBox-field">
 		<xsl:param name="currentSchemaNode" />
@@ -171,7 +245,7 @@
 		<xsl:param name="rootNode" />
 		<xsl:variable name="name" select="$currentSchemaNode/@name" />
 		<xsl:variable name="currentNode" select="$currentParent/node()[$name=name()]" />
-		<div class="checkbox labelindnt">
+		<div class="checkbox labelindnt" id="{$name}parent">
 			<xsl:call-template name="checkbox-widget">
 				<xsl:with-param name="name" select="$name" />
 				<xsl:with-param name="currentNode" select="$currentNode" />
@@ -179,6 +253,12 @@
 			<xsl:call-template name="produce-label">
 				<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
 			</xsl:call-template>
+			<xsl:if test="@maxOccurs='-1'">
+				<a href="javascript:addItem('{$name}parent');" class="addEl">
+					<img src="/sakai-metaobj-tool/img/blank.gif" />
+				</a>
+				<input type="hidden" id="{$name}parenthid" value="0" />
+			</xsl:if>
 		</div>
 	</xsl:template>
 	<xsl:template name="checkbox-widget">
@@ -198,7 +278,7 @@
 		<xsl:param name="rootNode" />
 		<xsl:variable name="name" select="$currentSchemaNode/@name" />
 		<xsl:variable name="currentNode" select="$currentParent/node()[$name=name()]" />
-		<div class="shorttext">
+		<div class="shorttext" id="{$name}parent">
 			<xsl:call-template name="produce-label">
 				<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
 			</xsl:call-template>
@@ -227,6 +307,14 @@
 					</xsl:for-each>
 				</ul>
 			</xsl:if>
+			<!-- a file helper helps pick many files, having it cloned creates problems
+			<xsl:if test="@maxOccurs='-1'">
+				<a href="javascript:addItem('{$name}parent');" class="addEl">
+					<img src="/sakai-metaobj-tool/img/blank.gif" />
+				</a>
+				<input type="hidden" id="{$name}parenthid" value="0" />
+			</xsl:if>
+			-->
 		</div>
 	</xsl:template>
 	<xsl:template name="date-field">
@@ -235,7 +323,7 @@
 		<xsl:param name="rootNode" />
 		<xsl:variable name="name" select="$currentSchemaNode/@name" />
 		<xsl:variable name="currentNode" select="$currentParent/node()[$name=name()]" />
-		<div class="shorttext">
+		<div class="shorttext" id="{$name}-node">
 			<xsl:choose>
 				<xsl:when test="@minOccurs='1'">
 					<xsl:attribute name="class">shorttext required</xsl:attribute>
@@ -253,7 +341,19 @@
 				<xsl:with-param name="schemaNode" select="$currentSchemaNode" />
 				<xsl:with-param name="dataNode" select="$currentNode" />
 			</xsl:call-template>
+			<xsl:if test="not(@maxOccurs='1')">
+				<a href="javascript:addItem('{$name}-node','{$name}');" class="addEl" id="{$name}-addlink">
+					<img src="/sakai-metaobj-tool/img/blank.gif" />
+				</a>
+				<div class="instruction" style="display:inline" id="{$name}-disp">
+					<xsl:text> </xsl:text>
+				</div>
+			</xsl:if>
 		</div>
+		<xsl:if test="not(@maxOccurs='1')">
+			<input id="{$name}-count" type="hidden" value="1" />
+			<input id="{$name}-max" type="hidden" value="{@maxOccurs}" />
+		</xsl:if>
 	</xsl:template>
 	<xsl:template name="calendar-widget">
 		<xsl:param name="schemaNode" />
