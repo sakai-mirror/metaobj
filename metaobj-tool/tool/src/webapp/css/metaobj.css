@@ -1,3 +1,7 @@
+label a:hover{
+	color:#000;
+	text-decoration: none;
+}
 div.nicetitle {
     position: absolute;
     padding: 4px;
@@ -6,7 +10,7 @@ div.nicetitle {
     color: white;
     font-weight:bold;
     width:50%;
-    background: url(../img/ntbg.png); ;
+    background: url(../img/ntbg.png); 
 }
 div.nicetitle p {
     margin: 0; 
@@ -22,10 +26,39 @@ a.nt{
 	cursor: help;
 	padding-right:1em;
 	text-decoration: none !important;
-   background: url(../img/desc-anc.gif) center right no-repeat; 
 }
 a.nt:hover{
 	text-decoration: none !important;
 	color:orange;
-	background: url(../img/desc-anc-h.gif) center right no-repeat; 
+}
+
+.addEl{
+		font-size: 1.1em;
+		margin:.3em;
+		background:url(../img/add.gif) top left no-repeat;
+
+}
+.deleteEl{
+		font-size: 1.1em;
+		margin:.3em;
+		background:url(../img/delete.gif) top left no-repeat;
+
+}
+
+
+.addEl-inact{
+		font-size: 1.1em;
+		margin:.3em;
+	
+	cursor:text;
+		background:url(../img/add-inact.gif) top left no-repeat;
+}
+
+ a.inactlabel{
+	color:gray;
+	text-decoration: none !important;
+}
+ a.inactlabel:hover{
+	color:gray;
+	text-decoration: none !important;
 }
