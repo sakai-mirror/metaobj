@@ -64,9 +64,13 @@
 						<xsl:attribute name="maxLength">
 							<xsl:value-of select="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value" />
 						</xsl:attribute>
+						<xsl:attribute name="title">
+							<xsl:value-of select="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value" /><xsl:text> </xsl:text><xsl:value-of select="sakaifn:getMessage('messages', 'max_chars')" /></xsl:attribute>
 					</xsl:when>
 					<xsl:otherwise>
 						<xsl:attribute name="maxLength"> 50 </xsl:attribute>
+						<xsl:attribute name="title">
+							<xsl:text> 50 </xsl:text> <xsl:value-of select="sakaifn:getMessage('messages', 'max_chars')" /> </xsl:attribute>
 					</xsl:otherwise>
 				</xsl:choose>
 			</input>
@@ -199,6 +203,8 @@
 			</xsl:call-template>
 			<textarea id="{$name}" name="{$name}">
 				<xsl:if test="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value">
+					<xsl:attribute name="title">
+						<xsl:value-of select="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value" /><xsl:text> </xsl:text> <xsl:value-of select="sakaifn:getMessage('messages', 'max_chars')" /> </xsl:attribute>
 					<xsl:choose>
 						<xsl:when test="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value &lt; 600">
 							<xsl:attribute name="rows">3</xsl:attribute>
@@ -282,7 +288,7 @@
 			<xsl:call-template name="produce-label">
 				<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
 			</xsl:call-template>
-			<input id="{$name}" type="button" onclick="javascript:document.forms[0].childPath.value='{$name}';document.forms[0].fileHelper.value='true';document.forms[0].onsubmit();document.forms[0].submit();" title="sakaifn:getMessage('messages', 'manage_attachments'_title)" value="sakaifn:getMessage('messages', 'manage_attachments')">
+			<input id="{$name}" type="button" onclick="javascript:document.forms[0].childPath.value='{$name}';document.forms[0].fileHelper.value='true';document.forms[0].onsubmit();document.forms[0].submit();" title="sakaifn:getMessage('messages', 'manage_attachments_title')" value="sakaifn:getMessage('messages', 'manage_attachments')">
 				<xsl:attribute name="title">
 					<xsl:value-of select="sakaifn:getMessage('messages', 'manage_attachments_title')" />
 				</xsl:attribute>
