@@ -361,3 +361,132 @@ NiceTitles.autoCreation = function(){
 }
 
 addEvent(window, "load", NiceTitles.autoCreation);
+
+
+
+/* =================================================================================================
+* CloneNode
+* 8 January 2007
+*
+* Clone nodes
+*
+==================================================================================================*/
+
+
+		function addItem(idtoclone,baseid) {
+		//get the element to clone, its parent and the element after it
+	  var itemToClone = document.getElementById(idtoclone);
+	  var itemToCloneParent = itemToClone.parentNode;
+	  var itemToCloneSibling= itemToClone.nextSibling;
+	 	var maxNumber = document.getElementById(baseid + '-max').value;
+	  //clone the element
+	  var newItem = itemToClone.cloneNode(true);
+	
+	  //get the hidden input and increase its value
+	  var holder = document.getElementById(baseid + '-count');
+		var num = (document.getElementById(baseid + '-count').value -1)+ 2;
+		holder.value = num;
+	
+	
+		//change in the clone the "for" and "id" attributes of the children
+		//change the values of the <a> child as well (to remove the clone)
+		for (i=0;i<newItem.childNodes.length;i++)
+		{
+			if (newItem.childNodes[i].nodeName=="LABEL")
+			{
+		//change the label display
+			newItem.childNodes[i].firstChild.removeAttribute('class');
+			newItem.childNodes[i].firstChild.setAttribute('class','inactlabel')
+			newItem.childNodes[i].firstChild.removeAttribute('title');
+			newItem.childNodes[i].firstChild.removeAttribute('nicetitle');
+			newItem.childNodes[i].removeAttribute("htmlFor"); //silly IE...
+			newItem.childNodes[i].setAttribute('for',baseid + "-" + num + 'child')
+			newItem.childNodes[i].setAttribute('htmlFor',baseid + "-" + num + 'child')
+			}
+			else if (newItem.childNodes[i].nodeName=="INPUT")
+			{
+			newItem.childNodes[i].setAttribute('id',baseid + "-" + num + 'child')
+			}
+			else if (newItem.childNodes[i].nodeName=="TEXTAREA")
+			{
+			newItem.childNodes[i].setAttribute('id',baseid + "-" + num + 'child')
+			}
+			else if (newItem.childNodes[i].nodeName=="SPAN")
+			{
+			newItem.childNodes[i].firstChild.nodeValue='';
+			}
+
+			else if (newItem.childNodes[i].nodeName=="DIV")
+			{
+			newItem.childNodes[i].setAttribute('id','');
+			newItem.childNodes[i].firstChild.nodeValue='';
+			}
+			else if (newItem.childNodes[i].nodeName=="A")
+			{
+				newItem.childNodes[i].setAttribute('className','deleteEl'); //silly IE...
+				newItem.childNodes[i].setAttribute('class','deleteEl');
+				newItem.childNodes[i].setAttribute('id','');
+	
+				newItem.childNodes[i].setAttribute('href','javascript:removeItem(\''+ baseid + '-' + num + '\',\''+ baseid + '\');');
+			}
+		}
+		//change the cloned element "id" attribute
+		newItem.setAttribute('id',baseid + "-" + num);
+	
+		//stick it in
+	  itemToCloneParent.insertBefore(newItem,itemToCloneSibling);
+		// hide the add link if max number has been reached
+		if (holder.value==maxNumber)
+		{
+		var addLink = document.getElementById(baseid + '-addlink');
+		addLink.className='addEl-inact';
+		addLink.href='#';
+		}
+		var displayTotal = document.getElementById(baseid + '-disp');
+		var used = document.getElementById(baseid + '-count').value;
+		if (maxNumber<0)
+		{
+			displayTotal.firstChild.nodeValue = '(' + (used ++) + ' of as many as you want)'
+		}
+			else
+		{
+		displayTotal.firstChild.nodeValue = '(' + (used ++) + ' of  ' + maxNumber + ' max)'
+		}
+	}
+	
+	
+	
+	function removeItem(nodeToRemove,baseid)
+	{
+		var itemToRemove = document.getElementById(nodeToRemove);
+	
+		var itemToRemoveParent = itemToRemove.parentNode;
+	 	var maxNumber = document.getElementById(baseid + '-max').value;
+	
+		//remove the element
+		itemToRemoveParent.removeChild(itemToRemove);
+		//reset the count of elements
+		var holder = document.getElementById(baseid + '-count');
+		var num = (document.getElementById(baseid + '-count').value -1);
+		holder.value = num;
+		// show the add link if removing this link puts it unde the max number
+		if (holder.value<maxNumber)
+		{
+		var addLink =document.getElementById(baseid + '-addlink');
+			addLink.style.display='inline';
+		addLink.className='addEl';
+		addLink.href="javascript:addItem(\'" + baseid + "-node\',\'" + baseid + "\');";
+	
+		}
+			var displayTotal = document.getElementById(baseid + '-disp');
+			var used = document.getElementById(baseid + '-count').value;
+		//	alert (displayTotal.firstChild.nodeValue);
+		if (maxNumber<0)
+		{
+			displayTotal.firstChild.nodeValue ='(' + (used --	) + ' of as many as you want)'
+		}
+		else
+		{
+		displayTotal.firstChild.nodeValue = '(' +  (used --	) + ' of  ' + maxNumber + ' max)'
+		}
+}
