@@ -379,6 +379,7 @@ addEvent(window, "load", NiceTitles.autoCreation);
 	  var itemToCloneParent = itemToClone.parentNode;
 	  var itemToCloneSibling= itemToClone.nextSibling;
 	 	var maxNumber = document.getElementById(baseid + '-max').value;
+	 	var removeItemText=document.getElementById('remove_item_msg').value;
 	  //clone the element
 	  var newItem = itemToClone.cloneNode(true);
 	
@@ -394,7 +395,7 @@ addEvent(window, "load", NiceTitles.autoCreation);
 		{
 			if (newItem.childNodes[i].nodeName=="LABEL")
 			{
-		//change the label display
+		//change the element children's  display and relationships
 			newItem.childNodes[i].firstChild.removeAttribute('class');
 			newItem.childNodes[i].firstChild.setAttribute('class','inactlabel')
 			newItem.childNodes[i].firstChild.removeAttribute('title');
@@ -426,6 +427,7 @@ addEvent(window, "load", NiceTitles.autoCreation);
 				newItem.childNodes[i].setAttribute('className','deleteEl'); //silly IE...
 				newItem.childNodes[i].setAttribute('class','deleteEl');
 				newItem.childNodes[i].setAttribute('id','');
+				newItem.childNodes[i].setAttribute('title',removeItemText);
 	
 				newItem.childNodes[i].setAttribute('href','javascript:removeItem(\''+ baseid + '-' + num + '\',\''+ baseid + '\');');
 			}
@@ -446,11 +448,11 @@ addEvent(window, "load", NiceTitles.autoCreation);
 		var used = document.getElementById(baseid + '-count').value;
 		if (maxNumber<0)
 		{
-			displayTotal.firstChild.nodeValue = '(' + (used ++) + ' of as many as you want)'
+			displayTotal.firstChild.nodeValue = '(' + (used ++) + '/?)'
 		}
 			else
 		{
-		displayTotal.firstChild.nodeValue = '(' + (used ++) + ' of  ' + maxNumber + ' max)'
+		displayTotal.firstChild.nodeValue = '(' + (used ++) + '/' + maxNumber + ')'
 		}
 	}
 	
@@ -469,7 +471,7 @@ addEvent(window, "load", NiceTitles.autoCreation);
 		var holder = document.getElementById(baseid + '-count');
 		var num = (document.getElementById(baseid + '-count').value -1);
 		holder.value = num;
-		// show the add link if removing this link puts it unde the max number
+		// show the add link if removing this link puts it under the max number
 		if (holder.value<maxNumber)
 		{
 		var addLink =document.getElementById(baseid + '-addlink');
@@ -480,13 +482,12 @@ addEvent(window, "load", NiceTitles.autoCreation);
 		}
 			var displayTotal = document.getElementById(baseid + '-disp');
 			var used = document.getElementById(baseid + '-count').value;
-		//	alert (displayTotal.firstChild.nodeValue);
 		if (maxNumber<0)
 		{
-			displayTotal.firstChild.nodeValue ='(' + (used --	) + ' of as many as you want)'
+			displayTotal.firstChild.nodeValue ='(' + (used --	) + '/?)'
 		}
 		else
 		{
-		displayTotal.firstChild.nodeValue = '(' +  (used --	) + ' of  ' + maxNumber + ' max)'
+		displayTotal.firstChild.nodeValue = '(' +  (used --	) + '/' + maxNumber + ')'
 		}
 }
