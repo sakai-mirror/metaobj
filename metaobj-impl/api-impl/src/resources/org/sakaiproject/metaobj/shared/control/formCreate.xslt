@@ -48,6 +48,11 @@
 						/>');setFocus(focus_path);</xsl:attribute>
 				</xsl:if>
 				<div class="portletBody">
+					<input type="hidden" id="remove_item_msg">
+						<xsl:attribute name="value">
+							<xsl:value-of select="sakaifn:getMessage('messages', 'delete_form_element')" />
+						</xsl:attribute>
+					</input>					
 					<p class="instruction">
 						<xsl:value-of disable-output-escaping="yes" select="formData/artifact/schema/instructions"/>
 					</p>

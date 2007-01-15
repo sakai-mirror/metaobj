@@ -65,18 +65,26 @@
 							<xsl:value-of select="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value" />
 						</xsl:attribute>
 						<xsl:attribute name="title">
-							<xsl:value-of select="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value" /><xsl:text> </xsl:text><xsl:value-of select="sakaifn:getMessage('messages', 'max_chars')" /></xsl:attribute>
+							<xsl:value-of select="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value" />
+							<xsl:text> </xsl:text>
+							<xsl:value-of select="sakaifn:getMessage('messages', 'max_chars')" />
+						</xsl:attribute>
 					</xsl:when>
 					<xsl:otherwise>
 						<xsl:attribute name="maxLength"> 50 </xsl:attribute>
 						<xsl:attribute name="title">
-							<xsl:text> 50 </xsl:text> <xsl:value-of select="sakaifn:getMessage('messages', 'max_chars')" /> </xsl:attribute>
+							<xsl:text> 50 </xsl:text>
+							<xsl:value-of select="sakaifn:getMessage('messages', 'max_chars')" />
+						</xsl:attribute>
 					</xsl:otherwise>
 				</xsl:choose>
 			</input>
 			<xsl:if test="not(@maxOccurs='1')">
 				<a href="javascript:addItem('{$name}-node','{$name}');" class="addEl" id="{$name}-addlink">
-					<img src="/sakai-metaobj-tool/img/blank.gif" />
+					<xsl:attribute name="title">
+						<xsl:value-of select="sakaifn:getMessage('messages', 'add_form_element')" />
+					</xsl:attribute>
+					<img src="/sakai-metaobj-tool/img/blank.gif" alt="" />
 				</a>
 				<div class="instruction" style="display:inline" id="{$name}-disp">
 					<xsl:text> </xsl:text>
@@ -119,7 +127,10 @@
 			</select>
 			<xsl:if test="not(@maxOccurs='1')">
 				<a href="javascript:addItem('{$name}-node','{$name}');" class="addEl" id="{$name}-addlink">
-					<img src="/sakai-metaobj-tool/img/blank.gif" />
+					<xsl:attribute  name="title">
+						<xsl:value-of select="sakaifn:getMessage('messages', 'add_form_element')" />
+					</xsl:attribute>
+					<img src="/sakai-metaobj-tool/img/blank.gif" alt="" />
 				</a>
 				<div class="instruction" style="display:inline" id="{$name}-disp">
 					<xsl:text> </xsl:text>
@@ -172,7 +183,10 @@
 						<xsl:value-of select="sakaifn:getRichTextScript($name, $currentSchemaNode)" disable-output-escaping="yes" />
 						<xsl:if test="@maxOccurs='-1'">
 							<a href="javascript:addItem('{$name}parent');" class="addEl">
-								<img src="/sakai-metaobj-tool/img/blank.gif" />
+								<xsl:attribute  name="title">
+									<xsl:value-of select="sakaifn:getMessage('messages', 'add_form_element')" />
+								</xsl:attribute>
+								<img src="/sakai-metaobj-tool/img/blank.gif" alt="" />
 							</a>
 							<input type="hidden" id="{$name}parenthid" value="0" />
 						</xsl:if>
@@ -204,7 +218,10 @@
 			<textarea id="{$name}" name="{$name}">
 				<xsl:if test="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value">
 					<xsl:attribute name="title">
-						<xsl:value-of select="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value" /><xsl:text> </xsl:text> <xsl:value-of select="sakaifn:getMessage('messages', 'max_chars')" /> </xsl:attribute>
+						<xsl:value-of select="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value" />
+						<xsl:text> </xsl:text>
+						<xsl:value-of select="sakaifn:getMessage('messages', 'max_chars')" />
+					</xsl:attribute>
 					<xsl:choose>
 						<xsl:when test="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value &lt; 600">
 							<xsl:attribute name="rows">3</xsl:attribute>
@@ -233,7 +250,10 @@
 			</textarea>
 			<xsl:if test="not(@maxOccurs='1')">
 				<a href="javascript:addItem('{$name}-node','{$name}');" class="addEl" id="{$name}-addlink">
-					<img src="/sakai-metaobj-tool/img/blank.gif" />
+					<xsl:attribute  name="title">
+						<xsl:value-of select="sakaifn:getMessage('messages', 'add_form_element')" />
+					</xsl:attribute>
+					<img src="/sakai-metaobj-tool/img/blank.gif" alt="" />
 				</a>
 				<div class="instruction" style="display:inline" id="{$name}-disp">
 					<xsl:text> </xsl:text>
@@ -261,7 +281,10 @@
 			</xsl:call-template>
 			<xsl:if test="@maxOccurs='-1'">
 				<a href="javascript:addItem('{$name}parent');" class="addEl">
-					<img src="/sakai-metaobj-tool/img/blank.gif" />
+					<xsl:attribute  name="title">
+						<xsl:value-of select="sakaifn:getMessage('messages', 'add_form_element')" />
+					</xsl:attribute>
+					<img src="/sakai-metaobj-tool/img/blank.gif" alt="" />
 				</a>
 				<input type="hidden" id="{$name}parenthid" value="0" />
 			</xsl:if>
@@ -349,7 +372,10 @@
 			</xsl:call-template>
 			<xsl:if test="not(@maxOccurs='1')">
 				<a href="javascript:addItem('{$name}-node','{$name}');" class="addEl" id="{$name}-addlink">
-					<img src="/sakai-metaobj-tool/img/blank.gif" />
+					<xsl:attribute  name="title">
+						<xsl:value-of select="sakaifn:getMessage('messages', 'add_form_element')" />
+					</xsl:attribute>
+					<img src="/sakai-metaobj-tool/img/blank.gif" alt="" />
 				</a>
 				<div class="instruction" style="display:inline" id="{$name}-disp">
 					<xsl:text> </xsl:text>
