@@ -600,13 +600,13 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
 
       try {
          createResource("/org/sakaiproject/metaobj/shared/control/formCreate.xslt", "formCreate.xslt",
-            "used for default rendering of form add and update", "text/xml", isReplaceViews());
+            "used for default rendering of form add and update", "text/xml", isReplaceViews(), true);
 
          createResource("/org/sakaiproject/metaobj/shared/control/formFieldTemplate.xslt", "formFieldTemplate.xslt",
-            "used for default rendering of form fields", "text/xml", isReplaceViews());
+            "used for default rendering of form fields", "text/xml", isReplaceViews(), true);
 
          createResource("/org/sakaiproject/metaobj/shared/control/formView.xslt", "formView.xslt",
-            "used for default rendering of form viewing", "text/xml", isReplaceViews());
+            "used for default rendering of form viewing", "text/xml", isReplaceViews(), true);
       }
       finally{
          sakaiSession.setUserEid(userId);
@@ -1104,7 +1104,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
    }
 
    protected String createResource(String resourceLocation, String name,
-                                   String description, String type, boolean replace) {
+                                   String description, String type, boolean replace, boolean pubview) {
       ByteArrayOutputStream bos = loadResource(resourceLocation);
       ContentResource resource;
       ResourcePropertiesEdit resourceProperties = getContentHosting().newResourceProperties();
@@ -1186,6 +1186,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       try {
          resource = getContentHosting().addResource(name, folder, 100, type,
                      bos.toByteArray(), resourceProperties, NotificationService.NOTI_NONE);
+         getContentHosting().setPubView(resource.getId(), pubview);
       }
       catch (Exception e) {
          throw new RuntimeException(e);
