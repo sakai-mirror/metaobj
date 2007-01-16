@@ -32,6 +32,7 @@ import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactValidationService;
 import org.sakaiproject.metaobj.shared.model.ElementBean;
 import org.sakaiproject.metaobj.shared.model.ElementListBean;
 import org.sakaiproject.metaobj.shared.model.ValidationError;
+import org.sakaiproject.metaobj.shared.model.ElementListBeanWrapper;
 import org.sakaiproject.metaobj.utils.mvc.intf.FieldValueWrapper;
 import org.sakaiproject.metaobj.utils.xml.NormalizationException;
 import org.sakaiproject.metaobj.utils.xml.SchemaNode;
@@ -139,6 +140,9 @@ public class StructuredArtifactValidationServiceImpl implements StructuredArtifa
                            MessageFormat.format(exp.getErrorCode(), exp.getErrorInfo())));
                   }
                }
+            }
+            else if (value instanceof ElementListBeanWrapper) {
+               ((ElementListBeanWrapper)value).validate(errors);
             }
             else if (childSchema.isAttribute()) {
                Attribute childAttribute = rootElement.getAttribute(childSchema.getName());

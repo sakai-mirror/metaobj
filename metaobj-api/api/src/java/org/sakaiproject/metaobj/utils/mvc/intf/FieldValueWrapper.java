@@ -30,12 +30,14 @@ import java.util.List;
  * Time: 6:38:48 PM
  * To change this template use File | Settings | File Templates.
  */
-public interface FieldValueWrapper {
+public interface FieldValueWrapper extends Cloneable {
 
    public void setValue(Object value);
 
    public Object getValue();
 
    public void validate(List errors);
+
+   public Object clone();
 
 }

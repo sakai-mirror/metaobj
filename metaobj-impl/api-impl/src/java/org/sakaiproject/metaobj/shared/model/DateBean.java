@@ -231,4 +231,11 @@ public class DateBean implements FieldValueWrapper {
       checkFlag(fullDate);
    }
 
+   public Object clone() {
+      try {
+         return super.clone();
+      } catch (CloneNotSupportedException e) {
+         throw new RuntimeException(e);
+      }
+   }
 }

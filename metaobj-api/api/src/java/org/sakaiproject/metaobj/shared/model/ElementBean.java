@@ -60,6 +60,7 @@ public class ElementBean extends HashMap implements TypedMap {
    private Map types = new HashMap();
    private SchemaNode currentSchema;
    private Map wrappedInstances = new HashMap();
+   private Map wrappedLists = new HashMap();
    private boolean deferValidation = true;
    private ElementListBean parent;
 
@@ -234,7 +235,12 @@ public class ElementBean extends HashMap implements TypedMap {
             childElements.add(new ElementBean((Element) i.next(), schema, deferValidation));
          }
 
-         return new ElementListBean(baseElement, childElements, schema, deferValidation);
+         if (getWrapperFactory().checkWrapper(schema.getObjectType())) {
+            return wrappedListGet(childElements, schema, key);
+         }
+         else {
+            return new ElementListBean(baseElement, childElements, schema, deferValidation);
+         }
       }
 
       if (getWrapperFactory().checkWrapper(schema.getObjectType())) {
@@ -291,6 +297,17 @@ public class ElementBean extends HashMap implements TypedMap {
       }
    }
 
+   protected Object wrappedListGet(List childElements, SchemaNode schema, Object key) {
+      if (wrappedLists.get(key) == null) {
+         wrappedLists.put(key,
+            new ElementListBeanWrapper(
+               new ElementListBean(baseElement, childElements, schema, deferValidation),
+               (FieldValueWrapper) wrappedObjectGet(key, schema)));
+      }
+
+      return wrappedLists.get(key);
+   }
+
    protected Object wrappedObjectPut(Object key, Object value, SchemaNode schema) {
       FieldValueWrapper wrapper = (FieldValueWrapper) wrappedInstances.get(key);
 
@@ -338,7 +355,12 @@ public class ElementBean extends HashMap implements TypedMap {
 
       if (schema != null) {
          if (schema.getMaxOccurs() > 1 || schema.getMaxOccurs() == -1) {
-            return ElementListBean.class;
+            if (getWrapperFactory().checkWrapper(schema.getObjectType())) {
+               return ElementListBeanWrapper.class;
+            }
+            else {
+               return ElementListBean.class;
+            }
          }
          else {
             return schema.getObjectType();
