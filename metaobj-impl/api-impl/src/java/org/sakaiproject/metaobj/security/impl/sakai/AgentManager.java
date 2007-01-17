@@ -88,7 +88,7 @@ public class AgentManager extends SecurityBase implements org.sakaiproject.metao
       }
 
       if (exception != null) {
-         logger.warn("Unable to find user: " + id, exception);
+         logger.warn("Unable to find user: " + id + " " + exception.toString());
       }
       else {
          logger.warn("Unable to find user: " + id);
