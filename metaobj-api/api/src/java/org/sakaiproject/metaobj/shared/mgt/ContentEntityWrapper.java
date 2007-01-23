@@ -27,6 +27,8 @@ import java.util.Stack;
 
 import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.content.api.ContentCollection;
+import org.sakaiproject.content.api.ContentEntity;
+import org.sakaiproject.content.api.ContentHostingHandler;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.exception.ServerOverloadException;
@@ -184,4 +186,25 @@ public class ContentEntityWrapper implements ContentResource
    {
       return base.getResourceType();
    }
+
+   public ContentHostingHandler getContentHandler() {
+      return base.getContentHandler();
+   }
+
+   public ContentEntity getMember(String nextId) {
+      return base.getMember(nextId);
+   }
+
+   public ContentEntity getVirtualContentEntity() {
+      return base.getVirtualContentEntity();
+   }
+
+   public void setContentHandler(ContentHostingHandler chh) {
+      base.setContentHandler(chh);      
+   }
+
+   public void setVirtualContentEntity(ContentEntity ce) {
+      base.setVirtualContentEntity(ce);      
+   }
+
 }
