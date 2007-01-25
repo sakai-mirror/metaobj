@@ -94,7 +94,7 @@ public class AgentManager extends SecurityBase implements org.sakaiproject.metao
          logger.warn("Unable to find user: " + id);
       }
 
-      return null;
+      return new AgentWrapper(null, null, null, null, null);
    }
 
    public Agent getAgent(String username) {
@@ -122,13 +122,13 @@ public class AgentManager extends SecurityBase implements org.sakaiproject.metao
       }
 
       if (exception != null) {
-         logger.warn("Unable to find user: " + username, exception);
+         logger.warn("Unable to find user: " + username + " " + exception.toString());
       }
       else {
          logger.warn("Unable to find user: " + username);
       }
 
-      return null;
+      return new AgentWrapper(null, null, null, null, null);
    }
 
    public Agent getWorksiteRole(String roleName) {
