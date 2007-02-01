@@ -31,13 +31,14 @@ import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
 import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactHomeInterface;
+import org.sakaiproject.metaobj.shared.mgt.home.ResourceHelperArtifactHome;
 import org.sakaiproject.metaobj.shared.FormHelper;
-import org.sakaiproject.content.api.ResourceEditingHelper;
-import org.sakaiproject.content.api.FilePickerHelper;
+import org.sakaiproject.content.api.*;
 import org.sakaiproject.content.cover.ContentHostingService;
 import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.entity.api.Reference;
+import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.entity.cover.EntityManager;
 
 import java.util.*;
@@ -174,6 +175,18 @@ public class XmlControllerBase {
       if (session.get(FormHelper.PREVIEW_HOME_TAG) != null) {
          return getStructuredArtifactDefinitionManager().convertToHome(
             (StructuredArtifactDefinitionBean)session.get(FormHelper.PREVIEW_HOME_TAG));
+      }
+      else if (session.get(ResourceToolAction.ACTION_PIPE) != null) {
+         ResourceToolActionPipe pipe = (ResourceToolActionPipe)session.get(ResourceToolAction.ACTION_PIPE);
+         String schemaName = getSchemaName(session);
+         if (schemaName == null) {
+            ContentEntity entity = pipe.getContentEntity();
+            schemaName = (String) entity.getProperties().get(ResourceProperties.PROP_STRUCTOBJ_TYPE);
+         }
+
+         StructuredArtifactHomeInterface home =
+            (StructuredArtifactHomeInterface) getHomeFactory().getHome(schemaName);
+         return new ResourceHelperArtifactHome(home, pipe);
       }
       else {
          return (StructuredArtifactHomeInterface) getHomeFactory().getHome(getSchemaName(session));

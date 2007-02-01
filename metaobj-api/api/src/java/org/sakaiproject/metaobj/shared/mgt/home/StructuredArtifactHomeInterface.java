@@ -53,5 +53,7 @@ public interface StructuredArtifactHomeInterface extends WritableObjectHome, Clo
    public StructuredArtifact load(ContentResource resource);
 
    public String getTypeId();
+
+   public byte[] getBytes(StructuredArtifact artifact);
    
 }

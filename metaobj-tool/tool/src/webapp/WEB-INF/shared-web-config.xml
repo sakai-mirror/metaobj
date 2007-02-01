@@ -186,6 +186,27 @@
       </property>
    </bean>
 
+   <bean id="chooseFormTypeHelperController"
+         class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
+      <property name="controller">
+         <bean class="org.sakaiproject.metaobj.shared.control.FormCreateResourceHelper">
+            <property name="structuredArtifactDefinitionManager">
+               <ref bean="structuredArtifactDefinitionManager"/>
+            </property>
+         </bean>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="formHelper">addXmlElementRedirect</prop>
+            <prop key="success">finishFormHelper</prop>
+            <prop key="cancel">finishFormHelper</prop>
+         </props>
+      </property>
+      <property name="commandName"><value>bean</value></property>
+      <property name="commandClass"><value>org.sakaiproject.metaobj.shared.control.FormCreateHelperBean</value></property>
+      <property name="formView"><value>chooseFormView</value></property>
+   </bean>
+
    <!-- generic xmlElement add controller -->
    <bean id="formHelperController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
       <property name="controller">

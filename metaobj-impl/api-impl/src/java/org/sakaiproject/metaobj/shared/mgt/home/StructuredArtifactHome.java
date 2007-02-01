@@ -272,6 +272,10 @@ public class StructuredArtifactHome extends XmlElementHome
       }
    }
 
+   public byte[] getBytes(StructuredArtifact artifact) {
+      return getInfoBytes(artifact);
+   }
+
    protected InputStream getInfoStream(Artifact object) throws PersistenceException {
       return new ByteArrayInputStream(getInfoBytes(object));
    }

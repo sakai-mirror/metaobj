@@ -116,8 +116,10 @@ public class AddXmlElementController extends XmlControllerBase
       try {
          WritableObjectHome home = getSchema(session);
          newArtifact = home.store(artifact);
-         session.put(FormHelper.RETURN_REFERENCE_TAG, newArtifact.getId().getValue());
-         session.put(FormHelper.RETURN_ACTION_TAG, FormHelper.RETURN_ACTION_SAVE);
+         if (newArtifact.getId() != null) {
+            session.put(FormHelper.RETURN_REFERENCE_TAG, newArtifact.getId().getValue());
+            session.put(FormHelper.RETURN_ACTION_TAG, FormHelper.RETURN_ACTION_SAVE);
+         }
       } catch (PersistenceException e) {
          errors.rejectValue(e.getField(), e.getErrorCode(), e.getErrorInfo(),
             e.getDefaultMessage());

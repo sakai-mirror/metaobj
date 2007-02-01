@@ -340,6 +340,10 @@ public class XmlElementHome implements StructuredArtifactHomeInterface, Initiali
       return typeId;
    }
 
+   public byte[] getBytes(StructuredArtifact artifact) {
+      return new byte[0];
+   }
+
    public void setTypeId(String typeId) {
       this.typeId = typeId;
    }

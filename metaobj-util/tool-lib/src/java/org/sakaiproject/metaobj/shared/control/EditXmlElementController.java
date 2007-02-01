@@ -30,14 +30,17 @@ import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifact;
 import org.sakaiproject.metaobj.shared.model.ElementBean;
 import org.sakaiproject.metaobj.shared.model.PersistenceException;
+import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactHomeInterface;
 import org.sakaiproject.metaobj.shared.mgt.WritableObjectHome;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome;
 import org.sakaiproject.metaobj.shared.ArtifactFinder;
 import org.sakaiproject.metaobj.shared.FormHelper;
 import org.sakaiproject.content.cover.ContentHostingService;
 import org.sakaiproject.content.api.ResourceEditingHelper;
 import org.sakaiproject.content.api.FilePickerHelper;
+import org.sakaiproject.content.api.ResourceToolAction;
 import org.sakaiproject.tool.api.ToolSession;
 
 import java.util.Map;
@@ -92,11 +95,21 @@ public class EditXmlElementController extends XmlControllerBase
    }
    public Object fillBackingObject(Object incomingModel, Map request, Map session, Map application) throws Exception {
       if (session.get(EditedArtifactStorage.STORED_ARTIFACT_FLAG) == null) {
-         String idString = ContentHostingService.getUuid(
-            (String) session.get(ResourceEditingHelper.ATTACHMENT_ID));
+         StructuredArtifact bean;
 
-         StructuredArtifact bean =
-            (StructuredArtifact) getArtifactFinder().load(getIdManager().getId(idString));
+         if (session.get(ResourceToolAction.ACTION_PIPE) == null) {
+            Id id;
+            String idString = ContentHostingService.getUuid(
+               (String) session.get(ResourceEditingHelper.ATTACHMENT_ID));
+
+            id = getIdManager().getId(idString);
+
+            bean = (StructuredArtifact) getArtifactFinder().load(id);
+         }
+         else {
+            ReadableObjectHome home = getSchema(session);
+            bean = (StructuredArtifact) home.load(null);
+         }
 
          session.put(ResourceEditingHelper.CREATE_SUB_TYPE,
             ((StructuredArtifactHomeInterface)bean.getHome()).getTypeId());

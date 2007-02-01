@@ -340,7 +340,7 @@ public class ElementBean extends HashMap implements TypedMap {
 
          Element valueElement = getBaseElement().getChild(schema.getName());
 
-         if (valueElement != null) {
+         if (valueElement != null && valueElement.getContentSize() != 0) {
             Object value = schema.getActualNormalizedValue(valueElement.getText());
             wrapper.setValue(value);
          }

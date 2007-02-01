@@ -94,7 +94,8 @@
             <prop key="/confirmSADDelete.osp">deleteStructuredArtifactDefinitionController</prop>            
             <prop key="/formView.osp">formViewController</prop>
             <prop key="/formHelper.osp">formHelperController</prop>
-            <prop key="/formEditHelper.osp">formEditHelperController</prop>                                    
+            <prop key="/formEditHelper.osp">formEditHelperController</prop>
+            <prop key="/formResourceCreateHelper.osp">chooseFormTypeHelperController</prop>
          </props>
       </property>
    </bean>

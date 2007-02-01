@@ -299,4 +299,13 @@
       </property>
    </bean>
 
+   <bean id="org.sakaiproject.content.api.ResourceType.metaobj"
+      class="org.sakaiproject.metaobj.registry.FormResourceType"
+      init-method="init"
+      singleton="true">
+      <property name="resourceTypeRegistry">
+         <ref bean="org.sakaiproject.content.api.ResourceTypeRegistry" />
+      </property>
+   </bean>
+
 </beans>
