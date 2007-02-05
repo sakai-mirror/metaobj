@@ -306,6 +306,9 @@
       <property name="resourceTypeRegistry">
          <ref bean="org.sakaiproject.content.api.ResourceTypeRegistry" />
       </property>
+      <property name="structuredArtifactDefinitionManager">
+         <ref bean="structuredArtifactDefinitionManager" />
+      </property>
    </bean>
 
 </beans>

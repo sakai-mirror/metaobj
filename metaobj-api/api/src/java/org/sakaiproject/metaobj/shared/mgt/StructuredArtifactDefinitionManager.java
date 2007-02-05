@@ -52,6 +52,8 @@ public interface StructuredArtifactDefinitionManager {
 
    public List findHomes();
 
+   public List findHomes(boolean includeHidden);
+
    /**
     * @return list of all published globals or global sad owned by current user
     */
@@ -140,5 +142,7 @@ public interface StructuredArtifactDefinitionManager {
    public Element createFormViewXml(ElementBean bean, String returnUrl);
 
    public InputStream getTransformer(String type, boolean readOnly);
+
+   public boolean hasHomes();
 
 }

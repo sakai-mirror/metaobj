@@ -125,29 +125,33 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
     * @return list of published sads or sads owned by current user
     */
    public List findHomes() {
+      return findHomes(true);
+   }
+
+   public List findHomes(boolean includeHidden) {
       // only for the appropriate worksites
       List sites = getWorksiteManager().getUserSites();
       List returned = new ArrayList();
       while (sites.size() > getExpressionMax()) {
-         returned.addAll(findHomes(sites.subList(0, getExpressionMax() - 1), false));
+         returned.addAll(findHomes(sites.subList(0, getExpressionMax() - 1), false, includeHidden));
          sites.subList(0, getExpressionMax() - 1).clear();
       }
-      returned.addAll(findHomes(sites, true));
+      returned.addAll(findHomes(sites, true, includeHidden));
       return returned;
    }
 
-   protected List findHomes(List sites, boolean includeGlobal) {
+   protected List findHomes(List sites, boolean includeGlobal, boolean includeHidden) {
       String query;
       Object[] params;
 
       if (includeGlobal) {
-         query = "from StructuredArtifactDefinitionBean where owner = ? or globalState = ? or (siteState = ?  and siteId in (";
+         query = "from StructuredArtifactDefinitionBean where (owner = ? or globalState = ? or (siteState = ?  and siteId in (";
          params = new Object[]{getAuthManager().getAgent(),
                                new Integer(StructuredArtifactDefinitionBean.STATE_PUBLISHED),
                                new Integer(StructuredArtifactDefinitionBean.STATE_PUBLISHED)};
       }
       else {
-         query = "from StructuredArtifactDefinitionBean where owner != ? and (siteState = ?  and siteId in (";
+         query = "from StructuredArtifactDefinitionBean where (owner != ? and (siteState = ?  and siteId in (";
          params = new Object[]{getAuthManager().getAgent(),
                                new Integer(StructuredArtifactDefinitionBean.STATE_PUBLISHED)};
       }
@@ -159,6 +163,13 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       }
 
       query += "''))";
+
+      if (includeHidden) {
+         query += ")";
+      }
+      else {
+         query += ") and systemOnly != true";
+      }
 
       return getHibernateTemplate().find(query, params);
    }
@@ -1057,6 +1068,10 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       } catch (TypeException e) {
          throw new RuntimeException(e);
       }
+   }
+
+   public boolean hasHomes() {
+      return findHomes(false).size() > 0;
    }
 
    public ArtifactFinder getArtifactFinder() {

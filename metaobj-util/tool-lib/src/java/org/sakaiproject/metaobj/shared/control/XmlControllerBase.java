@@ -252,6 +252,7 @@ public class XmlControllerBase {
       }
 
       session.put(FilePickerHelper.FILE_PICKER_ATTACHMENTS, attachmentRefs);
+      session.put(FilePickerHelper.START_HELPER, "true");
 
       return new ModelAndView("fileHelper");
    }

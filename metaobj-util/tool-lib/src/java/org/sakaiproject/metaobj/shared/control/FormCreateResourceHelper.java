@@ -56,7 +56,7 @@ public class FormCreateResourceHelper implements Controller, FormController, Can
    public Map referenceData(Map request, Object command, Errors errors) {
       Map ref = new Hashtable();
 
-      ref.put("formList", getStructuredArtifactDefinitionManager().findHomes());
+      ref.put("formList", getStructuredArtifactDefinitionManager().findHomes(false));
 
       return ref;
    }

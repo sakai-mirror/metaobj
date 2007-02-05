@@ -10,6 +10,10 @@ import org.sakaiproject.content.util.BaseServiceLevelAction;
 import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.user.api.User;
+import org.sakaiproject.util.ResourceLoader;
+import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
+import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactHomeInterface;
+import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 
 import java.util.*;
 
@@ -26,6 +30,8 @@ public class FormResourceType implements ResourceType {
       new EnumMap<ResourceToolAction.ActionType, List<ResourceToolAction>>(ResourceToolAction.ActionType.class);
    private Map<String, ResourceToolAction> actions = new Hashtable<String, ResourceToolAction>();
    private ResourceTypeRegistry resourceTypeRegistry;
+   private ResourceLoader rb;
+   private StructuredArtifactDefinitionManager structuredArtifactDefinitionManager;
 
    public static final String FORM_TYPE_ID = ResourceType.TYPE_METAOBJ;
 
@@ -33,11 +39,13 @@ public class FormResourceType implements ResourceType {
    private static final String REVISE_HELPER = "sakai.metaobj.form.resourceEditHelper";
 
    public void init() {
+      rb = new ResourceLoader("org/sakaiproject/metaobj/registry/messages");
       List requiredKeys = new ArrayList();
       requiredKeys.add(ResourceProperties.PROP_STRUCTOBJ_TYPE);
       requiredKeys.add(ContentHostingService.PROP_ALTERNATE_REFERENCE);
-      ResourceToolAction create = new BaseInteractionAction(ResourceToolAction.CREATE,
-         ResourceToolAction.ActionType.CREATE, FORM_TYPE_ID, CREATE_HELPER, requiredKeys);
+      ResourceToolAction create = new CreateFormInteractionAction(getStructuredArtifactDefinitionManager(),
+         ResourceToolAction.CREATE, ResourceToolAction.ActionType.CREATE, FORM_TYPE_ID, CREATE_HELPER,
+         requiredKeys);
       ResourceToolAction revise = new BaseInteractionAction(ResourceToolAction.REVISE_CONTENT,
          ResourceToolAction.ActionType.REVISE_CONTENT, FORM_TYPE_ID, REVISE_HELPER, null);
       ResourceToolAction copy = new BaseServiceLevelAction(ResourceToolAction.COPY,
@@ -127,8 +135,7 @@ public class FormResourceType implements ResourceType {
     * @return
     */
    public String getIconLocation() {
-      // todo icon
-      return null;
+      return "sakai/form.gif";
    }
 
    /**
@@ -144,8 +151,7 @@ public class FormResourceType implements ResourceType {
     * @return
     */
    public String getLabel() {
-      // todo i18n
-      return "Form Item";
+      return rb.getString("form_item");
    }
 
    /**
@@ -159,8 +165,10 @@ public class FormResourceType implements ResourceType {
     * @return
     */
    public String getLocalizedHoverText(ContentEntity member) {
-      // todo implement
-      return "Form Item";
+      StructuredArtifactDefinitionBean home = getStructuredArtifactDefinitionManager().loadHome(
+         (String)member.getProperties().get(ResourceProperties.PROP_STRUCTOBJ_TYPE));
+
+      return rb.getFormattedMessage("form_item_tip", new Object[]{home.getDescription()});
    }
 
    /**
@@ -232,6 +240,14 @@ public class FormResourceType implements ResourceType {
 
    public void setResourceTypeRegistry(ResourceTypeRegistry resourceTypeRegistry) {
       this.resourceTypeRegistry = resourceTypeRegistry;
+   }
+
+   public StructuredArtifactDefinitionManager getStructuredArtifactDefinitionManager() {
+      return structuredArtifactDefinitionManager;
+   }
+
+   public void setStructuredArtifactDefinitionManager(StructuredArtifactDefinitionManager structuredArtifactDefinitionManager) {
+      this.structuredArtifactDefinitionManager = structuredArtifactDefinitionManager;
    }
 
 }
