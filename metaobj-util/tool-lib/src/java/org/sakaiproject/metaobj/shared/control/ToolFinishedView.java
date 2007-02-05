@@ -30,6 +30,7 @@ import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.metaobj.shared.control.HelperView;
+import org.sakaiproject.spring.util.SpringTool;
 
 /**
  * Created by IntelliJ IDEA.
@@ -54,6 +55,7 @@ public class ToolFinishedView extends HelperView {
             tool.getId() + Tool.HELPER_DONE_URL);
 
       toolSession.removeAttribute(tool.getId() + Tool.HELPER_DONE_URL);
+      toolSession.removeAttribute(SpringTool.LAST_VIEW_VISITED);
 
       String pathObj = (String)toolSession.getAttribute(tool.getId() + "thetoolPath");
       toolSession.removeAttribute(tool.getId() + "thetoolPath");
