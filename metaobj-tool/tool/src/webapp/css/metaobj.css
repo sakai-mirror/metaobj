@@ -62,3 +62,6 @@ a.nt:hover{
 	color:gray;
 	text-decoration: none !important;
 }
+.skipthis{
+	display:none
+	}

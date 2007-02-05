@@ -378,6 +378,7 @@ addEvent(window, "load", NiceTitles.autoCreation);
 	  var itemToClone = document.getElementById(idtoclone);
 	  var itemToCloneParent = itemToClone.parentNode;
 	  var itemToCloneSibling= itemToClone.nextSibling;
+	  var itemToCloneLast=document.getElementById(baseid + '-hidden-fields');
 	 	var maxNumber = document.getElementById(baseid + '-max').value;
 	 	var removeItemText=document.getElementById('remove_item_msg').value;
 	  //clone the element
@@ -396,10 +397,12 @@ addEvent(window, "load", NiceTitles.autoCreation);
 			if (newItem.childNodes[i].nodeName=="LABEL")
 			{
 		//change the element children's  display and relationships
+		if(newItem.childNodes[i].firstChild.nodeName=="A"){
 			newItem.childNodes[i].firstChild.removeAttribute('class');
 			newItem.childNodes[i].firstChild.setAttribute('class','inactlabel')
 			newItem.childNodes[i].firstChild.removeAttribute('title');
 			newItem.childNodes[i].firstChild.removeAttribute('nicetitle');
+			}
 			newItem.childNodes[i].removeAttribute("htmlFor"); //silly IE...
 			newItem.childNodes[i].setAttribute('for',baseid + "-" + num + 'child')
 			newItem.childNodes[i].setAttribute('htmlFor',baseid + "-" + num + 'child')
@@ -407,10 +410,15 @@ addEvent(window, "load", NiceTitles.autoCreation);
 			else if (newItem.childNodes[i].nodeName=="INPUT")
 			{
 			newItem.childNodes[i].setAttribute('id',baseid + "-" + num + 'child')
+			newItem.childNodes[i].value='';;
+			clonedInputId = baseid + "-" + num + 'child';
 			}
 			else if (newItem.childNodes[i].nodeName=="TEXTAREA")
 			{
-			newItem.childNodes[i].setAttribute('id',baseid + "-" + num + 'child')
+			newItem.childNodes[i].setAttribute('id',baseid + "-" + num + 'child');
+			newItem.childNodes[i].value='';
+			clonedInputId = baseid + "-" + num + 'child';
+			newItem.childNodes[i].value='';
 			}
 			else if (newItem.childNodes[i].nodeName=="SPAN")
 			{
@@ -422,6 +430,15 @@ addEvent(window, "load", NiceTitles.autoCreation);
 			newItem.childNodes[i].setAttribute('id','');
 			newItem.childNodes[i].firstChild.nodeValue='';
 			}
+			//retouch the onclick attribute of the calendar img link 
+				else if (newItem.childNodes[i].nodeName=="IMG")
+			{
+				var parentIdval	= document.getElementById(baseid + '-dateWId').value;
+				thisIdVal =parentIdval + "X" + num;
+				newEventValue= "javascript:var cal" +  thisIdVal + " = new calendar2(document.getElementById(\'" + baseid + "-" + num + 'child' +"\'));cal" + thisIdVal +".year_scroll = true;cal" + thisIdVal + ".time_comp = false;cal" + thisIdVal + ".popup(\'\',\'/sakai-jsf-resource/inputDate/\')";
+				newItem.childNodes[i].setAttribute('onclick',newEventValue);
+			}
+
 			else if (newItem.childNodes[i].nodeName=="A")
 			{
 				newItem.childNodes[i].setAttribute('className','deleteEl'); //silly IE...
@@ -436,7 +453,11 @@ addEvent(window, "load", NiceTitles.autoCreation);
 		newItem.setAttribute('id',baseid + "-" + num);
 	
 		//stick it in
-	  itemToCloneParent.insertBefore(newItem,itemToCloneSibling);
+		
+	  //this puts it after the cloned item
+	  //itemToCloneParent.insertBefore(newItem,itemToCloneSibling);
+		//this puts it in the last position of the series
+		itemToCloneParent.insertBefore(newItem,itemToCloneLast);
 		// hide the add link if max number has been reached
 		if (holder.value==maxNumber)
 		{
@@ -454,6 +475,12 @@ addEvent(window, "load", NiceTitles.autoCreation);
 		{
 		displayTotal.firstChild.nodeValue = '(' + (used ++) + '/' + maxNumber + ')'
 		}
+		//pass the focus to the new control (if it is an input[type=text] or a textarea)
+		if (clonedInputId !='');
+		{
+			document.getElementById(clonedInputId).focus();
+		}
+
 	}
 	
 	
@@ -462,6 +489,8 @@ addEvent(window, "load", NiceTitles.autoCreation);
 	{
 		var itemToRemove = document.getElementById(nodeToRemove);
 	
+		
+		
 		var itemToRemoveParent = itemToRemove.parentNode;
 	 	var maxNumber = document.getElementById(baseid + '-max').value;
 	
@@ -475,10 +504,9 @@ addEvent(window, "load", NiceTitles.autoCreation);
 		if (holder.value<maxNumber)
 		{
 		var addLink =document.getElementById(baseid + '-addlink');
-			addLink.style.display='inline';
+		addLink.style.display='inline';
 		addLink.className='addEl';
 		addLink.href="javascript:addItem(\'" + baseid + "-node\',\'" + baseid + "\');";
-	
 		}
 			var displayTotal = document.getElementById(baseid + '-disp');
 			var used = document.getElementById(baseid + '-count').value;
