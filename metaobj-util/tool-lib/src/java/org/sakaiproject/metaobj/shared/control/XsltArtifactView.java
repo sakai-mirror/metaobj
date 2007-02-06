@@ -31,6 +31,7 @@ import org.jdom.transform.JDOMSource;
 import org.jdom.Element;
 import org.jdom.Document;
 import org.sakaiproject.content.api.ResourceEditingHelper;
+import org.sakaiproject.content.api.ResourceToolAction;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
 import org.sakaiproject.metaobj.shared.model.Artifact;
 import org.sakaiproject.metaobj.shared.model.ElementBean;
@@ -89,10 +90,17 @@ public class XsltArtifactView extends AbstractXsltView {
          paramsMap.put("preview", "true");
       }
 
+      if (toolSession.getAttribute(ResourceToolAction.ACTION_PIPE) != null) {
+         paramsMap.put("fromResources", "true");
+      }
+
+      boolean edit = false;
+
       if (bean instanceof Artifact) {
          root = getStructuredArtifactDefinitionManager().createFormViewXml(
             (Artifact) bean, null);
          homeType = getHomeType((Artifact) bean);
+         edit = ((Artifact)bean).getId() != null;
       }
       else {
          EditedArtifactStorage sessionBean = (EditedArtifactStorage)httpServletRequest.getSession().getAttribute(
@@ -104,6 +112,11 @@ public class XsltArtifactView extends AbstractXsltView {
          replaceNodes(root, bean, sessionBean);
          paramsMap.put("subForm", "true");
          homeType = getHomeType(sessionBean.getRootArtifact());
+         edit = sessionBean.getRootArtifact().getId() != null;
+      }
+
+      if (edit) {
+         paramsMap.put("edit", "true");
       }
 
       httpServletRequest.setAttribute(STYLESHEET_LOCATION,

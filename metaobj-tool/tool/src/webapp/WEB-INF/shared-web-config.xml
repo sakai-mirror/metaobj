@@ -224,6 +224,7 @@
             <prop key="subList">addXmlElementRedirect</prop>
             <prop key="success">finishFormHelper</prop>
             <prop key="fileHelper">xmlArtifactFileHelper</prop>
+            <prop key="back">formResourceCreateHelperRedirect</prop>                                    
          </props>
       </property>
       <property name="commandName"><value>bean</value></property>

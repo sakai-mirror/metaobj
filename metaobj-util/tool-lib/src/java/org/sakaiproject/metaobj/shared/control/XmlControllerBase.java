@@ -58,6 +58,12 @@ public class XmlControllerBase {
 
    protected ModelAndView handleNonSubmit(ElementBean bean, Map request,
                                              Map session, Map application, Errors errors, Map model) {
+      if (request.get("backButton") != null) {
+         session.remove(EditedArtifactStorage.STORED_ARTIFACT_FLAG);
+         session.remove(EditedArtifactStorage.EDITED_ARTIFACT_STORAGE_SESSION_KEY);
+         return new ModelAndView("back");
+      }
+
       EditedArtifactStorage sessionBean = (EditedArtifactStorage)session.get(
          EditedArtifactStorage.EDITED_ARTIFACT_STORAGE_SESSION_KEY);
 
