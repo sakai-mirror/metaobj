@@ -45,6 +45,7 @@ import org.sakaiproject.metaobj.utils.Config;
 import org.sakaiproject.metaobj.utils.xml.SchemaNode;
 import org.sakaiproject.metaobj.worksite.intf.WorksiteAware;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
+import org.sakaiproject.metaobj.registry.FormResourceType;
 import org.sakaiproject.entity.api.ResourcePropertiesEdit;
 import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.content.cover.ContentHostingService;
@@ -201,10 +202,11 @@ public class StructuredArtifactHome extends XmlElementHome
 
    protected Artifact addArtifact(Artifact object) throws PersistenceException {
       StructuredArtifact artifact = (StructuredArtifact) object;
-      String newFileId = artifact.getParentFolder() + object.getDisplayName();
+      String newFileId = artifact.getParentFolder() + getIdManager().createId().getValue();
 
       try {
          ContentResourceEdit resource = ContentHostingService.addResource(newFileId);
+         resource.setResourceType(FormResourceType.FORM_TYPE_ID);
          ResourcePropertiesEdit resourceProperties = resource.getPropertiesEdit();
          resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, object.getDisplayName());
          resourceProperties.addProperty (ResourceProperties.PROP_DESCRIPTION, object.getDisplayName());
