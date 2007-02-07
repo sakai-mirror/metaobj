@@ -595,7 +595,11 @@
 		<xsl:call-template name="produce-inline">
 			<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
 		</xsl:call-template>
-		<div class="checkbox labelindnt" id="{$name}parent">
+		<div class="checkbox indnt1" id="{$name}parent">
+			<xsl:if test="@minOccurs='1'">
+				<xsl:attribute name="class">checkbox required indnt1</xsl:attribute>
+				<span class="reqStar">*</span>
+			</xsl:if>	
 			<xsl:call-template name="checkbox-widget">
 				<xsl:with-param name="name" select="$name" />
 				<xsl:with-param name="currentNode" select="$currentNode" />
