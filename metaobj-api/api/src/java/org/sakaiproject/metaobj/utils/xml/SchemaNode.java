@@ -118,4 +118,6 @@ public interface SchemaNode extends Serializable {
 
    public ElementType getType();
 
+   public String getLabel();
+
 }

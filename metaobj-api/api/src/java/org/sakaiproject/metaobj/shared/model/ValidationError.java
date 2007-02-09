@@ -21,6 +21,10 @@
 
 package org.sakaiproject.metaobj.shared.model;
 
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 /**
  * Created by IntelliJ IDEA.
  * User: John Ellis
@@ -41,6 +45,7 @@ public class ValidationError {
    private String errorCode;
    private Object[] errorInfo;
    private String defaultMessage;
+   private String label;
 
    /**
     * Construct a ValidationError with all the required parameters
@@ -54,11 +59,23 @@ public class ValidationError {
     * @param errorInfo      an array of information related to the error.
     * @param defaultMessage the fields applied to the error code.
     */
-   public ValidationError(String fieldName, String errorCode, Object[] errorInfo, String defaultMessage) {
+   public ValidationError(String label, String fieldName, String errorCode,
+                          Object[] errorInfo, String defaultMessage) {
+      this.label = label;
       this.fieldName = fieldName;
       this.errorCode = errorCode;
-      this.errorInfo = errorInfo;
+      this.errorInfo = composeErrorInfo(errorInfo);
       this.defaultMessage = defaultMessage;
+   }
+
+   protected Object[] composeErrorInfo(Object[] errorInfo) {
+      if (errorInfo == null || errorInfo.length == 0) {
+         return new Object[]{getLabel()};
+      }
+
+      List info = new ArrayList(Arrays.asList(errorInfo));
+      info.add(0, getLabel());
+      return info.toArray();
    }
 
    public String getFieldName() {
@@ -91,5 +108,13 @@ public class ValidationError {
 
    public void setDefaultMessage(String defaultMessage) {
       this.defaultMessage = defaultMessage;
+   }
+
+   public String getLabel() {
+      return label;
+   }
+
+   public void setLabel(String label) {
+      this.label = label;
    }
 }

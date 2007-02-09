@@ -33,6 +33,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.metaobj.utils.mvc.intf.FieldValueWrapper;
+import org.sakaiproject.metaobj.utils.xml.NormalizationException;
 import org.springframework.validation.Errors;
 
 public class DateBean implements FieldValueWrapper {
@@ -132,7 +133,7 @@ public class DateBean implements FieldValueWrapper {
       return getDate();
    }
 
-   public void validate(List errors) {
+   public void validate(String fieldName, List errors, String label) {
       if (nullFlag) {
          return;
       }
@@ -141,8 +142,8 @@ public class DateBean implements FieldValueWrapper {
          try {
             setValue(dateFormat.parseObject(getFullDate()));
          } catch (ParseException e) {
-            errors.add(new ValidationError("fullDate", "invalid date {0}", new Object[]{getFullDate()},
-                  MessageFormat.format("invalid date {0}", new Object[]{getFullDate()})));
+            errors.add(new ValidationError(label, fieldName, NormalizationException.DATE_INVALID_ERROR_CODE,
+               new Object[]{getFullDate()}, MessageFormat.format("invalid date {0}", new Object[]{getFullDate()})));
             nullFlag = true;
          }
 
@@ -153,21 +154,21 @@ public class DateBean implements FieldValueWrapper {
          Integer.parseInt(getYear());
       }
       catch (NumberFormatException e) {
-         errors.add(new ValidationError("year", "invalid year {0}", new Object[]{getYear()},
+         errors.add(new ValidationError(label, fieldName + ".year", "invalid year {0}", new Object[]{getYear()},
                MessageFormat.format("invalid year {0}", new Object[]{getYear()})));
       }
       try {
          Integer.parseInt(getMonth());
       }
       catch (NumberFormatException e) {
-         errors.add(new ValidationError("month", "invalid month {0}", new Object[]{getYear()},
+         errors.add(new ValidationError(label, fieldName + ".month", "invalid month {0}", new Object[]{getYear()},
                MessageFormat.format("invalid month {0}", new Object[]{getYear()})));
       }
       try {
          Integer.parseInt(getDay());
       }
       catch (NumberFormatException e) {
-         errors.add(new ValidationError("day", "invalid day {0}", new Object[]{getYear()},
+         errors.add(new ValidationError(label, fieldName + ".day", "invalid day {0}", new Object[]{getYear()},
                MessageFormat.format("invalid day {0}", new Object[]{getYear()})));
       }
 

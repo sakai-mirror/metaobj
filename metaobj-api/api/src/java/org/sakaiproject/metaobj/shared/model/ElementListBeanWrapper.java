@@ -103,8 +103,8 @@ public class ElementListBeanWrapper extends HashMap implements TypedMap {
          FieldValueWrapper fieldWrapper = (FieldValueWrapper) i.next().getWrappedInstance();
 
          if (fieldWrapper.getValue() != null) {
-            fieldWrapper.validate(errors);
             ElementBean bean = getList().createBlank();
+            fieldWrapper.validate(bean.getCurrentSchema().getName(), errors, bean.getCurrentSchema().getLabel());
             bean.getBaseElement().addContent(
                bean.getCurrentSchema().getSchemaNormalizedValue(fieldWrapper.getValue()));
             getList().add(bean);

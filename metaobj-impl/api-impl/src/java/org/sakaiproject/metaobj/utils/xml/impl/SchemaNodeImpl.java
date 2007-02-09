@@ -433,6 +433,22 @@ public class SchemaNodeImpl implements SchemaNode {
       return null;
    }
 
+   public String getLabel() {
+      String label = null;
+      // todo i18n label
+
+      label = getDocumentAnnotation("sakai.label");
+      if (label == null) {
+         label = getDocumentAnnotation("ospi.label");
+      }
+
+      if (label == null) {
+         label = getName();
+      }
+
+      return label;
+   }
+
    public GlobalMaps getGlobalMaps() {
       return globalMaps;
    }

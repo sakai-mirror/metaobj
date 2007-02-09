@@ -121,7 +121,8 @@ public class StructuredArtifactValidationServiceImpl implements StructuredArtifa
                               childSchema, currentValue, parentName, errors);
                      }
                      catch (NormalizationException exp) {
-                        errors.add(new ValidationError(composeName(parentName, childSchema.getName()),
+                        errors.add(new ValidationError(childSchema.getLabel(),
+                              composeName(parentName, childSchema.getName()),
                               exp.getErrorCode(),
                               exp.getErrorInfo(),
                               MessageFormat.format(exp.getErrorCode(), exp.getErrorInfo())));
@@ -134,7 +135,8 @@ public class StructuredArtifactValidationServiceImpl implements StructuredArtifa
                            childSchema, null, parentName, errors);
                   }
                   catch (NormalizationException exp) {
-                     errors.add(new ValidationError(composeName(parentName, childSchema.getName()),
+                     errors.add(new ValidationError(childSchema.getLabel(),
+                           composeName(parentName, childSchema.getName()),
                            exp.getErrorCode(),
                            exp.getErrorInfo(),
                            MessageFormat.format(exp.getErrorCode(), exp.getErrorInfo())));
@@ -157,7 +159,8 @@ public class StructuredArtifactValidationServiceImpl implements StructuredArtifa
                   childAttribute.setValue(childSchema.getSchemaNormalizedValue(value));
                }
                else if (childSchema.getMinOccurs() > 0) {
-                  errors.add(new ValidationError(composeName(parentName, childSchema.getName()),
+                  errors.add(new ValidationError(childSchema.getLabel(),
+                        composeName(parentName, childSchema.getName()),
                         NormalizationException.REQIRED_FIELD_ERROR_CODE,
                         new Object[0], NormalizationException.REQIRED_FIELD_ERROR_CODE));
                }
@@ -168,7 +171,8 @@ public class StructuredArtifactValidationServiceImpl implements StructuredArtifa
             }
          }
          catch (NormalizationException exp) {
-            errors.add(new ValidationError(composeName(parentName, childSchema.getName()),
+            errors.add(new ValidationError(childSchema.getLabel(),
+                  composeName(parentName, childSchema.getName()),
                   exp.getErrorCode(),
                   exp.getErrorInfo(),
                   MessageFormat.format(exp.getErrorCode(), exp.getErrorInfo())));
@@ -182,7 +186,7 @@ public class StructuredArtifactValidationServiceImpl implements StructuredArtifa
                                        Object value, String parentName, List errors) {
       if (value instanceof FieldValueWrapper) {
          FieldValueWrapper fieldValueWrapper = ((FieldValueWrapper) value);
-         fieldValueWrapper.validate(errors);
+         fieldValueWrapper.validate(childSchema.getName(), errors, childSchema.getLabel());
          value = fieldValueWrapper.getValue();
          if (value != null && childElement == null) {
             childElement = new Element(childSchema.getName());
@@ -204,7 +208,8 @@ public class StructuredArtifactValidationServiceImpl implements StructuredArtifa
          childElement.setText(childSchema.getSchemaNormalizedValue(value));
       }
       else if (childSchema.getMinOccurs() > 0) {
-         errors.add(new ValidationError(composeName(parentName, childSchema.getName()),
+         errors.add(new ValidationError(childSchema.getLabel(),
+               composeName(parentName, childSchema.getName()),
                NormalizationException.REQIRED_FIELD_ERROR_CODE,
                new Object[0], NormalizationException.REQIRED_FIELD_ERROR_CODE));
       }

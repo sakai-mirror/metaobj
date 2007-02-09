@@ -45,6 +45,7 @@ import org.sakaiproject.util.Web;
 
 import javax.xml.transform.*;
 import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.stream.StreamResult;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
@@ -329,4 +330,17 @@ public class XsltArtifactView extends AbstractXsltView {
    public void setReadOnly(boolean readOnly) {
       this.readOnly = readOnly;
    }
+
+   protected void dumpDocument(Element node) {
+	   try {
+			Transformer transformer = TransformerFactory.newInstance().newTransformer();
+			transformer.setOutputProperty( OutputKeys.INDENT, "yes" );
+			transformer.transform( new JDOMSource(node), new StreamResult(System.out) );
+		}
+		catch ( Exception e )
+		{
+		   e.printStackTrace();
+		}
+   }
+
 }

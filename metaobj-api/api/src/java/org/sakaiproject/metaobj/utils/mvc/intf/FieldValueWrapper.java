@@ -36,7 +36,7 @@ public interface FieldValueWrapper extends Cloneable {
 
    public Object getValue();
 
-   public void validate(List errors);
+   public void validate(String fieldName, List errors, String label);
 
    public Object clone();
 
