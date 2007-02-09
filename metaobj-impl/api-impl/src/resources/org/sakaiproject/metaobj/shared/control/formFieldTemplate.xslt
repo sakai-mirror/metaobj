@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet version="2.0" xmlns="http://www.w3.org/1999/xhtml" xmlns:sakaifn="org.sakaiproject.metaobj.utils.xml.XsltFunctions" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:osp="http://www.osportfolio.org/OspML" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<!-- todo: final i18n pass -->
 	<xsl:template name="complexElement-field">
 		<xsl:param name="currentSchemaNode" />
 		<xsl:param name="currentParent" />
@@ -275,12 +276,7 @@
 		</xsl:for-each>
 	</xsl:template>
 	<!-- same in most respects as shorttext element except  1) cannot be cloned, 2) cannot be required (there is always a default) - so create and edit templates are one and the same.
-		- further work: this is an element whose html expression will depend on the xsd. Proposed:
-		
-		maxOccurs = 1 & enumeration children < 4: radio button set
-		maxOccurs = 1 & enumeration children >= 4: select element
-		maxOccurs = unbounded & enumeration children < 4: checkbox group
-		maxOccurs = unbounded & enumeration children >= 4: select element + multiple selection
+		todo: required work
 		-->
 	<xsl:template name="select-field">
 		<xsl:param name="currentSchemaNode" />
@@ -288,33 +284,235 @@
 		<xsl:param name="rootNode" />
 		<xsl:variable name="name" select="$currentSchemaNode/@name" />
 		<xsl:variable name="currentNode" select="$currentParent/node()[$name=name()]" />
+		<!-- this variable in com with maxOccurs' value controls the xhtml expression of this element (radiogroup, checkboxgroup, single select, multiple select) -->
+		<xsl:variable name="htmldeterm">4</xsl:variable>
 		<xsl:call-template name="produce-inline">
 			<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
 		</xsl:call-template>
 		<div id="{$name}-node">
 			<xsl:choose>
-				<xsl:when test="@minOccurs='1'">
-					<xsl:attribute name="class">shorttext required</xsl:attribute>
-					<span class="reqStar">*</span>
+				<xsl:when test="@maxOccurs='1' and count($currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:enumeration) &lt;= $htmldeterm">
+					<!-- this will resolve as a radio group control -->
+					<fieldset class="osp-radcheck">
+						<legend>
+							<xsl:if test="@minOccurs='1'">
+								<span class="reqStar">*</span>
+							</xsl:if>
+							<xsl:call-template name="produce-label">
+								<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
+							</xsl:call-template>
+						</legend>
+						<xsl:for-each select="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:enumeration">
+							<div class="checkbox">
+								<input id="{$name}-{position()}" name="{$name}" value="{@value}" type="radio">
+									<xsl:if test="$currentNode = @value">
+										<xsl:attribute name="checked">checked</xsl:attribute>
+									</xsl:if>
+								</input>
+								<label for="{$name}-{position()}">
+									<xsl:value-of select="@value" />
+								</label>
+							</div>
+						</xsl:for-each>
+					</fieldset>
 				</xsl:when>
-				<xsl:otherwise>
-					<xsl:attribute name="class">shorttext</xsl:attribute>
-				</xsl:otherwise>
+				<xsl:when test="@maxOccurs='1' and count($currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:enumeration) &gt; $htmldeterm">
+					<!-- this will resolve as a single select control-->
+					<xsl:choose>
+						<xsl:when test="@minOccurs='1'">
+							<xsl:attribute name="class">shorttext required</xsl:attribute>
+							<span class="reqStar">*</span>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:attribute name="class">shorttext</xsl:attribute>
+						</xsl:otherwise>
+					</xsl:choose>
+					<xsl:call-template name="produce-label">
+						<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
+					</xsl:call-template>
+					<select id="{$name}" name="{$name}">
+						<xsl:for-each select="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:enumeration">
+							<option value="{@value}">
+								<xsl:if test="$currentNode = @value">
+									<xsl:attribute name="selected">selected</xsl:attribute>
+								</xsl:if>
+								<xsl:value-of select="@value" />
+							</option>
+						</xsl:for-each>
+					</select>
+				</xsl:when>
+				<xsl:when test="@maxOccurs !='1' and count($currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:enumeration) &lt;= $htmldeterm">
+					<!-- this will resolve as a checkbox group control -->
+					<fieldset class="osp-radcheck">
+						<legend>
+							<xsl:if test="@minOccurs='1'">
+								<span class="reqStar">*</span>
+							</xsl:if>
+							<xsl:call-template name="produce-label">
+								<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
+							</xsl:call-template>
+						</legend>
+						<xsl:for-each select="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:enumeration">
+							<div class="checkbox">
+								<input id="{$name}-{position()}" name="{$name}" value="{@value}" type="checkbox">
+									<xsl:if test="$currentNode = @value">
+										<xsl:attribute name="checked">checked</xsl:attribute>
+									</xsl:if>
+								</input>
+								<label for="{$name}-{position()}">
+									<xsl:value-of select="@value" />
+								</label>
+							</div>
+						</xsl:for-each>
+					</fieldset>
+				</xsl:when>
+				<xsl:when test="@maxOccurs !='1' and count($currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:enumeration) &gt; $htmldeterm">
+					<!-- this will resolve as a multiple select control -->
+					<xsl:choose>
+						<xsl:when test="@minOccurs='1'">
+							<xsl:attribute name="class">shorttext required</xsl:attribute>
+							<span class="reqStar">*</span>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:attribute name="class">shorttext</xsl:attribute>
+						</xsl:otherwise>
+					</xsl:choose>
+					<xsl:call-template name="produce-label">
+						<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
+					</xsl:call-template>
+					<select id="{$name}" name="{$name}" multiple="multiple">
+						<xsl:attribute name="size">
+							<xsl:choose>
+								<!-- some crude calculations to determine the select visible row count -->
+								<xsl:when test="count($currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:enumeration) &lt; 10">5</xsl:when>
+								<xsl:when test="count($currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:enumeration) &lt; 20">10</xsl:when>
+								<xsl:otherwise>15</xsl:otherwise>
+							</xsl:choose>
+						</xsl:attribute>
+						<xsl:for-each select="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:enumeration">
+							<option value="{@value}">
+								<xsl:if test="$currentNode = @value">
+									<xsl:attribute name="selected">selected</xsl:attribute>
+								</xsl:if>
+								<xsl:value-of select="@value" />
+							</option>
+						</xsl:for-each>
+					</select>
+				</xsl:when>
 			</xsl:choose>
-			<xsl:call-template name="produce-label">
-				<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
-			</xsl:call-template>
-			<!--			<xsl:value-of select="count($currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:enumeration)" /> -->
-			<select id="{$name}" name="{$name}">
-				<xsl:for-each select="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:enumeration">
-					<option value="{@value}">
-						<xsl:if test="$currentNode = @value">
-							<xsl:attribute name="selected">selected</xsl:attribute>
-						</xsl:if>
-						<xsl:value-of select="@value" />
-					</option>
-				</xsl:for-each>
-			</select>
+		</div>
+	</xsl:template>
+	<xsl:template name="select-field-edit">
+		<xsl:param name="currentSchemaNode" />
+		<xsl:param name="currentParent" />
+		<xsl:param name="rootNode" />
+		<xsl:variable name="name" select="$currentSchemaNode/@name" />
+		<xsl:variable name="currentNode" select="$currentParent/node()[$name=name()]" />
+		<!-- this variable controls the xhtml expression of this element (ratio, checkbox, single select, multiple select) -->
+		<xsl:variable name="htmldeterm">4</xsl:variable>
+		<xsl:call-template name="produce-inline">
+			<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
+		</xsl:call-template>
+		<div id="{$name}-node">
+			<xsl:choose>
+				<xsl:when test="@maxOccurs='1' and count($currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:enumeration) &lt;= $htmldeterm">
+					<fieldset class="osp-radcheck">
+						<legend>
+							<xsl:call-template name="produce-label">
+								<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
+							</xsl:call-template>
+						</legend>
+						<xsl:for-each select="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:enumeration">
+							<div class="checkbox">
+								<input id="{$name}-{position()}" name="{$name}" value="{@value}" type="radio">
+									<xsl:if test="$currentNode = @value">
+										<xsl:attribute name="checked">checked</xsl:attribute>
+									</xsl:if>
+								</input>
+								<label for="{$name}-{position()}">
+									<xsl:value-of select="@value" />
+								</label>
+							</div>
+						</xsl:for-each>
+					</fieldset>
+				</xsl:when>
+				<xsl:when test="@maxOccurs='1' and count($currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:enumeration) &gt; $htmldeterm">
+					<xsl:choose>
+						<xsl:when test="@minOccurs='1'">
+							<xsl:attribute name="class">shorttext required</xsl:attribute>
+							<span class="reqStar">*</span>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:attribute name="class">shorttext</xsl:attribute>
+						</xsl:otherwise>
+					</xsl:choose>
+					<xsl:call-template name="produce-label">
+						<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
+					</xsl:call-template>
+					<select id="{$name}" name="{$name}">
+						<xsl:for-each select="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:enumeration">
+							<option value="{@value}">
+								<xsl:if test="$currentNode = @value">
+									<xsl:attribute name="selected">selected</xsl:attribute>
+								</xsl:if>
+								<xsl:value-of select="@value" />
+							</option>
+						</xsl:for-each>
+					</select>
+				</xsl:when>
+				<xsl:when test="@maxOccurs !='1' and count($currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:enumeration) &lt;= $htmldeterm">
+					<fieldset class="osp-radcheck">
+						<legend>
+							<xsl:call-template name="produce-label">
+								<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
+							</xsl:call-template>
+						</legend>
+						<xsl:for-each select="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:enumeration">
+							<div class="checkbox">
+								<input id="{$name}-{position()}" name="{$name}" value="{@value}" type="checkbox">
+									<xsl:if test="$currentNode = @value">
+										<xsl:attribute name="checked">checked</xsl:attribute>
+									</xsl:if>
+								</input>
+								<label for="{$name}-{position()}">
+									<xsl:value-of select="@value" />
+								</label>
+							</div>
+						</xsl:for-each>
+					</fieldset>
+				</xsl:when>
+				<xsl:when test="@maxOccurs !='1' and count($currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:enumeration) &gt; $htmldeterm">
+					<xsl:choose>
+						<xsl:when test="@minOccurs='1'">
+							<xsl:attribute name="class">shorttext required</xsl:attribute>
+							<span class="reqStar">*</span>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:attribute name="class">shorttext</xsl:attribute>
+						</xsl:otherwise>
+					</xsl:choose>
+					<xsl:call-template name="produce-label">
+						<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
+					</xsl:call-template>
+					<select id="{$name}" name="{$name}" multiple="multiple">
+						<xsl:attribute name="size">
+							<xsl:choose>
+								<xsl:when test="count($currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:enumeration) &lt; 10">5</xsl:when>
+								<xsl:when test="count($currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:enumeration) &lt; 20">10</xsl:when>
+								<xsl:otherwise>15</xsl:otherwise>
+							</xsl:choose>
+						</xsl:attribute>
+						<xsl:for-each select="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:enumeration">
+							<option value="{@value}">
+								<xsl:if test="$currentNode = @value">
+									<xsl:attribute name="selected">selected</xsl:attribute>
+								</xsl:if>
+								<xsl:value-of select="@value" />
+							</option>
+						</xsl:for-each>
+					</select>
+				</xsl:when>
+			</xsl:choose>
 		</div>
 	</xsl:template>
 	<!-- same in most respects as shorttext element except  cannot be cloned -->
@@ -599,7 +797,7 @@
 			<xsl:if test="@minOccurs='1'">
 				<xsl:attribute name="class">checkbox required indnt1</xsl:attribute>
 				<span class="reqStar">*</span>
-			</xsl:if>	
+			</xsl:if>
 			<xsl:call-template name="checkbox-widget">
 				<xsl:with-param name="name" select="$name" />
 				<xsl:with-param name="currentNode" select="$currentNode" />

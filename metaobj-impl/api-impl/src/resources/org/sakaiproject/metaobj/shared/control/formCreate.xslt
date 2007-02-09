@@ -8,9 +8,9 @@
 	<xsl:param name="panelId" />
 	<xsl:param name="subForm" />
 	<xsl:param name="preview" />
-   <xsl:param name="fromResources" />
-   <xsl:param name="edit" />
-   <xsl:output method="html" version="4.0" cdata-section-elements="" encoding="iso-8859-1" indent="yes" />
+	<xsl:param name="fromResources" />
+	<xsl:param name="edit" />
+	<xsl:output method="html" version="4.0" cdata-section-elements="" encoding="iso-8859-1" indent="yes" />
 	<xsl:include href="/group/PortfolioAdmin/system/formFieldTemplate.xslt" />
 	<xsl:template match="formView">
 		<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
@@ -64,21 +64,20 @@
 									<xsl:value-of select="formData/artifact/metaData/displayName" />
 								</h4>
 							</xsl:when>
-                     <xsl:when test="$fromResources = 'true' and $edit = 'true'">
-                        <h4>
-                           <xsl:value-of select="formData/artifact/metaData/displayName" />
-                        </h4>
-                        <input type="hidden" id="displayName" name="displayName" maxlength="1024">
-                           <xsl:attribute name="value">
-                              <xsl:value-of select="formData/artifact/metaData/displayName" />
-                           </xsl:attribute>
-                        </input>
-                     </xsl:when>
-                     <xsl:when test="$fromResources = 'true'">
-                        <input type="hidden" id="displayName" name="displayName"
-                               maxlength="1024" value="new form" />
-                     </xsl:when>
-                     <xsl:otherwise>
+							<xsl:when test="$fromResources = 'true' and $edit = 'true'">
+								<h4>
+									<xsl:value-of select="formData/artifact/metaData/displayName" />
+								</h4>
+								<input type="hidden" id="displayName" name="displayName" maxlength="1024">
+									<xsl:attribute name="value">
+										<xsl:value-of select="formData/artifact/metaData/displayName" />
+									</xsl:attribute>
+								</input>
+							</xsl:when>
+							<xsl:when test="$fromResources = 'true'">
+								<input type="hidden" id="displayName" name="displayName" maxlength="1024" value="new form" />
+							</xsl:when>
+							<xsl:otherwise>
 								<!-- the name of this entry, always required -->
 								<div class="shorttext required">
 									<span class="reqStar">*</span>
@@ -117,35 +116,35 @@
 										</xsl:attribute>
 									</input>
 								</xsl:when>
-                        <xsl:when test="$preview = 'true'">
-                           <input type="submit" name="submitButton" class="active">
-                              <xsl:attribute name="value">
-                                 <xsl:value-of select="sakaifn:getMessage('messages', 'button_validate')" />
-                              </xsl:attribute>
-                           </input>
-                           <input type="submit" name="cancel" accesskey="x">
-                              <xsl:attribute name="value">
-                                 <xsl:value-of select="sakaifn:getMessage('messages', 'button_return')" />
-                              </xsl:attribute>
-                           </input>
-                        </xsl:when>
-                        <xsl:when test="$fromResources = 'true' and $edit != 'true'">
-                           <input type="submit" name="submitButton" class="active" accesskey="s">
-                              <xsl:attribute name="value">
-                                 <xsl:value-of select="sakaifn:getMessage('messages', 'button_saveEditContinue')" />
-                              </xsl:attribute>
-                           </input>
-                           <input type="submit" name="backButton" accesskey="b">
-                              <xsl:attribute name="value">
-                                 <xsl:value-of select="sakaifn:getMessage('messages', 'button_back')" />
-                              </xsl:attribute>
-                           </input>
-                           <input type="submit" name="cancel" accesskey="x">
-                              <xsl:attribute name="value">
-                                 <xsl:value-of select="sakaifn:getMessage('messages', 'button_cancel')" />
-                              </xsl:attribute>
-                           </input>
-                        </xsl:when>
+								<xsl:when test="$preview = 'true'">
+									<input type="submit" name="submitButton" class="active">
+										<xsl:attribute name="value">
+											<xsl:value-of select="sakaifn:getMessage('messages', 'button_validate')" />
+										</xsl:attribute>
+									</input>
+									<input type="submit" name="cancel" accesskey="x">
+										<xsl:attribute name="value">
+											<xsl:value-of select="sakaifn:getMessage('messages', 'button_return')" />
+										</xsl:attribute>
+									</input>
+								</xsl:when>
+								<xsl:when test="$fromResources = 'true' and $edit != 'true'">
+									<input type="submit" name="submitButton" class="active" accesskey="s">
+										<xsl:attribute name="value">
+											<xsl:value-of select="sakaifn:getMessage('messages', 'button_saveEditContinue')" />
+										</xsl:attribute>
+									</input>
+									<input type="submit" name="backButton" accesskey="b">
+										<xsl:attribute name="value">
+											<xsl:value-of select="sakaifn:getMessage('messages', 'button_back')" />
+										</xsl:attribute>
+									</input>
+									<input type="submit" name="cancel" accesskey="x">
+										<xsl:attribute name="value">
+											<xsl:value-of select="sakaifn:getMessage('messages', 'button_cancel')" />
+										</xsl:attribute>
+									</input>
+								</xsl:when>
 								<xsl:otherwise>
 									<input type="submit" name="submitButton" class="active" accesskey="s">
 										<xsl:attribute name="value">
@@ -272,7 +271,7 @@
 		</xsl:call-template>
 	</xsl:template>
 	<!--
-    drop down
+    select one or more from many (radio and checkbox groups, single and multiple selects) 
    -->
 	<xsl:template match="element[xs:simpleType/xs:restriction[@base='xs:string']/xs:enumeration]">
 		<xsl:param name="currentParent" />
