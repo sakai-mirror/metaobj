@@ -57,6 +57,16 @@
 						</div>
 					</xsl:for-each>
 					<form method="post" onsubmit="a=1;">
+						<xsl:if test="formData/artifact/schema/element/xs:annotation/xs:documentation[@source='ospi.description']">
+							<h3>
+								<xsl:value-of select="formData/artifact/schema/element/xs:annotation/xs:documentation[@source='ospi.description']" />
+							</h3>
+						</xsl:if>
+						<xsl:if test="formData/artifact/schema/element/xs:annotation/xs:documentation[@source='ospi.inlinedescription']">
+							<p class="instruction highlightPanel">
+								<xsl:value-of select="formData/artifact/schema/element/xs:annotation/xs:documentation[@source='ospi.inlinedescription']" />
+							</p>
+						</xsl:if>
 						<xsl:choose>
 							<!-- todo: if this is a subform, display a good title, not sure the thing is appropriate as it stands -->
 							<xsl:when test="$subForm = 'true'">
