@@ -65,3 +65,15 @@ a.nt:hover{
 .skipthis{
 	display:none
 	}
+
+.osp-radcheck{
+	padding:1em .5em;
+}
+.osp-radcheck legend{
+	padding:0 .5em;
+
+}
+.osp-radcheck div.checkbox{
+	margin-left:2em
+}
+	
