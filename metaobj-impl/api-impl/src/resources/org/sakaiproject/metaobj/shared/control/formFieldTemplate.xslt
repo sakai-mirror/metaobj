@@ -6,7 +6,10 @@
 		<xsl:param name="currentParent" />
 		<xsl:param name="rootNode" />
 		<xsl:variable name="name" select="$currentSchemaNode/@name" />
-		<xsl:call-template name="produce-inline">
+      <xsl:variable name="maxOccurs" select="$currentSchemaNode/@maxOccurs"/>
+      <xsl:variable name="currentCount" select="count($currentParent/node()[$name=name()])"/>
+      <xsl:comment><xsl:value-of select="$currentCount"/></xsl:comment>
+      <xsl:call-template name="produce-inline">
 			<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
 		</xsl:call-template>
 		<xsl:choose>
@@ -24,8 +27,12 @@
 							</th>
 							<th scope="col">
 								<div style="float:right">
-									<input type="submit" name="addButton" id="{$name}" alignment="center" value="Add New" onClick="this.form.childPath.value='{$name}';return true" />
-								</div>
+                           <input type="submit" name="addButton" id="{$name}" alignment="center" value="Add New" onClick="this.form.childPath.value='{$name}';return true" >
+                              <xsl:if test="$maxOccurs != -1 and $currentCount >= $maxOccurs">
+                                 <xsl:attribute name="disabled">true</xsl:attribute>
+                              </xsl:if>
+                           </input>
+                        </div>
 							</th>
 						</tr>
 					</thead>
@@ -57,8 +64,12 @@
 							</th>
 							<th scope="col">
 								<div style="float:right">
-									<input type="submit" name="addButton" alignment="center" value="Add New" onClick="this.form.childPath.value='{$name}';return true" />
-								</div>
+									<input type="submit" name="addButton" alignment="center" value="Add New" onClick="this.form.childPath.value='{$name}';return true" >
+                              <xsl:if test="$maxOccurs != -1 and $currentCount >= $maxOccurs">
+                                 <xsl:attribute name="disabled">true</xsl:attribute>
+                              </xsl:if>
+                           </input>
+                        </div>
 							</th>
 						</tr>
 					</thead>
