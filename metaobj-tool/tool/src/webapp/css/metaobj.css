@@ -77,3 +77,11 @@ a.nt:hover{
 	margin-left:2em
 }
 	
+fieldset.validFail legend label{
+	color:#BD1010
+}
+fieldset.validFail .checkbox label{
+	color:#000 !important;
+
+}
+	
