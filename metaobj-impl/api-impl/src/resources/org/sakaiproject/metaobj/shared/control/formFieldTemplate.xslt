@@ -6,10 +6,12 @@
 		<xsl:param name="currentParent" />
 		<xsl:param name="rootNode" />
 		<xsl:variable name="name" select="$currentSchemaNode/@name" />
-      <xsl:variable name="maxOccurs" select="$currentSchemaNode/@maxOccurs"/>
-      <xsl:variable name="currentCount" select="count($currentParent/node()[$name=name()])"/>
-      <xsl:comment><xsl:value-of select="$currentCount"/></xsl:comment>
-      <xsl:call-template name="produce-inline">
+		<xsl:variable name="maxOccurs" select="$currentSchemaNode/@maxOccurs" />
+		<xsl:variable name="currentCount" select="count($currentParent/node()[$name=name()])" />
+		<xsl:comment>
+			<xsl:value-of select="$currentCount" />
+		</xsl:comment>
+		<xsl:call-template name="produce-inline">
 			<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
 		</xsl:call-template>
 		<xsl:choose>
@@ -27,12 +29,12 @@
 							</th>
 							<th scope="col">
 								<div style="float:right">
-                           <input type="submit" name="addButton" id="{$name}" alignment="center" value="Add New" onClick="this.form.childPath.value='{$name}';return true" >
-                              <xsl:if test="$maxOccurs != -1 and $currentCount >= $maxOccurs">
-                                 <xsl:attribute name="disabled">true</xsl:attribute>
-                              </xsl:if>
-                           </input>
-                        </div>
+									<input type="submit" name="addButton" id="{$name}" alignment="center" value="Add New" onClick="this.form.childPath.value='{$name}';return true">
+										<xsl:if test="$maxOccurs != -1 and $currentCount >= $maxOccurs">
+											<xsl:attribute name="disabled">true</xsl:attribute>
+										</xsl:if>
+									</input>
+								</div>
 							</th>
 						</tr>
 					</thead>
@@ -58,18 +60,15 @@
 								<xsl:call-template name="produce-label">
 									<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
 								</xsl:call-template>
-								<!--
-								<xsl:value-of select="$currentSchemaNode/xs:annotation/xs:documentation[@source='ospi.label']" />
-								-->
 							</th>
 							<th scope="col">
 								<div style="float:right">
-									<input type="submit" name="addButton" alignment="center" value="Add New" onClick="this.form.childPath.value='{$name}';return true" >
-                              <xsl:if test="$maxOccurs != -1 and $currentCount >= $maxOccurs">
-                                 <xsl:attribute name="disabled">true</xsl:attribute>
-                              </xsl:if>
-                           </input>
-                        </div>
+									<input type="submit" name="addButton" alignment="center" value="Add New" onClick="this.form.childPath.value='{$name}';return true">
+										<xsl:if test="$maxOccurs != -1 and $currentCount >= $maxOccurs">
+											<xsl:attribute name="disabled">true</xsl:attribute>
+										</xsl:if>
+									</input>
+								</div>
 							</th>
 						</tr>
 					</thead>
@@ -100,61 +99,62 @@
 		<xsl:call-template name="produce-inline">
 			<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
 		</xsl:call-template>
-      <div>
-         <xsl:if test="//formView/errors/error[@field=$name]">
-            <xsl:attribute name="class">validFail</xsl:attribute>
-         </xsl:if>
-         <div id="{$name}-node">
-            <xsl:choose>
-               <xsl:when test="@minOccurs='1'">
-                  <xsl:attribute name="class">shorttext required</xsl:attribute>
-                  <span class="reqStar">*</span>
-               </xsl:when>
-               <xsl:otherwise>
-                  <xsl:attribute name="class">shorttext</xsl:attribute>
-               </xsl:otherwise>
-            </xsl:choose>
-            <xsl:call-template name="produce-label">
-               <xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
-            </xsl:call-template>
-            <input type="text" id="{$name}" name="{$name}" value="{$currentNode}">
-               <!--calculate value of maxlength attribute, if absent set to 50, provide a title attribute with this value for the tooltip -->
-               <xsl:choose>
-                  <xsl:when test="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value">
-                     <xsl:attribute name="maxLength">
-                        <xsl:value-of select="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value" />
-                     </xsl:attribute>
-                     <xsl:attribute name="title">
-                        <xsl:value-of select="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value" />
-                        <xsl:text> </xsl:text>
-                        <xsl:value-of select="sakaifn:getMessage('messages', 'max_chars')" />
-                     </xsl:attribute>
-                  </xsl:when>
-                  <xsl:otherwise>
-                     <xsl:attribute name="maxLength"> 50 </xsl:attribute>
-                     <xsl:attribute name="title">
-                        <xsl:text> 50 </xsl:text>
-                        <xsl:value-of select="sakaifn:getMessage('messages', 'max_chars')" />
-                     </xsl:attribute>
-                  </xsl:otherwise>
-               </xsl:choose>
-            </input>
-            <!-- if @maxOccurs is not 1, then it is either a discreet number or unbounded, so add a link that will clone the node in the DOM
+		<div id="{$name}-node">
+			<xsl:choose>
+				<xsl:when test="@minOccurs='1'">
+					<xsl:attribute name="class">shorttext required</xsl:attribute>
+					<xsl:if test="//formView/errors/error[@field=$name]">
+						<xsl:attribute name="class">shorttext required validFail</xsl:attribute>
+					</xsl:if>
+					<span class="reqStar">*</span>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:attribute name="class">shorttext</xsl:attribute>
+					<xsl:if test="//formView/errors/error[@field=$name]">
+						<xsl:attribute name="class">shorttext validFail</xsl:attribute>
+					</xsl:if>
+				</xsl:otherwise>
+			</xsl:choose>
+			<xsl:call-template name="produce-label">
+				<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
+			</xsl:call-template>
+			<input type="text" id="{$name}" name="{$name}" value="{$currentNode}">
+				<!--calculate value of maxlength attribute, if absent set to 50, provide a title attribute with this value for the tooltip -->
+				<xsl:choose>
+					<xsl:when test="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value">
+						<xsl:attribute name="maxLength">
+							<xsl:value-of select="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value" />
+						</xsl:attribute>
+						<xsl:attribute name="title">
+							<xsl:value-of select="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value" />
+							<xsl:text> </xsl:text>
+							<xsl:value-of select="sakaifn:getMessage('messages', 'max_chars')" />
+						</xsl:attribute>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:attribute name="maxLength"> 50 </xsl:attribute>
+						<xsl:attribute name="title">
+							<xsl:text> 50 </xsl:text>
+							<xsl:value-of select="sakaifn:getMessage('messages', 'max_chars')" />
+						</xsl:attribute>
+					</xsl:otherwise>
+				</xsl:choose>
+			</input>
+			<!-- if @maxOccurs is not 1, then it is either a discreet number or unbounded, so add a link that will clone the node in the DOM
                 -->
-            <xsl:if test="not(@maxOccurs='1')">
-               <a href="javascript:addItem('{$name}-node','{$name}');" class="addEl" id="{$name}-addlink">
-                  <xsl:attribute name="title">
-                     <xsl:value-of select="sakaifn:getMessage('messages', 'add_form_element')" />
-                  </xsl:attribute>
-                  <img src="/sakai-metaobj-tool/img/blank.gif" alt="" />
-               </a>
-               <div class="instruction" style="display:inline" id="{$name}-disp">
-                  <xsl:text> </xsl:text>
-               </div>
-            </xsl:if>
-         </div>
-      </div>
-      <!-- render hidden fields to aid the cloning -->
+			<xsl:if test="not(@maxOccurs='1')">
+				<a href="javascript:addItem('{$name}-node','{$name}');" class="addEl" id="{$name}-addlink">
+					<xsl:attribute name="title">
+						<xsl:value-of select="sakaifn:getMessage('messages', 'add_form_element')" />
+					</xsl:attribute>
+					<img src="/sakai-metaobj-tool/img/blank.gif" alt="" />
+				</a>
+				<div class="instruction" style="display:inline" id="{$name}-disp">
+					<xsl:text> </xsl:text>
+				</div>
+			</xsl:if>
+		</div>
+		<!-- render hidden fields to aid the cloning -->
 		<xsl:if test="not(@maxOccurs='1')">
 			<div id="{$name}-hidden-fields" class="skipthis">
 				<input id="{$name}-count" type="text" value="1" />
@@ -305,15 +305,14 @@
 		<xsl:call-template name="produce-inline">
 			<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
 		</xsl:call-template>
-      <div>
-         <xsl:if test="//formView/errors/error[@field=$name]">
-            <xsl:attribute name="class">validFail</xsl:attribute>
-         </xsl:if>
-   		<div id="{$name}-node">
+		<div id="{$name}-node">
 			<xsl:choose>
 				<xsl:when test="@maxOccurs='1' and count($currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:enumeration) &lt;= $htmldeterm">
 					<!-- this will resolve as a radio group control -->
 					<fieldset class="osp-radcheck">
+						<xsl:if test="//formView/errors/error[@field=$name]">
+							<xsl:attribute name="class">osp-radcheck validFail</xsl:attribute>
+						</xsl:if>
 						<legend>
 							<xsl:if test="@minOccurs='1'">
 								<span class="reqStar">*</span>
@@ -341,6 +340,9 @@
 					<xsl:choose>
 						<xsl:when test="@minOccurs='1'">
 							<xsl:attribute name="class">shorttext required</xsl:attribute>
+							<xsl:if test="//formView/errors/error[@field=$name]">
+								<xsl:attribute name="class">shorttext required validFail</xsl:attribute>
+							</xsl:if>
 							<span class="reqStar">*</span>
 						</xsl:when>
 						<xsl:otherwise>
@@ -364,6 +366,9 @@
 				<xsl:when test="@maxOccurs !='1' and count($currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:enumeration) &lt;= $htmldeterm">
 					<!-- this will resolve as a checkbox group control -->
 					<fieldset class="osp-radcheck">
+						<xsl:if test="//formView/errors/error[@field=$name]">
+							<xsl:attribute name="class">osp-radcheck validFail</xsl:attribute>
+						</xsl:if>
 						<legend>
 							<xsl:if test="@minOccurs='1'">
 								<span class="reqStar">*</span>
@@ -391,6 +396,9 @@
 					<xsl:choose>
 						<xsl:when test="@minOccurs='1'">
 							<xsl:attribute name="class">shorttext required</xsl:attribute>
+							<xsl:if test="//formView/errors/error[@field=$name]">
+								<xsl:attribute name="class">shorttext required validFail</xsl:attribute>
+							</xsl:if>
 							<span class="reqStar">*</span>
 						</xsl:when>
 						<xsl:otherwise>
@@ -421,7 +429,6 @@
 				</xsl:when>
 			</xsl:choose>
 		</div>
-      </div>
 	</xsl:template>
 	<xsl:template name="select-field-edit">
 		<xsl:param name="currentSchemaNode" />
@@ -546,18 +553,20 @@
 		<xsl:call-template name="produce-inline">
 			<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
 		</xsl:call-template>
-      <div>
-         <xsl:if test="//formView/errors/error[@field=$name]">
-            <xsl:attribute name="class">validFail</xsl:attribute>
-         </xsl:if>
-   		<div id="{$name}">
+		<div id="{$name}">
 			<xsl:choose>
 				<xsl:when test="@minOccurs='1'">
 					<xsl:attribute name="class">longtext required</xsl:attribute>
+					<xsl:if test="//formView/errors/error[@field=$name]">
+						<xsl:attribute name="class">longtext required validFail</xsl:attribute>
+					</xsl:if>
 					<span class="reqStar">*</span>
 				</xsl:when>
 				<xsl:otherwise>
 					<xsl:attribute name="class">longtext</xsl:attribute>
+					<xsl:if test="//formView/errors/error[@field=$name]">
+						<xsl:attribute name="class">longtext validFail</xsl:attribute>
+					</xsl:if>
 				</xsl:otherwise>
 			</xsl:choose>
 			<xsl:call-template name="produce-label">
@@ -595,7 +604,6 @@
 				</tr>
 			</table>
 		</div>
-      </div>
 	</xsl:template>
 	<!-- renders a textarea, similar in most respects to the shorttext element, except where noted below in comments -->
 	<xsl:template name="longText-field">
@@ -608,18 +616,20 @@
 		<xsl:call-template name="produce-inline">
 			<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
 		</xsl:call-template>
-      <div>
-         <xsl:if test="//formView/errors/error[@field=$name]">
-            <xsl:attribute name="class">validFail</xsl:attribute>
-         </xsl:if>
-   		<div id="{$name}-node">
+		<div id="{$name}-node">
 			<xsl:choose>
 				<xsl:when test="@minOccurs='1'">
 					<xsl:attribute name="class">longtext required</xsl:attribute>
+					<xsl:if test="//formView/errors/error[@field=$name]">
+						<xsl:attribute name="class">longtext required validFail</xsl:attribute>
+					</xsl:if>
 					<span class="reqStar">*</span>
 				</xsl:when>
 				<xsl:otherwise>
 					<xsl:attribute name="class">longtext</xsl:attribute>
+					<xsl:if test="//formView/errors/error[@field=$name]">
+						<xsl:attribute name="class">longtext validFail</xsl:attribute>
+					</xsl:if>
 				</xsl:otherwise>
 			</xsl:choose>
 			<!-- passing a nodeType param to the label producing template creates a label with the css class "block" so that it renders label and textarea in 2 separate lines -->
@@ -673,7 +683,6 @@
 				</div>
 			</xsl:if>
 		</div>
-      </div>
 		<xsl:if test="not(@maxOccurs='1')">
 			<div id="{$name}-hidden-fields" class="skipthis">
 				<input id="{$name}-count" type="text" value="1" />
@@ -824,13 +833,12 @@
 		<xsl:call-template name="produce-inline">
 			<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
 		</xsl:call-template>
-      <div>
-         <xsl:if test="//formView/errors/error[@field=$name]">
-            <xsl:attribute name="class">validFail</xsl:attribute>
-         </xsl:if>
-   		<div class="checkbox indnt1" id="{$name}parent">
+		<div class="checkbox indnt1" id="{$name}parent">
 			<xsl:if test="@minOccurs='1'">
 				<xsl:attribute name="class">checkbox required indnt1</xsl:attribute>
+				<xsl:if test="//formView/errors/error[@field=$name]">
+					<xsl:attribute name="class">checkbox required indnt1 validFail</xsl:attribute>
+				</xsl:if>
 				<span class="reqStar">*</span>
 			</xsl:if>
 			<xsl:call-template name="checkbox-widget">
@@ -850,7 +858,6 @@
 				<input type="hidden" id="{$name}parenthid" value="0" />
 			</xsl:if>
 		</div>
-      </div>
 	</xsl:template>
 	<xsl:template name="checkbox-widget">
 		<xsl:param name="name" />
@@ -872,20 +879,20 @@
 		<xsl:call-template name="produce-inline">
 			<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
 		</xsl:call-template>
-      <div>
-         <xsl:if test="//formView/errors/error[@field=$name]">
-            <xsl:attribute name="class">validFail</xsl:attribute>
-         </xsl:if>
-   		<div class="shorttext" id="{$name}parent">
-			<xsl:if test="@minOccurs='1'">
-				<xsl:attribute name="class">shorttext required</xsl:attribute>
-				<span class="reqStar">*</span>
-			</xsl:if>
-			<xsl:call-template name="produce-label">
-				<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
-			</xsl:call-template>
-			<input id="{$name}" type="button" onclick="javascript:document.forms[0].childPath.value='{$name}';document.forms[0].fileHelper.value='true';document.forms[0].onsubmit();document.forms[0].submit();" title="sakaifn:getMessage('messages', 'manage_attachments_title')" value="sakaifn:getMessage('messages', 'manage_attachments')">
-				<!--TODO: need to set the onclick attribute to pass a parameter to the filepicker allowing more files to be added or not after limit is reached 
+		<div>
+			<div class="shorttext" id="{$name}parent">
+				<xsl:if test="@minOccurs='1'">
+					<xsl:attribute name="class">shorttext required</xsl:attribute>
+					<xsl:if test="//formView/errors/error[@field=$name]">
+						<xsl:attribute name="class">shorttext required validFail</xsl:attribute>
+					</xsl:if>
+					<span class="reqStar">*</span>
+				</xsl:if>
+				<xsl:call-template name="produce-label">
+					<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
+				</xsl:call-template>
+				<input id="{$name}" type="button" onclick="javascript:document.forms[0].childPath.value='{$name}';document.forms[0].fileHelper.value='true';document.forms[0].onsubmit();document.forms[0].submit();" title="sakaifn:getMessage('messages', 'manage_attachments_title')" value="sakaifn:getMessage('messages', 'manage_attachments')">
+					<!--TODO: need to set the onclick attribute to pass a parameter to the filepicker allowing more files to be added or not after limit is reached 
 					- and how many files can be added total (the filepicker understands this parameter)
 					
 					paremeter can  be set when invoking the FilePicker by defining an attribute in
@@ -897,33 +904,33 @@
 					
 					- the parameter would be the initial maxOccurs on first use, or (maxOccurs -  count($currentParent/node()[$name=name()])  if count < maxOccurs)
 				-->
-				<xsl:attribute name="title">
-					<xsl:value-of select="sakaifn:getMessage('messages', 'manage_attachments_title')" />
-				</xsl:attribute>
-				<xsl:attribute name="value">
-					<xsl:value-of select="sakaifn:getMessage('messages', 'manage_attachments')" />
-				</xsl:attribute>
-			</input>
-			<!-- if there are attachments already, render these as a list, more ui refinement needed -->
-			<xsl:if test="$currentParent/node()[$name=name()]">
-				<ul class="attachList labelindnt" style="clear:both">
-					<xsl:for-each select="$currentParent/node()[$name=name()]">
-						<li>
-							<!--todo: need a mimetype lookup to generate the icon -->
-							<img src="/library/image/sakai/attachments.gif" />
-							<input type="hidden" name="{$name}" value="{.}" />
-							<a target="_blank">
-								<xsl:attribute name="href">
-									<xsl:value-of select="sakaifn:getReferenceUrl(.)" />
-								</xsl:attribute>
-								<xsl:value-of select="sakaifn:getReferenceName(.)" />
-							</a>
-						</li>
-					</xsl:for-each>
-				</ul>
-			</xsl:if>
+					<xsl:attribute name="title">
+						<xsl:value-of select="sakaifn:getMessage('messages', 'manage_attachments_title')" />
+					</xsl:attribute>
+					<xsl:attribute name="value">
+						<xsl:value-of select="sakaifn:getMessage('messages', 'manage_attachments')" />
+					</xsl:attribute>
+				</input>
+				<!-- if there are attachments already, render these as a list, more ui refinement needed -->
+				<xsl:if test="$currentParent/node()[$name=name()]">
+					<ul class="attachList labelindnt" style="clear:both">
+						<xsl:for-each select="$currentParent/node()[$name=name()]">
+							<li>
+								<!--todo: need a mimetype lookup to generate the icon -->
+								<img src="/library/image/sakai/attachments.gif" />
+								<input type="hidden" name="{$name}" value="{.}" />
+								<a target="_blank">
+									<xsl:attribute name="href">
+										<xsl:value-of select="sakaifn:getReferenceUrl(.)" />
+									</xsl:attribute>
+									<xsl:value-of select="sakaifn:getReferenceName(.)" />
+								</a>
+							</li>
+						</xsl:for-each>
+					</ul>
+				</xsl:if>
+			</div>
 		</div>
-      </div>
 		<!-- todo: remove this test if not needed -->
 		<xsl:if test="not(@maxOccurs='1')">
 			<div id="{$name}-hidden-fields" class="skipthis">
@@ -942,14 +949,13 @@
 		<xsl:call-template name="produce-inline">
 			<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
 		</xsl:call-template>
-      <div>
-         <xsl:if test="//formView/errors/error[@field=$name]">
-            <xsl:attribute name="class">validFail</xsl:attribute>
-         </xsl:if>
-   		<div class="shorttext" id="{$name}-node">
+		<div class="shorttext" id="{$name}-node">
 			<xsl:choose>
 				<xsl:when test="@minOccurs='1'">
 					<xsl:attribute name="class">shorttext required</xsl:attribute>
+					<xsl:if test="//formView/errors/error[@field=$name]">
+						<xsl:attribute name="class">shorttext required validFail</xsl:attribute>
+					</xsl:if>
 					<span class="reqStar">*</span>
 				</xsl:when>
 				<xsl:otherwise>
@@ -977,7 +983,6 @@
 				</div>
 			</xsl:if>
 		</div>
-      </div>
 		<xsl:if test="not(@maxOccurs='1')">
 			<div id="{$name}-hidden-fields" class="skipthis">
 				<input id="{$name}-count" type="text" value="1" />
