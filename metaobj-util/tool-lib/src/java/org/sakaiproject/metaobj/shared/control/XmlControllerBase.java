@@ -24,10 +24,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
-import org.sakaiproject.metaobj.shared.model.StructuredArtifact;
-import org.sakaiproject.metaobj.shared.model.ElementBean;
-import org.sakaiproject.metaobj.shared.model.ElementListBean;
-import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
+import org.sakaiproject.metaobj.shared.model.*;
 import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
 import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactHomeInterface;
@@ -248,10 +245,10 @@ public class XmlControllerBase {
       session.put(FilePickerHelper.FILE_PICKER_MAX_ATTACHMENTS,
          FilePickerHelper.CARDINALITY_SINGLE);
       if (List.class.isAssignableFrom(currentBean.getType(fieldName))) {
-         List currentIds = (List) currentBean.get(fieldName);
+         LimitedList currentIds = (LimitedList) currentBean.get(fieldName);
          attachmentRefs.addAll(convertToRefList(currentIds));
          session.put(FilePickerHelper.FILE_PICKER_MAX_ATTACHMENTS,
-            FilePickerHelper.CARDINALITY_MULTIPLE);
+            currentIds.getUpperLimit());
       }
       else if (currentBean.get(fieldName) != null) {
          attachmentRefs.add(convertToRef(currentBean.get(fieldName).toString()));

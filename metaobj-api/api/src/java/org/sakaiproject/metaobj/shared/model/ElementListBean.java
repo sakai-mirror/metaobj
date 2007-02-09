@@ -38,7 +38,7 @@ import org.sakaiproject.metaobj.utils.xml.SchemaNode;
  * Time: 3:55:06 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ElementListBean extends ArrayList {
+public class ElementListBean extends ArrayList implements LimitedList {
    protected final Log logger = LogFactory.getLog(getClass());
 
    private Element parentElement;
@@ -146,5 +146,16 @@ public class ElementListBean extends ArrayList {
       while (size() > 0) {
          remove(0);
       }
+   }
+
+   public int getUpperLimit() {
+      if (schema.getMaxOccurs() == -1) {
+         return Integer.MAX_VALUE;
+      }
+      return schema.getMaxOccurs();
+   }
+
+   public int getLowerLimit() {
+      return schema.getMinOccurs();
    }
 }
