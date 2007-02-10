@@ -35,10 +35,7 @@ import org.jdom.xpath.XPath;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 import org.sakaiproject.component.cover.ComponentManager;
-import org.sakaiproject.metaobj.shared.mgt.IdManager;
-import org.sakaiproject.metaobj.shared.mgt.PresentableObjectHome;
-import org.sakaiproject.metaobj.shared.mgt.StreamableObjectHome;
-import org.sakaiproject.metaobj.shared.mgt.AgentManager;
+import org.sakaiproject.metaobj.shared.mgt.*;
 import org.sakaiproject.metaobj.shared.model.*;
 import org.sakaiproject.metaobj.shared.ArtifactFinder;
 import org.sakaiproject.metaobj.utils.Config;
@@ -135,6 +132,7 @@ public class StructuredArtifactHome extends XmlElementHome
          StructuredArtifact xmlObject =
             new StructuredArtifact(doc.getRootElement(), getSchema().getChild(getRootNode()));
 
+         xmlObject.setBaseResource(resource);
          xmlObject.setId(resourceId);
          xmlObject.setDisplayName(
             (String) resource.getProperties().get(
@@ -364,7 +362,10 @@ public class StructuredArtifactHome extends XmlElementHome
       type.addContent(createNode("id", "file"));
       type.addContent(createNode("description", "file"));
 
-      Element repositoryNode = new Element("repositoryNode");
+      ContentResource contentResource = ((StructuredArtifact)art).getBaseResource();
+
+      Element repositoryNode =
+         ContentHostingUtil.createRepoNode(contentResource);
       root.addContent(repositoryNode);
 
       return root;

@@ -39,10 +39,7 @@ import org.sakaiproject.entity.api.EntityPropertyNotDefinedException;
 import org.sakaiproject.entity.api.EntityPropertyTypeException;
 import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.exception.ServerOverloadException;
-import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
-import org.sakaiproject.metaobj.shared.mgt.IdManager;
-import org.sakaiproject.metaobj.shared.mgt.PresentableObjectHome;
-import org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome;
+import org.sakaiproject.metaobj.shared.mgt.*;
 import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactHomeInterface;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Artifact;
@@ -226,62 +223,31 @@ public class ContentResourceHome implements ReadableObjectHome, PresentableObjec
 
    protected Element getMetadata(ContentResourceArtifact art) {
       Element root = new Element("metaData");
-      root.addContent(createNode("id", art.getId().getValue()));
-      root.addContent(createNode("displayName", art.getDisplayName()));
+      root.addContent(ContentHostingUtil.createNode("id", art.getId().getValue()));
+      root.addContent(ContentHostingUtil.createNode("displayName", art.getDisplayName()));
 
       Element type = new Element("type");
       root.addContent(type);
 
-      type.addContent(createNode("id", "file"));
-      type.addContent(createNode("description", "file"));
+      type.addContent(ContentHostingUtil.createNode("id", "file"));
+      type.addContent(ContentHostingUtil.createNode("description", "file"));
 
-      Element repositoryNode = new Element("repositoryNode");
+      ContentResource contentResource = art.getBase();
+      Element repositoryNode =
+         ContentHostingUtil.createRepoNode(contentResource);
       root.addContent(repositoryNode);
 
-      Date created = getDate(art.getBase(),
-            art.getBase().getProperties().getNamePropCreationDate());
-      if (created != null) {
-         repositoryNode.addContent(createNode("created",
-               created.toString()));
-      }
-
-      Date modified = getDate(art.getBase(),
-            art.getBase().getProperties().getNamePropModifiedDate());
-      if (modified != null) {
-         repositoryNode.addContent(createNode("modified",
-               modified.toString()));
-      }
-
-      repositoryNode.addContent(createNode("size", "" +
-            art.getBase().getContentLength()));
+      repositoryNode.addContent(ContentHostingUtil.createNode("size", "" +
+            contentResource.getContentLength()));
 
       Element mimeType = new Element("mimeType");
       repositoryNode.addContent(mimeType);
-      String mimeTypeString = art.getBase().getContentType();
+      String mimeTypeString = contentResource.getContentType();
       MimeType mime = new MimeType(mimeTypeString);
-      mimeType.addContent(createNode("primary", mime.getPrimaryType()));
-      mimeType.addContent(createNode("sub", mime.getSubType()));
+      mimeType.addContent(ContentHostingUtil.createNode("primary", mime.getPrimaryType()));
+      mimeType.addContent(ContentHostingUtil.createNode("sub", mime.getSubType()));
 
       return root;
-   }
-
-   protected Element createNode(String name, String value) {
-      Element newNode = new Element(name);
-      newNode.addContent(value);
-      return newNode;
-   }
-
-   protected Date getDate(ContentResource resource, String propName) {
-      try {
-         Time time = resource.getProperties().getTimeProperty(propName);
-         return new Date(time.getTime());
-      }
-      catch (EntityPropertyNotDefinedException e) {
-         return null;
-      }
-      catch (EntityPropertyTypeException e) {
-         throw new RuntimeException(e);
-      }
    }
 
    public HomeFactory getHomeFactory() {

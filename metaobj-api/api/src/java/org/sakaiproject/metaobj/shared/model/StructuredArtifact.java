@@ -27,6 +27,7 @@ import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome;
 import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactHomeInterface;
 import org.sakaiproject.metaobj.utils.xml.SchemaNode;
+import org.sakaiproject.content.api.ContentResource;
 
 /**
  * Created by IntelliJ IDEA.
@@ -46,6 +47,7 @@ public class StructuredArtifact extends ElementBean implements Artifact {
    private static String ARTIFACT_ID_PARAMETER_NAME = "artifactId";
    private static String DISPLAY_NAME_PARAMETER_NAME = "displayName";
    private String displayName;
+   private ContentResource baseResource;
 
    public StructuredArtifact(String elementName, SchemaNode currentSchema) {
       super(elementName, currentSchema);
@@ -177,5 +179,13 @@ public class StructuredArtifact extends ElementBean implements Artifact {
 
    public void setParentFolder(String parentFolder) {
       this.parentFolder = parentFolder;
+   }
+
+   public ContentResource getBaseResource() {
+      return baseResource;
+   }
+
+   public void setBaseResource(ContentResource baseResource) {
+      this.baseResource = baseResource;
    }
 }
