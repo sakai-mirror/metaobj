@@ -112,8 +112,13 @@ public class XmlControllerBase {
    protected void handleRemove(ElementBean bean, EditedArtifactStorage sessionBean, Map request,
                                Map session, Map application, Errors errors) {
       ElementListBean parentList = findList(bean, (String)request.get("childPath"));
-      int removeIndex = Integer.parseInt((String)request.get("childIndex"));
-      parentList.remove(removeIndex);
+      if (parentList == null) {
+         bean.remove((String)request.get("childPath"));
+      }
+      else {
+         int removeIndex = Integer.parseInt((String)request.get("childIndex"));
+         parentList.remove(removeIndex);
+      }
    }
 
    protected void handleEditAdd(ElementBean bean, EditedArtifactStorage sessionBean, Map request,
@@ -122,21 +127,21 @@ public class XmlControllerBase {
       ElementListBean parentList = findList(bean, (String)request.get("childPath"));
       ElementBean newBean = null;
 
-      if (request.get("editButton") != null &&
+      if (parentList == null) {
+         newBean = findSubForm(bean, (String)request.get("childPath"));
+      }
+      else if (request.get("editButton") != null &&
          request.get("editButton").toString().length() > 0) {
          int index = Integer.parseInt((String)request.get("childIndex"));
          newBean = (ElementBean)parentList.get(index);
       }
       else if (request.get("addButton") != null) {
          newBean = parentList.createBlank();
+         parentList.add(newBean);
       }
 
       sessionBean.pushCurrentElement(newBean);
       sessionBean.pushCurrentPath((String)request.get("childPath"));
-
-      if (request.get("addButton") != null) {
-         parentList.add(newBean);
-      }
 
    }
 
@@ -151,6 +156,20 @@ public class XmlControllerBase {
          }
          else if (obj instanceof ElementListBean) {
             return (ElementListBean)obj;
+         }
+      }
+
+      return null;
+   }
+
+   protected ElementBean findSubForm(ElementBean bean, String path) {
+      StringTokenizer tok = new StringTokenizer(path, ".");
+      ElementBean current = bean;
+
+      while (tok.hasMoreTokens()) {
+         Object obj = current.get(tok.nextToken());
+         if (obj instanceof ElementBean) {
+            return (ElementBean)obj;
          }
       }
 
