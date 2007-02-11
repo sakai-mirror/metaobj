@@ -54,7 +54,7 @@
 					<thead>
 						<tr>
 							<th scope="col">
-								<xsl:if test="@minOccurs='1'">
+								<xsl:if test="$currentSchemaNode/@minOccurs='1'">
 									<span class="reqStar">*</span>
 								</xsl:if>
 								<xsl:call-template name="produce-label">
@@ -100,21 +100,15 @@
 			<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
 		</xsl:call-template>
 		<div id="{$name}-node">
-			<xsl:choose>
-				<xsl:when test="@minOccurs='1'">
-					<xsl:attribute name="class">shorttext required</xsl:attribute>
-					<xsl:if test="//formView/errors/error[@field=$name]">
-						<xsl:attribute name="class">shorttext required validFail</xsl:attribute>
-					</xsl:if>
-					<span class="reqStar">*</span>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:attribute name="class">shorttext</xsl:attribute>
-					<xsl:if test="//formView/errors/error[@field=$name]">
-						<xsl:attribute name="class">shorttext validFail</xsl:attribute>
-					</xsl:if>
-				</xsl:otherwise>
-			</xsl:choose>
+         <xsl:attribute name="class">
+            <xsl:call-template
+               name="fieldClass"><xsl:with-param
+               name="schemaNode" select="$currentSchemaNode" /><xsl:with-param
+               name="baseType" select="'shorttext'" /></xsl:call-template>
+         </xsl:attribute>
+         <xsl:if test="$currentSchemaNode/@minOccurs='1'">
+            <span class="reqStar">*</span>
+         </xsl:if>
 			<xsl:call-template name="produce-label">
 				<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
 			</xsl:call-template>
@@ -199,15 +193,15 @@
 							<xsl:value-of select="name()" />-<xsl:value-of select="position()" />-node</xsl:otherwise>
 					</xsl:choose>
 				</xsl:attribute>
-				<xsl:choose>
-					<xsl:when test="@minOccurs='1'">
-						<xsl:attribute name="class">shorttext required</xsl:attribute>
-						<span class="reqStar">*</span>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:attribute name="class">shorttext</xsl:attribute>
-					</xsl:otherwise>
-				</xsl:choose>
+            <xsl:attribute name="class">
+               <xsl:call-template
+                  name="fieldClass"><xsl:with-param
+                  name="schemaNode" select="$currentSchemaNode" /><xsl:with-param
+                  name="baseType" select="'shorttext'" /></xsl:call-template>
+            </xsl:attribute>
+            <xsl:if test="$currentSchemaNode/@minOccurs='1'">
+               <span class="reqStar">*</span>
+            </xsl:if>
 				<!-- call template that will produce the label in edit mode -->
 				<xsl:call-template name="produce-label-edit">
 					<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
@@ -309,12 +303,15 @@
 			<xsl:choose>
 				<xsl:when test="@maxOccurs='1' and count($currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:enumeration) &lt;= $htmldeterm">
 					<!-- this will resolve as a radio group control -->
-					<fieldset class="osp-radcheck">
-						<xsl:if test="//formView/errors/error[@field=$name]">
-							<xsl:attribute name="class">osp-radcheck validFail</xsl:attribute>
-						</xsl:if>
+					<fieldset>
+                  <xsl:attribute name="class">
+                     <xsl:call-template
+                        name="fieldClass"><xsl:with-param
+                        name="schemaNode" select="$currentSchemaNode" /><xsl:with-param
+                        name="baseType" select="'osp-radcheck'" /></xsl:call-template>
+                  </xsl:attribute>
 						<legend>
-							<xsl:if test="@minOccurs='1'">
+							<xsl:if test="$currentSchemaNode/@minOccurs='1'">
 								<span class="reqStar">*</span>
 							</xsl:if>
 							<xsl:call-template name="produce-label">
@@ -337,19 +334,16 @@
 				</xsl:when>
 				<xsl:when test="@maxOccurs='1' and count($currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:enumeration) &gt; $htmldeterm">
 					<!-- this will resolve as a single select control-->
-					<xsl:choose>
-						<xsl:when test="@minOccurs='1'">
-							<xsl:attribute name="class">shorttext required</xsl:attribute>
-							<xsl:if test="//formView/errors/error[@field=$name]">
-								<xsl:attribute name="class">shorttext required validFail</xsl:attribute>
-							</xsl:if>
-							<span class="reqStar">*</span>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:attribute name="class">shorttext</xsl:attribute>
-						</xsl:otherwise>
-					</xsl:choose>
-					<xsl:call-template name="produce-label">
+               <xsl:attribute name="class">
+                  <xsl:call-template
+                     name="fieldClass"><xsl:with-param
+                     name="schemaNode" select="$currentSchemaNode" /><xsl:with-param
+                     name="baseType" select="'shorttext'" /></xsl:call-template>
+               </xsl:attribute>
+               <xsl:if test="$currentSchemaNode/@minOccurs='1'">
+                  <span class="reqStar">*</span>
+               </xsl:if>
+               <xsl:call-template name="produce-label">
 						<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
 					</xsl:call-template>
 					<select id="{$name}" name="{$name}">
@@ -365,12 +359,15 @@
 				</xsl:when>
 				<xsl:when test="@maxOccurs !='1' and count($currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:enumeration) &lt;= $htmldeterm">
 					<!-- this will resolve as a checkbox group control -->
-					<fieldset class="osp-radcheck">
-						<xsl:if test="//formView/errors/error[@field=$name]">
-							<xsl:attribute name="class">osp-radcheck validFail</xsl:attribute>
-						</xsl:if>
+					<fieldset>
+                  <xsl:attribute name="class">
+                     <xsl:call-template
+                        name="fieldClass"><xsl:with-param
+                        name="schemaNode" select="$currentSchemaNode" /><xsl:with-param
+                        name="baseType" select="'osp-radcheck'" /></xsl:call-template>
+                  </xsl:attribute>
 						<legend>
-							<xsl:if test="@minOccurs='1'">
+							<xsl:if test="$currentSchemaNode/@minOccurs='1'">
 								<span class="reqStar">*</span>
 							</xsl:if>
 							<xsl:call-template name="produce-label">
@@ -393,18 +390,15 @@
 				</xsl:when>
 				<xsl:when test="@maxOccurs !='1' and count($currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:enumeration) &gt; $htmldeterm">
 					<!-- this will resolve as a multiple select control -->
-					<xsl:choose>
-						<xsl:when test="@minOccurs='1'">
-							<xsl:attribute name="class">shorttext required</xsl:attribute>
-							<xsl:if test="//formView/errors/error[@field=$name]">
-								<xsl:attribute name="class">shorttext required validFail</xsl:attribute>
-							</xsl:if>
-							<span class="reqStar">*</span>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:attribute name="class">shorttext</xsl:attribute>
-						</xsl:otherwise>
-					</xsl:choose>
+               <xsl:attribute name="class">
+                  <xsl:call-template
+                     name="fieldClass"><xsl:with-param
+                     name="schemaNode" select="$currentSchemaNode" /><xsl:with-param
+                     name="baseType" select="'shorttext'" /></xsl:call-template>
+               </xsl:attribute>
+               <xsl:if test="$currentSchemaNode/@minOccurs='1'">
+                  <span class="reqStar">*</span>
+               </xsl:if>
 					<xsl:call-template name="produce-label">
 						<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
 					</xsl:call-template>
@@ -465,15 +459,15 @@
 					</fieldset>
 				</xsl:when>
 				<xsl:when test="@maxOccurs='1' and count($currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:enumeration) &gt; $htmldeterm">
-					<xsl:choose>
-						<xsl:when test="@minOccurs='1'">
-							<xsl:attribute name="class">shorttext required</xsl:attribute>
-							<span class="reqStar">*</span>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:attribute name="class">shorttext</xsl:attribute>
-						</xsl:otherwise>
-					</xsl:choose>
+               <xsl:attribute name="class">
+                  <xsl:call-template
+                     name="fieldClass"><xsl:with-param
+                     name="schemaNode" select="$currentSchemaNode" /><xsl:with-param
+                     name="baseType" select="'shorttext'" /></xsl:call-template>
+               </xsl:attribute>
+               <xsl:if test="$currentSchemaNode/@minOccurs='1'">
+                  <span class="reqStar">*</span>
+               </xsl:if>
 					<xsl:call-template name="produce-label">
 						<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
 					</xsl:call-template>
@@ -510,15 +504,15 @@
 					</fieldset>
 				</xsl:when>
 				<xsl:when test="@maxOccurs !='1' and count($currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:enumeration) &gt; $htmldeterm">
-					<xsl:choose>
-						<xsl:when test="@minOccurs='1'">
-							<xsl:attribute name="class">shorttext required</xsl:attribute>
-							<span class="reqStar">*</span>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:attribute name="class">shorttext</xsl:attribute>
-						</xsl:otherwise>
-					</xsl:choose>
+               <xsl:attribute name="class">
+                  <xsl:call-template
+                     name="fieldClass"><xsl:with-param
+                     name="schemaNode" select="$currentSchemaNode" /><xsl:with-param
+                     name="baseType" select="'shorttext'" /></xsl:call-template>
+               </xsl:attribute>
+               <xsl:if test="$currentSchemaNode/@minOccurs='1'">
+                  <span class="reqStar">*</span>
+               </xsl:if>
 					<xsl:call-template name="produce-label">
 						<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
 					</xsl:call-template>
@@ -554,21 +548,15 @@
 			<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
 		</xsl:call-template>
 		<div id="{$name}">
-			<xsl:choose>
-				<xsl:when test="@minOccurs='1'">
-					<xsl:attribute name="class">longtext required</xsl:attribute>
-					<xsl:if test="//formView/errors/error[@field=$name]">
-						<xsl:attribute name="class">longtext required validFail</xsl:attribute>
-					</xsl:if>
-					<span class="reqStar">*</span>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:attribute name="class">longtext</xsl:attribute>
-					<xsl:if test="//formView/errors/error[@field=$name]">
-						<xsl:attribute name="class">longtext validFail</xsl:attribute>
-					</xsl:if>
-				</xsl:otherwise>
-			</xsl:choose>
+         <xsl:attribute name="class">
+            <xsl:call-template
+               name="fieldClass"><xsl:with-param
+               name="schemaNode" select="$currentSchemaNode" /><xsl:with-param
+               name="baseType" select="'longtext'" /></xsl:call-template>
+         </xsl:attribute>
+         <xsl:if test="$currentSchemaNode/@minOccurs='1'">
+            <span class="reqStar">*</span>
+         </xsl:if>
 			<xsl:call-template name="produce-label">
 				<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
 				<xsl:with-param name="nodeType">longtext</xsl:with-param>
@@ -617,21 +605,15 @@
 			<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
 		</xsl:call-template>
 		<div id="{$name}-node">
-			<xsl:choose>
-				<xsl:when test="@minOccurs='1'">
-					<xsl:attribute name="class">longtext required</xsl:attribute>
-					<xsl:if test="//formView/errors/error[@field=$name]">
-						<xsl:attribute name="class">longtext required validFail</xsl:attribute>
-					</xsl:if>
-					<span class="reqStar">*</span>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:attribute name="class">longtext</xsl:attribute>
-					<xsl:if test="//formView/errors/error[@field=$name]">
-						<xsl:attribute name="class">longtext validFail</xsl:attribute>
-					</xsl:if>
-				</xsl:otherwise>
-			</xsl:choose>
+         <xsl:attribute name="class">
+            <xsl:call-template
+               name="fieldClass"><xsl:with-param
+               name="schemaNode" select="$currentSchemaNode" /><xsl:with-param
+               name="baseType" select="'longtext'" /></xsl:call-template>
+         </xsl:attribute>
+         <xsl:if test="$currentSchemaNode/@minOccurs='1'">
+            <span class="reqStar">*</span>
+         </xsl:if>
 			<!-- passing a nodeType param to the label producing template creates a label with the css class "block" so that it renders label and textarea in 2 separate lines -->
 			<xsl:call-template name="produce-label">
 				<xsl:with-param name="nodeType">longtext</xsl:with-param>
@@ -722,16 +704,16 @@
 							<xsl:value-of select="name()" />-<xsl:value-of select="position()" />-node</xsl:otherwise>
 					</xsl:choose>
 				</xsl:attribute>
-				<xsl:choose>
-					<xsl:when test="@minOccurs='1'">
-						<xsl:attribute name="class">longtext required</xsl:attribute>
-						<span class="reqStar">*</span>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:attribute name="class">longtext</xsl:attribute>
-					</xsl:otherwise>
-				</xsl:choose>
-				<xsl:call-template name="produce-label-edit">
+            <xsl:attribute name="class">
+               <xsl:call-template
+                  name="fieldClass"><xsl:with-param
+                  name="schemaNode" select="$currentSchemaNode" /><xsl:with-param
+                  name="baseType" select="'longtext'" /></xsl:call-template>
+            </xsl:attribute>
+            <xsl:if test="$currentSchemaNode/@minOccurs='1'">
+               <span class="reqStar">*</span>
+            </xsl:if>
+            <xsl:call-template name="produce-label-edit">
 					<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
 					<xsl:with-param name="sep">-</xsl:with-param>
 					<xsl:with-param name="nodeType">longtext</xsl:with-param>
@@ -833,14 +815,16 @@
 		<xsl:call-template name="produce-inline">
 			<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
 		</xsl:call-template>
-		<div class="checkbox indnt1" id="{$name}parent">
-			<xsl:if test="@minOccurs='1'">
-				<xsl:attribute name="class">checkbox required indnt1</xsl:attribute>
-				<xsl:if test="//formView/errors/error[@field=$name]">
-					<xsl:attribute name="class">checkbox required indnt1 validFail</xsl:attribute>
-				</xsl:if>
-				<span class="reqStar">*</span>
-			</xsl:if>
+		<div id="{$name}parent">
+         <xsl:attribute name="class">
+            <xsl:call-template
+               name="fieldClass"><xsl:with-param
+               name="schemaNode" select="$currentSchemaNode" /><xsl:with-param
+               name="baseType" select="'checkbox indnt1'" /></xsl:call-template>
+         </xsl:attribute>
+         <xsl:if test="$currentSchemaNode/@minOccurs='1'">
+            <span class="reqStar">*</span>
+         </xsl:if>
 			<xsl:call-template name="checkbox-widget">
 				<xsl:with-param name="name" select="$name" />
 				<xsl:with-param name="currentNode" select="$currentNode" />
@@ -880,14 +864,16 @@
 			<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
 		</xsl:call-template>
 		<div>
-			<div class="shorttext" id="{$name}parent">
-				<xsl:if test="@minOccurs='1'">
-					<xsl:attribute name="class">shorttext required</xsl:attribute>
-					<xsl:if test="//formView/errors/error[@field=$name]">
-						<xsl:attribute name="class">shorttext required validFail</xsl:attribute>
-					</xsl:if>
-					<span class="reqStar">*</span>
-				</xsl:if>
+			<div id="{$name}parent">
+            <xsl:attribute name="class">
+               <xsl:call-template
+                  name="fieldClass"><xsl:with-param
+                  name="schemaNode" select="$currentSchemaNode" /><xsl:with-param
+                  name="baseType" select="'shorttext'" /></xsl:call-template>
+            </xsl:attribute>
+            <xsl:if test="$currentSchemaNode/@minOccurs='1'">
+               <span class="reqStar">*</span>
+            </xsl:if>
 				<xsl:call-template name="produce-label">
 					<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
 				</xsl:call-template>
@@ -949,19 +935,16 @@
 		<xsl:call-template name="produce-inline">
 			<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
 		</xsl:call-template>
-		<div class="shorttext" id="{$name}-node">
-			<xsl:choose>
-				<xsl:when test="@minOccurs='1'">
-					<xsl:attribute name="class">shorttext required</xsl:attribute>
-					<xsl:if test="//formView/errors/error[@field=$name]">
-						<xsl:attribute name="class">shorttext required validFail</xsl:attribute>
-					</xsl:if>
-					<span class="reqStar">*</span>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:attribute name="class">shorttext</xsl:attribute>
-				</xsl:otherwise>
-			</xsl:choose>
+		<div id="{$name}-node">
+         <xsl:attribute name="class">
+            <xsl:call-template
+               name="fieldClass"><xsl:with-param
+               name="schemaNode" select="$currentSchemaNode" /><xsl:with-param
+               name="baseType" select="'shorttext'" /></xsl:call-template>
+         </xsl:attribute>
+         <xsl:if test="$currentSchemaNode/@minOccurs='1'">
+            <span class="reqStar">*</span>
+         </xsl:if>
 			<xsl:call-template name="produce-label">
 				<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
 			</xsl:call-template>
@@ -1025,15 +1008,15 @@
 							<xsl:value-of select="name()" />-<xsl:value-of select="position()" />-node</xsl:otherwise>
 					</xsl:choose>
 				</xsl:attribute>
-				<xsl:choose>
-					<xsl:when test="@minOccurs='1'">
-						<xsl:attribute name="class">shorttext required</xsl:attribute>
-						<span class="reqStar">*</span>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:attribute name="class">shorttext</xsl:attribute>
-					</xsl:otherwise>
-				</xsl:choose>
+            <xsl:attribute name="class">
+               <xsl:call-template
+                  name="fieldClass"><xsl:with-param
+                  name="schemaNode" select="$currentSchemaNode" /><xsl:with-param
+                  name="baseType" select="'shorttext'" /></xsl:call-template>
+            </xsl:attribute>
+            <xsl:if test="$currentSchemaNode/@minOccurs='1'">
+               <span class="reqStar">*</span>
+            </xsl:if>
 				<xsl:call-template name="produce-label-edit">
 					<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
 					<xsl:with-param name="sep">-</xsl:with-param>
@@ -1340,4 +1323,14 @@
 		<xsl:variable name="day" select="substring-after($rest,'-')" />
 		<xsl:value-of select="$month" />/<xsl:value-of select="$day" />/<xsl:value-of select="$year" />
 	</xsl:template>
+
+   <xsl:template name="fieldClass">
+      <xsl:param name="schemaNode"/>
+      <xsl:param name="baseType"/>
+      <xsl:variable name="name" select="$schemaNode/@name" />
+      <xsl:value-of select="$baseType"/> <xsl:if
+         test="$schemaNode/@minOccurs = '1'"> required </xsl:if> <xsl:if
+         test="//formView/errors/error[@field=$name]"> validFail </xsl:if>
+   </xsl:template>
+
 </xsl:stylesheet>

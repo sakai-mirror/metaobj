@@ -363,11 +363,12 @@ public class StructuredArtifactHome extends XmlElementHome
       type.addContent(createNode("description", "file"));
 
       ContentResource contentResource = ((StructuredArtifact)art).getBaseResource();
-
-      Element repositoryNode =
-         ContentHostingUtil.createRepoNode(contentResource);
-      root.addContent(repositoryNode);
-
+      if (contentResource != null) {
+         Element repositoryNode =
+            ContentHostingUtil.createRepoNode(contentResource);
+         root.addContent(repositoryNode);
+      }
+      
       return root;
    }
 
