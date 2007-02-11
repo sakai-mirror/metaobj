@@ -108,13 +108,13 @@
 <p class="act">
 <c:if test="${empty bean.id}">
 <input name="action" type="submit" class="active" value="<fmt:message key="button_save"/>"/>
-<input type="button" value="Preview" onclick="document.forms[0]['previewAction'].value='preview';
-      document.forms[0].submit();return false;">
 </c:if>
 
 <c:if test="${!empty bean.id}">
 <input name="action" type="submit" class="active" value="<fmt:message key="button_saveEdit"/>"/>
 </c:if>
+<input type="button" value="<fmt:message key="button_preview"/>" onclick="document.forms[0]['previewAction'].value='preview';
+      document.forms[0].submit();return false;">
 
 <input name="previewAction" id="previewAction" type="hidden" value=""/>
 <input name="action" id="action" type="hidden" value=""/>
