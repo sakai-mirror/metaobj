@@ -203,23 +203,11 @@
 	<xsl:template match="element[@type = 'xs:date']">
 		<xsl:param name="currentParent" />
 		<xsl:param name="rootNode" />
-		<xsl:choose>
-			<!--if there is data we are editing, call the editing template, same comment applies to shorttext and longtext -->
-			<xsl:when test="//formView/formData[1]/artifact[1]/metaData[1]/id[1]">
-				<xsl:call-template name="date-field-edit">
-					<xsl:with-param name="currentSchemaNode" select="." />
-					<xsl:with-param name="currentParent" select="$currentParent" />
-					<xsl:with-param name="rootNode" select="$rootNode" />
-				</xsl:call-template>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:call-template name="date-field">
-					<xsl:with-param name="currentSchemaNode" select="." />
-					<xsl:with-param name="currentParent" select="$currentParent" />
-					<xsl:with-param name="rootNode" select="$rootNode" />
-				</xsl:call-template>
-			</xsl:otherwise>
-		</xsl:choose>
+      <xsl:call-template name="date-field">
+         <xsl:with-param name="currentSchemaNode" select="." />
+         <xsl:with-param name="currentParent" select="$currentParent" />
+         <xsl:with-param name="rootNode" select="$rootNode" />
+      </xsl:call-template>
 	</xsl:template>
 	<!--
     file picker
@@ -251,22 +239,11 @@
 	<xsl:template match="element[xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength[@value>99]]">
 		<xsl:param name="currentParent" />
 		<xsl:param name="rootNode" />
-		<xsl:choose>
-			<xsl:when test="//formView/formData[1]/artifact[1]/metaData[1]/id[1]">
-				<xsl:call-template name="longText-field-edit">
-					<xsl:with-param name="currentSchemaNode" select="." />
-					<xsl:with-param name="currentParent" select="$currentParent" />
-					<xsl:with-param name="rootNode" select="$rootNode" />
-				</xsl:call-template>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:call-template name="longText-field">
-					<xsl:with-param name="currentSchemaNode" select="." />
-					<xsl:with-param name="currentParent" select="$currentParent" />
-					<xsl:with-param name="rootNode" select="$rootNode" />
-				</xsl:call-template>
-			</xsl:otherwise>
-		</xsl:choose>
+      <xsl:call-template name="longText-field">
+         <xsl:with-param name="currentSchemaNode" select="." />
+         <xsl:with-param name="currentParent" select="$currentParent" />
+         <xsl:with-param name="rootNode" select="$rootNode" />
+      </xsl:call-template>
 	</xsl:template>
 	<!--
     rich text
@@ -298,21 +275,10 @@
 	<xsl:template match="element">
 		<xsl:param name="currentParent" />
 		<xsl:param name="rootNode" />
-		<xsl:choose>
-			<xsl:when test="//formView/formData[1]/artifact[1]/metaData[1]/id[1]">
-				<xsl:call-template name="shortText-field-edit">
-					<xsl:with-param name="currentSchemaNode" select="." />
-					<xsl:with-param name="currentParent" select="$currentParent" />
-					<xsl:with-param name="rootNode" select="$rootNode" />
-				</xsl:call-template>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:call-template name="shortText-field">
-					<xsl:with-param name="currentSchemaNode" select="." />
-					<xsl:with-param name="currentParent" select="$currentParent" />
-					<xsl:with-param name="rootNode" select="$rootNode" />
-				</xsl:call-template>
-			</xsl:otherwise>
-		</xsl:choose>
+      <xsl:call-template name="shortText-field">
+         <xsl:with-param name="currentSchemaNode" select="." />
+         <xsl:with-param name="currentParent" select="$currentParent" />
+         <xsl:with-param name="rootNode" select="$rootNode" />
+      </xsl:call-template>
 	</xsl:template>
 </xsl:stylesheet>
