@@ -177,7 +177,7 @@ public class FormResourceType implements ResourceType {
     * @return true if availability is included among the resource properties in the UI, false otherwise.
     */
    public boolean hasAvailabilityDialog() {
-      return false;
+      return true;
    }
 
    /**
@@ -195,7 +195,7 @@ public class FormResourceType implements ResourceType {
     * @return true if access by groups is included among the resource properties in the UI, false otherwise.
     */
    public boolean hasGroupsDialog() {
-      return false;
+      return true;
    }
 
    /**
@@ -204,7 +204,7 @@ public class FormResourceType implements ResourceType {
     * @return true if email-notification is included among the resource properties in the UI, false otherwise.
     */
    public boolean hasNotificationDialog() {
-      return false;
+      return true;
    }
 
    /**
@@ -213,7 +213,7 @@ public class FormResourceType implements ResourceType {
     * @return true if optional properties form is included among the resource properties in the UI, false otherwise.
     */
    public boolean hasOptionalPropertiesDialog() {
-      return false;
+      return true;
    }
 
    /**
@@ -222,7 +222,7 @@ public class FormResourceType implements ResourceType {
     * @return true if public access is included among the resource properties in the UI, false otherwise.
     */
    public boolean hasPublicDialog() {
-      return false;
+      return true;
    }
 
    /**
@@ -231,7 +231,7 @@ public class FormResourceType implements ResourceType {
     * @return true if the copyright/licensing dialog is included among the resource properties in the UI, false otherwise.
     */
    public boolean hasRightsDialog() {
-      return false;
+      return true;
    }
 
    public ResourceTypeRegistry getResourceTypeRegistry() {
