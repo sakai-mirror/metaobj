@@ -23,13 +23,13 @@
 								<xsl:call-template name="produce-label">
 									<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
 								</xsl:call-template>
-								<!--
-								<xsl:value-of select="$currentSchemaNode/xs:annotation/xs:documentation[@source='ospi.label']" />
-								-->
 							</th>
 							<th scope="col">
 								<div style="float:right">
-									<input type="submit" name="addButton" id="{$name}" alignment="center" value="Add New" onClick="this.form.childPath.value='{$name}';return true">
+									<input type="submit" name="addButton" id="{$name}" alignment="center" onClick="this.form.childPath.value='{$name}';return true">
+										<xsl:attribute name="value">
+											<xsl:value-of select="sakaifn:getMessage('messages', 'button_addsubform')" />
+										</xsl:attribute>
 										<xsl:if test="$maxOccurs != -1 and $currentCount >= $maxOccurs">
 											<xsl:attribute name="disabled">true</xsl:attribute>
 										</xsl:if>
@@ -63,7 +63,10 @@
 							</th>
 							<th scope="col">
 								<div style="float:right">
-									<input type="submit" name="addButton" alignment="center" value="Add New" onClick="this.form.childPath.value='{$name}';return true">
+									<input type="submit" name="addButton" alignment="center" onClick="this.form.childPath.value='{$name}';return true">
+										<xsl:attribute name="value">
+											<xsl:value-of select="sakaifn:getMessage('messages', 'button_addsubform')" />
+										</xsl:attribute>
 										<xsl:if test="$maxOccurs != -1 and $currentCount >= $maxOccurs">
 											<xsl:attribute name="disabled">true</xsl:attribute>
 										</xsl:if>
@@ -120,16 +123,14 @@
 							<xsl:value-of select="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value" />
 						</xsl:attribute>
 						<xsl:attribute name="title">
-							<xsl:value-of select="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value" />
-							<xsl:text> </xsl:text>
-							<xsl:value-of select="sakaifn:getMessage('messages', 'max_chars')" />
+							<!--info: convert node to string before passing it to the function-->
+							<xsl:value-of select="sakaifn:formatMessage('messages','max_chars',string($currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value))" />
 						</xsl:attribute>
 					</xsl:when>
 					<xsl:otherwise>
-						<xsl:attribute name="maxLength"> 50 </xsl:attribute>
+						<xsl:attribute name="maxLength">50</xsl:attribute>
 						<xsl:attribute name="title">
-							<xsl:text> 50 </xsl:text>
-							<xsl:value-of select="sakaifn:getMessage('messages', 'max_chars')" />
+							<xsl:value-of select="sakaifn:formatMessage('messages', 'max_chars',50)" />
 						</xsl:attribute>
 					</xsl:otherwise>
 				</xsl:choose>
@@ -156,8 +157,6 @@
 			</div>
 		</xsl:if>
 	</xsl:template>
-	<!-- produce text type input on editing, the operations were so different that a different template seemed required for sanity's sake
-		 might collapse both later -->
 	<xsl:template name="shortText-field">
 		<xsl:param name="currentSchemaNode" />
 		<xsl:param name="currentParent" />
@@ -219,16 +218,12 @@
 								<xsl:value-of select="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value" />
 							</xsl:attribute>
 							<xsl:attribute name="title">
-								<xsl:value-of select="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value" />
-								<xsl:text> </xsl:text>
-								<xsl:value-of select="sakaifn:getMessage('messages', 'max_chars')" />
+								<xsl:value-of select="sakaifn:formatMessage('messages','max_chars',string($currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value))" />
 							</xsl:attribute>
 						</xsl:when>
 						<xsl:otherwise>
-							<xsl:attribute name="maxLength"> 50 </xsl:attribute>
 							<xsl:attribute name="title">
-								<xsl:text>50 </xsl:text>
-								<xsl:value-of select="sakaifn:getMessage('messages', 'max_chars')" />
+								<xsl:value-of select="sakaifn:formatMessage('messages', 'max_chars',50)" />
 							</xsl:attribute>
 						</xsl:otherwise>
 					</xsl:choose>
@@ -503,9 +498,7 @@
 			<textarea id="{$name}" name="{$name}">
 				<xsl:if test="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value">
 					<xsl:attribute name="title">
-						<xsl:value-of select="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value" />
-						<xsl:text> </xsl:text>
-						<xsl:value-of select="sakaifn:getMessage('messages', 'max_chars')" />
+						<xsl:value-of select="sakaifn:formatMessage('messages','max_chars',string($currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value))" />
 					</xsl:attribute>
 					<xsl:choose>
 						<xsl:when test="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value &lt; 600">
@@ -605,9 +598,7 @@
 					</xsl:attribute>
 					<xsl:if test="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value">
 						<xsl:attribute name="title">
-							<xsl:value-of select="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value" />
-							<xsl:text> </xsl:text>
-							<xsl:value-of select="sakaifn:getMessage('messages', 'max_chars')" />
+							<xsl:value-of select="sakaifn:formatMessage('messages','max_chars',string($currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value))" />
 						</xsl:attribute>
 						<xsl:choose>
 							<xsl:when test="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value &lt; 600">
@@ -750,32 +741,32 @@
 				<xsl:call-template name="produce-label">
 					<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
 				</xsl:call-template>
-				<input id="{$name}" type="button" onclick="javascript:document.forms[0].childPath.value='{$name}';document.forms[0].fileHelper.value='true';document.forms[0].onsubmit();document.forms[0].submit();" title="sakaifn:getMessage('messages', 'manage_attachments_title')" value="sakaifn:getMessage('messages', 'manage_attachments')">
-					<!--TODO: need to set the onclick attribute to pass a parameter to the filepicker allowing more files to be added or not after limit is reached 
-					- and how many files can be added total (the filepicker understands this parameter)
-					
-					paremeter can  be set when invoking the FilePicker by defining an attribute in
-					tool-session as described in the javadocs for FilePickerHelper.
-					FILE_PICKER_MAX_ATTACHMENTS :
-					
-					http://source.sakaiproject.org/release/2.3.0/javadoc/org/sakaiproject/
-					content/api/FilePickerHelper.html#FILE_PICKER_MAX_ATTACHMENTS
-					
-					- the parameter would be the initial maxOccurs on first use, or (maxOccurs -  count($currentParent/node()[$name=name()])  if count < maxOccurs)
-				-->
-					<xsl:attribute name="title">
-						<xsl:value-of select="sakaifn:getMessage('messages', 'manage_attachments_title')" />
-					</xsl:attribute>
-					<xsl:attribute name="value">
-						<xsl:value-of select="sakaifn:getMessage('messages', 'manage_attachments')" />
-					</xsl:attribute>
+				<input id="{$name}" type="button" onclick="javascript:document.forms[0].childPath.value='{$name}';document.forms[0].fileHelper.value='true';document.forms[0].onsubmit();document.forms[0].submit();">
+					<xsl:choose>
+						<xsl:when test="$currentParent/node()[$name=name()]">
+							<xsl:attribute name="value">
+								<xsl:value-of select="sakaifn:getMessage('messages', 'manage_attachments')" />
+							</xsl:attribute>
+							<xsl:attribute name="title">
+								<xsl:value-of select="sakaifn:getMessage('messages', 'manage_attachments_title')" />
+							</xsl:attribute>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:attribute name="value">
+								<xsl:value-of select="sakaifn:getMessage('messages', 'add_attachments')" />
+							</xsl:attribute>
+							<xsl:attribute name="title">
+								<xsl:value-of select="sakaifn:getMessage('messages', 'add_attachments_title')" />
+							</xsl:attribute>
+						</xsl:otherwise>
+					</xsl:choose>
 				</input>
-				<!-- if there are attachments already, render these as a list, more ui refinement needed -->
+				<!-- if there are attachments already, render these as a list -->
+				<!--todo: mime type lookup to resolve the icons  -->
 				<xsl:if test="$currentParent/node()[$name=name()]">
-					<ul class="attachList labelindnt" style="clear:both">
+					<ul class="attachList labelindnt" style="clear:both;padding-top:.5em">
 						<xsl:for-each select="$currentParent/node()[$name=name()]">
 							<li>
-								<!--todo: need a mimetype lookup to generate the icon -->
 								<img src="/library/image/sakai/attachments.gif" />
 								<input type="hidden" name="{$name}" value="{.}" />
 								<a target="_blank">
@@ -1060,6 +1051,7 @@
 						</xsl:when>
 						<xsl:otherwise>
 							<xsl:for-each select="$currentSchemaNode">
+								<!-- todo: this is sort of a radical fallback -->
 								<xsl:value-of select="@name" />
 							</xsl:for-each>
 						</xsl:otherwise>
@@ -1121,7 +1113,7 @@
 	<xsl:template name="produce-inline">
 		<xsl:param name="currentSchemaNode" />
 		<xsl:if test="$currentSchemaNode/xs:annotation/xs:documentation[@source='ospi.inlinedescription']/text()">
-			<p class="instruction clear highlightPanel">
+			<p class="instruction clear">
 				<xsl:value-of select="$currentSchemaNode/xs:annotation/xs:documentation[@source='ospi.inlinedescription']" />
 			</p>
 		</xsl:if>

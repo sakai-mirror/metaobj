@@ -17,7 +17,9 @@
 			<head>
 				<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 				<meta http-equiv="Content-Style-Type" content="text/css" />
-				<title>blank</title>
+				<title>
+					<xsl:value-of select="formData/artifact/schema/element/xs:annotation/xs:documentation[@source='ospi.label']" />
+				</title>
 				<xsl:for-each select="css/uri">
 					<link type="text/css" rel="stylesheet" media="all">
 						<xsl:attribute name="href">
@@ -68,7 +70,7 @@
 							</p>
 						</xsl:if>
 						<xsl:choose>
-							<!-- todo: if this is a subform, display a good title, not sure the thing is appropriate as it stands -->
+							<!-- todo: if this is a subform, display a good title -->
 							<xsl:when test="$subForm = 'true'">
 								<h4>
 									<xsl:value-of select="formData/artifact/metaData/displayName" />
@@ -112,7 +114,6 @@
 						<input type="hidden" name="editButton" value="" />
 						<input type="hidden" name="removeButton" value="" />
 						<div class="act">
-							<!-- todo i18n -->
 							<xsl:choose>
 								<xsl:when test="$subForm = 'true'">
 									<input type="submit" name="updateNestedButton" class="active" accesskey="s">
