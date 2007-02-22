@@ -3,7 +3,7 @@
  * $Id$
  ***********************************************************************************
  *
- * Copyright (c) 2004, 2005, 2006 The Sakai Foundation.
+ * Copyright (c) 2004, 2005, 2006, 2007 The Sakai Foundation.
  *
  * Licensed under the Educational Community License, Version 1.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,6 @@ import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentResource;
-import org.sakaiproject.content.api.ContentResourceEdit;
 import org.sakaiproject.content.api.ContentCollectionEdit;
 import org.sakaiproject.exception.*;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
@@ -91,7 +90,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
    }
 
    public Map getHomes() {
-      Map returnMap = new HashMap();
+      Map<String, StructuredArtifactDefinitionBean> returnMap = new HashMap<String, StructuredArtifactDefinitionBean>();
       List list = findHomes();
       for (Iterator iter = list.iterator(); iter.hasNext();) {
          StructuredArtifactDefinitionBean sad = (StructuredArtifactDefinitionBean) iter.next();
@@ -110,8 +109,8 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
    }
 
    public Map getWorksiteHomes(Id worksiteId, boolean includeHidden) {
-      Map returnMap = new HashMap();
-      List list = findGlobalHomes();
+      Map<String, StructuredArtifactDefinitionBean> returnMap = new HashMap<String, StructuredArtifactDefinitionBean>();
+      List<StructuredArtifactDefinitionBean> list = findGlobalHomes();
       list.addAll(findHomes(worksiteId, includeHidden));
       for (Iterator iter = list.iterator(); iter.hasNext();) {
          StructuredArtifactDefinitionBean sad = (StructuredArtifactDefinitionBean) iter.next();
@@ -131,7 +130,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
    public List findHomes(boolean includeHidden) {
       // only for the appropriate worksites
       List sites = getWorksiteManager().getUserSites();
-      List returned = new ArrayList();
+      List<StructuredArtifactDefinitionBean> returned = new ArrayList<StructuredArtifactDefinitionBean>();
       while (sites.size() > getExpressionMax()) {
          returned.addAll(findHomes(sites.subList(0, getExpressionMax() - 1), false, includeHidden));
          sites.subList(0, getExpressionMax() - 1).clear();
@@ -262,17 +261,13 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
             bean.setModified(new Date(System.currentTimeMillis()));
          }
 
-         boolean loadSchema = false;
-
          StructuredArtifactDefinition sad = null;
          try {
             if (bean.getId() == null) {
-               loadSchema = true;
                loadNode(bean);
                bean.setCreated(new Date(System.currentTimeMillis()));
             }
             else if (bean.getSchemaFile() != null) {
-               loadSchema = true;
                loadNode(bean);
                sad = new StructuredArtifactDefinition(bean);
                updateExistingArtifacts(sad);
@@ -384,7 +379,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
 
    protected boolean sadExists(StructuredArtifactDefinitionBean sad) throws PersistenceException {
       String query = "from StructuredArtifactDefinitionBean where description = ? ";
-      List params = new ArrayList();
+      List<Object> params = new ArrayList<Object>();
       params.add(sad.getDescription());
 
       if (sad.getId() != null) {
@@ -474,7 +469,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       String type = sad.getType().getId().getValue();
       //ArtifactFinder artifactFinder = getArtifactFinderManager().getArtifactFinderByType(type);
       Collection artifacts = getArtifactFinder().findByType(type);
-      Collection modifiedArtifacts = new ArrayList();
+      Collection<StructuredArtifact> modifiedArtifacts = new ArrayList<StructuredArtifact>();
 
       // perform xsl transformations on existing artifacts
       try {
@@ -574,6 +569,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
             getHibernateTemplate().evict(bean);
             bean.setSiteId(toContext);
             bean.setId(null);
+            bean.setSiteState(StructuredArtifactDefinitionBean.STATE_UNPUBLISHED);
 
             //Check for an existing form
             if (findBean(bean) == null) {
@@ -832,9 +828,13 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       return bean;
    }
 
+   /**
+    * 
+    * @param bean
+    * @return
+    */
    protected StructuredArtifactDefinitionBean findBean(StructuredArtifactDefinitionBean bean) {
       Object[] params = new Object[]{new Integer(StructuredArtifactDefinitionBean.STATE_PUBLISHED),
-                                     new Integer(StructuredArtifactDefinitionBean.STATE_PUBLISHED),
                                      bean.getSiteId(), bean.getSchemaHash()};
       List beans = getHibernateTemplate().findByNamedQuery("findBean", params);
 

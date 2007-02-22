@@ -45,7 +45,7 @@
 	</query>
 
    <query name="findBean">   	
-		from StructuredArtifactDefinitionBean where (globalState = ? or (siteState = ?  and siteId = ?)) and schema_hash = ?
+		from StructuredArtifactDefinitionBean where (globalState = ? or siteId = ?) and schema_hash = ?
 	</query>
 	
 	<query name="findBySchema">   	
