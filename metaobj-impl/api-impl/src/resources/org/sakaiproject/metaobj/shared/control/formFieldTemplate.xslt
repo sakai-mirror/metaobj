@@ -695,7 +695,8 @@
 			</xsl:call-template>
 			<xsl:call-template name="produce-label">
 				<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
-			</xsl:call-template>
+            <xsl:with-param name="fieldName" select="concat($name, '_checkbox')"/>
+         </xsl:call-template>
 			<xsl:if test="@maxOccurs='-1'">
 				<a href="javascript:addItem('{$name}parent');" class="addEl">
 					<xsl:attribute name="title">
@@ -710,9 +711,10 @@
 	<xsl:template name="checkbox-widget">
 		<xsl:param name="name" />
 		<xsl:param name="currentNode" />
-		<input type="checkbox" value="true" id="{$name}" name="{$name}_checkbox">
+		<input type="checkbox" id="{$name}_checkbox" name="{$name}_checkbox">
 			<xsl:if test="$currentNode = 'true'">
-				<xsl:attribute name="checked" />checked</xsl:if>
+				<xsl:attribute name="checked"/>
+         </xsl:if>
 			<xsl:attribute name="onChange">form['<xsl:value-of select="$name" />'].value=this.checked </xsl:attribute>
 		</input>
 		<input type="hidden" name="{$name}" value="{$currentNode}" />
@@ -1012,11 +1014,15 @@
 	</xsl:template>
 	<xsl:template name="produce-label">
 		<xsl:param name="currentSchemaNode" />
-		<xsl:param name="nodeType" />
+      <xsl:param name="nodeType" />
 		<xsl:param name="sep" />
 		<xsl:param name="num" />
+      <xsl:param name="fieldName" />
 		<label for="{@name}">
-			<xsl:if test="$nodeType='longtext'">
+         <xsl:if test="$fieldName">
+            <xsl:attribute name="for"><xsl:value-of select="$fieldName"/></xsl:attribute>
+         </xsl:if>
+         <xsl:if test="$nodeType='longtext'">
 				<xsl:attribute name="class">block</xsl:attribute>
 			</xsl:if>
 			<!--output the ospi.descripion as a title in a link (using nicetitle)  -->
