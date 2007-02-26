@@ -951,8 +951,8 @@
 		<xsl:variable name="fieldId" select="generate-id()" />
 		<input type="text" size="10" title="mm/dd/yyyy" name="{$schemaNode/@name}.fullDate" id="{$schemaNode/@name}">
 			<xsl:attribute name="value">
-				<xsl:if test="$year > -1"><xsl:value-of select="$month" />/<xsl:value-of select="$day" />/<xsl:value-of select="$year" /></xsl:if>
-			</xsl:attribute>
+            <xsl:value-of select="sakaifn:formatDate($dataNode, 'mm/dd/yyyy')"/>
+         </xsl:attribute>
 		</input>
 		<!-- hidden field to hold the value of the unique id the calendar needs, and use it by increment to call the calendar in the context of any cloned nodes -->
 		<input type="hidden" value="{$fieldId}" id="{$schemaNode/@name}-dateWId" />
@@ -983,12 +983,7 @@
 				<xsl:value-of select="position()" />
 			</xsl:attribute>
 			<xsl:attribute name="value">
-				<!-- TODO: this one does not work for editing so call template instead  for now till better thing done-->
-				<!-- <xsl:if test="$year > -1"><xsl:value-of select="$month" />/<xsl:value-of select="$day" />/<xsl:value-of select="$year" /></xsl:if> -->
-				<xsl:call-template name="dateformat">
-					<xsl:with-param name="date" select="$val" />
-					<xsl:with-param name="format">mm/dd/yy</xsl:with-param>
-				</xsl:call-template>
+            <xsl:value-of select="sakaifn:formatDate($val, 'mm/dd/yyyy')"/>
 			</xsl:attribute>
 		</input>
 		<input type="hidden" value="" id="{$schemaNode/@name}-dateWId" />

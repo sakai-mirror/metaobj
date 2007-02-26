@@ -145,6 +145,12 @@ public class StructuredArtifactValidationServiceImpl implements StructuredArtifa
             }
             else if (value instanceof ElementListBeanWrapper) {
                ((ElementListBeanWrapper)value).validate(errors);
+               if (((ElementListBeanWrapper)value).getList().size() < childSchema.getMinOccurs()) {
+                  errors.add(new ValidationError(childSchema.getLabel(),
+                        composeName(parentName, childSchema.getName()),
+                        NormalizationException.REQIRED_FIELD_ERROR_CODE,
+                        new Object[0], NormalizationException.REQIRED_FIELD_ERROR_CODE));
+               }
             }
             else if (childSchema.isAttribute()) {
                Attribute childAttribute = rootElement.getAttribute(childSchema.getName());

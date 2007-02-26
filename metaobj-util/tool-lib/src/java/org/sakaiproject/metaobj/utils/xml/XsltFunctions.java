@@ -117,6 +117,21 @@ public class XsltFunctions {
       return script;
    }
 
+   public static String formatDate(String date, String format) {
+      Date dateObject = null;
+      if (date == null || date.equals("")) {
+         return "";
+      }
+      else {
+         try {
+            dateObject = (Date) dateFormat.parseObject(date);
+            return new SimpleDateFormat(format).format(dateObject);
+         } catch (ParseException e) {
+            throw new RuntimeException(e);
+         }
+      }
+   }
+
    public static long dateField(String date, int field, String type) {
       Format useFormat = dateTimeFormat;
       if (type.equalsIgnoreCase("date")) {
