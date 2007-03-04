@@ -1,6 +1,7 @@
 package org.sakaiproject.metaobj.registry;
 
 import org.sakaiproject.content.util.BaseInteractionAction;
+import org.sakaiproject.content.api.ContentEntity;
 import org.sakaiproject.content.api.ResourceToolAction;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
 
@@ -27,7 +28,7 @@ public class CreateFormInteractionAction extends BaseInteractionAction {
    /* (non-Javadoc)
      * @see org.sakaiproject.content.api.ResourceToolAction#available(java.lang.String)
      */
-   public boolean available(String context) {
+   public boolean available(ContentEntity entity) {
       return getStructuredArtifactDefinitionManager().hasHomes();
    }
 
