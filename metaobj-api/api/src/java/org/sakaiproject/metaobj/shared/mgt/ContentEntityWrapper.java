@@ -207,4 +207,12 @@ public class ContentEntityWrapper implements ContentResource
       base.setVirtualContentEntity(ce);      
    }
 
+	/* (non-Javadoc)
+	 * @see org.sakaiproject.content.api.ContentEntity#getUrl(boolean)
+	 */
+	public String getUrl(boolean relative)
+	{
+		return base.getUrl(relative);
+	}
+
 }
