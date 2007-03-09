@@ -364,7 +364,10 @@
 						</legend>
 						<xsl:for-each select="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:enumeration">
 							<div class="checkbox">
-								<input id="{$name}-{position()}" name="{$name}" value="{@value}" type="checkbox">
+								<input id="{$name}-{position()}" name="{$name}-{position()}" type="checkbox">
+									<xsl:attribute name="onChange">
+										(this.checked==true) ? document.getElementById('<xsl:value-of select="$name" />-<xsl:value-of select="position()" />-w').value='<xsl:value-of select="@value" />'
+										: document.getElementById('<xsl:value-of select="$name" />-<xsl:value-of select="position()" />-w').value=''</xsl:attribute>
 									<xsl:if test="$currentNode = @value">
 										<xsl:attribute name="checked">checked</xsl:attribute>
 									</xsl:if>
@@ -372,6 +375,19 @@
 								<label for="{$name}-{position()}">
 									<xsl:value-of select="@value" />
 								</label>
+								<input type="hidden">
+									<xsl:attribute name="name">
+										<xsl:value-of select="$name" />
+									</xsl:attribute>
+									<xsl:attribute name="id">
+										<xsl:value-of select="concat($name,'-',position(),'-w')" />
+									</xsl:attribute>
+									<xsl:attribute name="value">
+										<xsl:if test="$currentNode = @value">
+											<xsl:value-of select="@value" />
+										</xsl:if>
+									</xsl:attribute>
+								</input>
 							</div>
 						</xsl:for-each>
 					</fieldset>
