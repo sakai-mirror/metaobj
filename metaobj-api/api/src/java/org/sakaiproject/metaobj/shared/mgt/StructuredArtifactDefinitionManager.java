@@ -145,4 +145,6 @@ public interface StructuredArtifactDefinitionManager {
 
    public boolean hasHomes();
 
+   public void addConsumer(FormConsumer consumer);
+
 }

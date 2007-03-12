@@ -28,6 +28,8 @@ import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.XMLOutputter;
 import org.sakaiproject.authz.cover.FunctionManager;
+import org.sakaiproject.authz.api.SecurityAdvisor;
+import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.content.api.ContentHostingService;
@@ -39,10 +41,7 @@ import org.sakaiproject.metaobj.security.AuthorizationFacade;
 import org.sakaiproject.metaobj.shared.ArtifactFinder;
 import org.sakaiproject.metaobj.shared.DownloadableManager;
 import org.sakaiproject.metaobj.shared.SharedFunctionConstants;
-import org.sakaiproject.metaobj.shared.mgt.IdManager;
-import org.sakaiproject.metaobj.shared.mgt.PresentableObjectHome;
-import org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome;
-import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
+import org.sakaiproject.metaobj.shared.mgt.*;
 import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactDefinition;
 import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactHomeInterface;
 import org.sakaiproject.metaobj.shared.model.*;
@@ -70,7 +69,7 @@ import java.util.zip.*;
  * @author jbush
  */
 public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
-      implements StructuredArtifactDefinitionManager, DuplicatableToolService, DownloadableManager {
+      implements StructuredArtifactDefinitionManager, DuplicatableToolService, DownloadableManager, FormConsumer {
 
    static final private String DOWNLOAD_FORM_ID_PARAM = "formId";
    private static final String SYSTEM_COLLECTION_ID = "/system/";
@@ -83,8 +82,11 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
    private List globalSites;
    private List globalSiteTypes;
    private ArtifactFinder artifactFinder;
+   private ArtifactFinder structuredArtifactFinder;
    private int expressionMax = 999;
    private boolean replaceViews = true;
+   private List formConsumers;
+   private SecurityService securityService;
 
    public StructuredArtifactDefinitionManagerImpl() {
    }
@@ -289,9 +291,13 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
    }
 
    public void delete(StructuredArtifactDefinitionBean sad) {
-      if (sad.isPublished()) {
-         throw new PersistenceException("unable_to_delete_published", new Object[]{}, "siteState");
+
+      for (Iterator<FormConsumer> i=getFormConsumers().iterator();i.hasNext();) {
+         if (i.next().checkFormConsumption(sad.getId())) {
+            throw new PersistenceException("unable_to_delete_published", new Object[]{}, "siteState");
+         }
       }
+
       getHibernateTemplate().delete(sad);
    }
 
@@ -599,6 +605,8 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       FunctionManager.registerFunction(SharedFunctionConstants.PUBLISH_ARTIFACT_DEF);
       FunctionManager.registerFunction(SharedFunctionConstants.SUGGEST_GLOBAL_PUBLISH_ARTIFACT_DEF);
       updateSchemaHash();
+
+      addConsumer(this);
 
       org.sakaiproject.tool.api.Session sakaiSession = SessionManager.getCurrentSession();
       String userId = sakaiSession.getUserId();
@@ -1074,6 +1082,10 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       return findHomes(false).size() > 0;
    }
 
+   public void addConsumer(FormConsumer consumer) {
+      getFormConsumers().add(consumer);
+   }
+
    public ArtifactFinder getArtifactFinder() {
       return artifactFinder;
    }
@@ -1215,5 +1227,48 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
 
    public void setReplaceViews(boolean replaceViews) {
       this.replaceViews = replaceViews;
+   }
+
+   public List getFormConsumers() {
+      return formConsumers;
+   }
+
+   public void setFormConsumers(List formConsumers) {
+      this.formConsumers = formConsumers;
+   }
+
+   public boolean checkFormConsumption(Id formId) {
+      String type = formId.getValue();
+
+      getSecurityService().pushAdvisor(new SecurityAdvisor() {
+         public SecurityAdvice isAllowed(String userId, String function, String reference) {
+            return SecurityAdvice.ALLOWED;
+         }
+      });
+
+      try {
+         Collection arts = getStructuredArtifactFinder().findByType(type);
+
+         return arts != null && arts.size() > 0;
+      }
+      finally {
+         getSecurityService().popAdvisor();
+      }
+   }
+
+   public SecurityService getSecurityService() {
+      return securityService;
+   }
+
+   public void setSecurityService(SecurityService securityService) {
+      this.securityService = securityService;
+   }
+
+   public ArtifactFinder getStructuredArtifactFinder() {
+      return structuredArtifactFinder;
+   }
+
+   public void setStructuredArtifactFinder(ArtifactFinder structuredArtifactFinder) {
+      this.structuredArtifactFinder = structuredArtifactFinder;
    }
 }
