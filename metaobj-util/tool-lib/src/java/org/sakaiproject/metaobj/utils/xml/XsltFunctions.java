@@ -27,6 +27,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.content.cover.ContentHostingService;
+import org.sakaiproject.content.cover.ContentTypeImageService;
 import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.util.Xml;
 import org.sakaiproject.util.ResourceLoader;
@@ -262,6 +263,11 @@ public class XsltFunctions {
    public static String getReferenceName(String idString) {
       String refString = ContentHostingService.getReference(idString);
       Reference ref = EntityManager.newReference(refString);
+
+      if (ref == null || ref.getEntity() == null) {
+         return "";
+      }
+
       String prop = ref.getEntity().getProperties().getNamePropDisplayName();
       return ref.getEntity().getProperties().getProperty(prop);
    }
@@ -269,7 +275,23 @@ public class XsltFunctions {
    public static String getReferenceUrl(String idString) {
       String refString = ContentHostingService.getReference(idString);
       Reference ref = EntityManager.newReference(refString);
+
+      if (ref == null || ref.getEntity() == null) {
+         return "";
+      }
+
       return ref.getUrl();
+   }
+
+   public static String getImageUrl(String idString) {
+      String refString = ContentHostingService.getReference(idString);
+      Reference ref = EntityManager.newReference(refString);
+
+      if (ref == null) {
+         return "/library/image/sakai/unknown.gif";
+      }
+
+      return "/library/image" + ContentTypeImageService.getContentTypeImage(ref.getType());
    }
 
 }

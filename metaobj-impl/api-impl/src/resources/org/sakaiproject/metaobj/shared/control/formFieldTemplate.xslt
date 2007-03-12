@@ -785,8 +785,12 @@
 					<ul class="attachList labelindnt" style="clear:both;padding-top:.5em">
 						<xsl:for-each select="$currentParent/node()[$name=name()]">
 							<li>
-								<img src="/library/image/sakai/attachments.gif" />
-								<input type="hidden" name="{$name}" value="{.}" />
+								<img>
+                           <xsl:attribute name="src">
+                              <xsl:value-of select="sakaifn:getImageUrl(.)" />
+                           </xsl:attribute>
+                        </img>
+                        <input type="hidden" name="{$name}" value="{.}" />
 								<a target="_blank">
 									<xsl:attribute name="href">
 										<xsl:value-of select="sakaifn:getReferenceUrl(.)" />
