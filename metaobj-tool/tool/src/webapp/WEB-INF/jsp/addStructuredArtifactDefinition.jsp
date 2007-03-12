@@ -49,7 +49,6 @@
 </spring:bind>
 </p>
 
-<c:if test="${!bean.published}">
 <p class="shorttext">
 <c:if test="${empty bean.id}"><span class="reqStar">*</span></c:if>
 <label><fmt:message key="label_schemaFile"/></label>
@@ -81,7 +80,6 @@
 </select>
 </spring:bind>
 </p>
-</c:if>
 
 <p class="longtext">
 <spring:bind path="bean.instruction">

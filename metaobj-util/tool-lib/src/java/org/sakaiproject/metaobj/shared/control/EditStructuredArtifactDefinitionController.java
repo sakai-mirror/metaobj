@@ -22,17 +22,27 @@
 package org.sakaiproject.metaobj.shared.control;
 
 import java.util.Map;
+import java.util.Iterator;
+import java.util.Collection;
 
 import org.sakaiproject.metaobj.shared.SharedFunctionConstants;
+import org.sakaiproject.metaobj.shared.ArtifactFinder;
+import org.sakaiproject.metaobj.shared.ArtifactFinderManager;
 import org.sakaiproject.metaobj.shared.model.PersistenceException;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
+import org.sakaiproject.metaobj.shared.model.StructuredArtifact;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
+import org.sakaiproject.metaobj.utils.mvc.impl.BindExceptionBase;
+import org.sakaiproject.authz.api.SecurityService;
+import org.sakaiproject.authz.api.SecurityAdvisor;
 import org.springframework.validation.Errors;
+import org.springframework.validation.ObjectError;
 
-public class EditStructuredArtifactDefinitionController extends AddStructuredArtifactDefinitionController implements LoadObjectController {
-   //private ArtifactFinderManager artifactFinderManager;
+public class EditStructuredArtifactDefinitionController extends AddStructuredArtifactDefinitionController
+   implements LoadObjectController {
+   private ArtifactFinder artifactFinder;
+   private SecurityService securityService;
 
-//TODO removed reference to ArtifactFinderManager
    public Object fillBackingObject(Object incomingModel, Map request, Map session, Map application) throws Exception {
       if (session.get(SAD_SESSION_TAG) != null) {
          return session.remove(SAD_SESSION_TAG);
@@ -49,50 +59,58 @@ public class EditStructuredArtifactDefinitionController extends AddStructuredArt
 
       //TODO verify user is system admin, if editting global SAD
 
-      /*
-      todo this should all be done on the server
+      // todo this should all be done on the server
       // check only if new xsd has been submitted
-      if (sad.getSchemaFile() != null){
+      if (sad.getSchemaFile() != null) {
 
          String type = sad.getType().getId().getValue();
-         ArtifactFinder artifactFinder = getArtifactFinderManager().getArtifactFinderByType(type);
-         Collection artifacts = artifactFinder.findByType(type);
-         StructuredArtifactValidator validator = new StructuredArtifactValidator();
 
-         // validate every artifact against new xsd to determine
-         // whether or not an xsl conversion file is necessary
-         for (Iterator i = artifacts.iterator(); i.hasNext();) {
-            Object obj = i.next();
-            if (obj instanceof StructuredArtifact) {
-               StructuredArtifact artifact = (StructuredArtifact)obj;
-               artifact.setHome(sad);
-               Errors artifactErrors = new BindExceptionBase(artifact, "bean");
-               validator.validate(artifact, artifactErrors);
-               if (artifactErrors.getErrorCount() > 0){
-                  if (sad.getXslConversionFileId() == null ||
-                        sad.getXslConversionFileId().getValue().length() == 0) {
+         getSecurityService().pushAdvisor(new SecurityAdvisor() {
+				public SecurityAdvice isAllowed(String userId, String function, String reference) {
+					return SecurityAdvice.ALLOWED;
+				}
+			});
 
-                     errors.rejectValue("xslConversionFileId",
-                           "xsl file required to convert existing artifacts",
-                           "xsl file required to convert existing artifacts");
+         try {
+            Collection artifacts = artifactFinder.findByType(type);
+            StructuredArtifactValidator validator = new StructuredArtifactValidator();
 
-                     for (Iterator x=artifactErrors.getAllErrors().iterator();x.hasNext();){
-                        ObjectError error = (ObjectError) x.next();
-                        logger.error(error.toString());
-                        errors.rejectValue("xslConversionFileId",error.toString(),error.toString());
+            // validate every artifact against new xsd to determine
+            // whether or not an xsl conversion file is necessary
+            for (Iterator i = artifacts.iterator(); i.hasNext();) {
+               Object obj = i.next();
+               if (obj instanceof StructuredArtifact) {
+                  StructuredArtifact artifact = (StructuredArtifact)obj;
+                  artifact.setHome(getStructuredArtifactDefinitionManager().convertToHome(sad));
+                  Errors artifactErrors = new BindExceptionBase(artifact, "bean");
+                  validator.validate(artifact, artifactErrors);
+                  if (artifactErrors.getErrorCount() > 0) {
+                     if (sad.getXslConversionFileId() == null ||
+                           sad.getXslConversionFileId().getValue().length() == 0) {
+
+                        errors.rejectValue("schemaFile",
+                              "invalid_schema_file_edit",
+                              "key missing:  invalid_schema_file_edit");
+
+                        for (Iterator x=artifactErrors.getAllErrors().iterator();x.hasNext();){
+                           ObjectError error = (ObjectError) x.next();
+                           logger.warn(error.toString());
+                        }
+
+                        return;
+
+                     } else {
+                        sad.setRequiresXslFile(true);
+                        break;
                      }
-
-                     return;
-
-                  } else {
-                     sad.setRequiresXslFile(true);
-                     break;
                   }
                }
             }
          }
+         finally {
+            getSecurityService().popAdvisor();
+         }
       }
-      */
 
       try {
          getStructuredArtifactDefinitionManager().save(sad);
@@ -103,11 +121,19 @@ public class EditStructuredArtifactDefinitionController extends AddStructuredArt
       }
    }
 
-   //public ArtifactFinderManager getArtifactFinderManager() {
-   //   return artifactFinderManager;
-   //}
+   public ArtifactFinder getArtifactFinder() {
+      return artifactFinder;
+   }
 
-   //public void setArtifactFinderManager(ArtifactFinderManager artifactFinderManager) {
-   //   this.artifactFinderManager = artifactFinderManager;
-   //}
+   public void setArtifactFinder(ArtifactFinder artifactFinder) {
+      this.artifactFinder = artifactFinder;
+   }
+
+   public SecurityService getSecurityService() {
+      return securityService;
+   }
+
+   public void setSecurityService(SecurityService securityService) {
+      this.securityService = securityService;
+   }
 }

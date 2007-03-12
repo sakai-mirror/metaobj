@@ -64,4 +64,18 @@ public class StructuredArtifactFinder extends WrappedStructuredArtifactFinder {
       this.homeFactory = homeFactory;
    }
 
+   public Collection findByType(String type) {
+      List artifacts = getContentHostingService().findResources(type,
+            null, null);
+
+      Collection returned = new ArrayList();
+
+      for (Iterator i = artifacts.iterator(); i.hasNext();) {
+         ContentResource resource = (ContentResource) i.next();
+         returned.add(createArtifact(resource));
+      }
+
+      return returned;
+   }
+
 }
