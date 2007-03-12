@@ -965,11 +965,14 @@
 		<xsl:variable name="month" select="sakaifn:dateField($dataNode, 2, 'date') + 1" />
 		<xsl:variable name="day" select="sakaifn:dateField($dataNode, 5, 'date')" />
 		<xsl:variable name="fieldId" select="generate-id()" />
-		<input type="text" size="10" title="mm/dd/yyyy" name="{$schemaNode/@name}.fullDate" id="{$schemaNode/@name}">
+		<input type="text" size="10" name="{$schemaNode/@name}.fullDate" id="{$schemaNode/@name}">
 			<xsl:attribute name="value">
-            <xsl:value-of select="sakaifn:formatDate($dataNode, 'mm/dd/yyyy')"/>
+            <xsl:value-of select="sakaifn:formatDateWidget($dataNode)"/>
          </xsl:attribute>
-		</input>
+         <xsl:attribute name="title">
+            <xsl:value-of select="sakaifn:getMessage('messages', 'date_format_hint')"/>
+         </xsl:attribute>
+      </input>
 		<!-- hidden field to hold the value of the unique id the calendar needs, and use it by increment to call the calendar in the context of any cloned nodes -->
 		<input type="hidden" value="{$fieldId}" id="{$schemaNode/@name}-dateWId" />
 		<!-- since there are two links to the right of the input  put some space between them to avoid confusion -->
@@ -978,7 +981,7 @@
 			<xsl:attribute name="alt">
 				<xsl:value-of select="sakaifn:getMessage('messages', 'date_pick_alt')" />
 			</xsl:attribute>
-			<xsl:attribute name="onclick">javascript:var cal<xsl:value-of select="$fieldId" /> = new calendar2(document.getElementById('<xsl:value-of select="$schemaNode/@name" />'));cal<xsl:value-of select="$fieldId" />.year_scroll = true;cal<xsl:value-of select="$fieldId" />.time_comp = false;cal<xsl:value-of select="$fieldId" />.popup('','/sakai-jsf-resource/inputDate/')</xsl:attribute>
+			<xsl:attribute name="onclick"><xsl:value-of select="sakaifn:getDateWidget($fieldId, $schemaNode/@name)" /></xsl:attribute>
 		</img>
 		<!-- since there are two links to the right of the input  put some space between them to avoid confusion -->
 		<xsl:text>&#xa0;&#xa0;</xsl:text>
@@ -993,23 +996,27 @@
 		<xsl:variable name="currentYear" select="sakaifn:dateField(sakaifn:currentDate(), 1, 'date')" />
 		<xsl:variable name="month" select="sakaifn:dateField($dataNode, 2, 'date') + 1" />
 		<xsl:variable name="day" select="sakaifn:dateField($dataNode, 5, 'date')" />
-		<input type="text" size="10" title="mm/dd/yyyy" name="{$schemaNode/@name}.fullDate">
+		<input type="text" size="10" name="{$schemaNode/@name}.fullDate">
 			<xsl:attribute name="id">
 				<xsl:value-of select="$schemaNode/@name" />
 				<xsl:value-of select="position()" />
 			</xsl:attribute>
 			<xsl:attribute name="value">
-            <xsl:value-of select="sakaifn:formatDate($val, 'mm/dd/yyyy')"/>
+            <xsl:value-of select="sakaifn:formatDateWidget($val)"/>
 			</xsl:attribute>
-		</input>
+         <xsl:attribute name="title">
+            <xsl:value-of select="sakaifn:getMessage('messages', 'date_format_hint')"/>
+         </xsl:attribute>
+      </input>
 		<input type="hidden" value="" id="{$schemaNode/@name}-dateWId" />
 		<xsl:text>&#xa0;</xsl:text>
 		<img width="16" height="16" style="cursor:pointer;" border="0" src="/sakai-jsf-resource/inputDate/images/calendar.gif">
 			<xsl:attribute name="alt">
 				<xsl:value-of select="sakaifn:getMessage('messages', 'date_pick_alt')" />
 			</xsl:attribute>
-			<xsl:attribute name="onclick">javascript:var cal<xsl:value-of select="$fieldIdclone" /><xsl:value-of select="$num" /> = new calendar2(document.getElementById('<xsl:value-of select="$schemaNode/@name" /><xsl:value-of select="$num" />'));cal<xsl:value-of select="$fieldIdclone" /><xsl:value-of select="$num" />.year_scroll = true;cal<xsl:value-of select="$fieldIdclone" /><xsl:value-of select="$num" />.time_comp = false;cal<xsl:value-of select="$fieldIdclone" /><xsl:value-of select="$num" />.popup('','/sakai-jsf-resource/inputDate/')</xsl:attribute>
-		</img>
+			<xsl:attribute name="onclick"><xsl:value-of select="sakaifn:getDateWidget(concat($fieldIdclone, $num),
+			   concat($schemaNode/@name, $num))" /></xsl:attribute>
+      </img>
 		<xsl:text>&#xa0;&#xa0;</xsl:text>
 	</xsl:template>
 	<xsl:template name="month-option">

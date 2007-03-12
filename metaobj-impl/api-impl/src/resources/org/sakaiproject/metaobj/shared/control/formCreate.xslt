@@ -33,7 +33,8 @@
 				<script type="text/javascript" language="JavaScript" src="/sakai-metaobj-tool/js/nicetitle.js"> // empty
 					block </script>
 				<script type="text/javascript" language="JavaScript" src="/library/editor/FCKeditor/fckeditor.js"> // empty block </script>
-				<script type="text/javascript" src="/library/calendar/js/calendar2.js"> // empty block </script>
+            <script type="text/javascript" src="/library/calendar/js/calendar1.js"> // empty block </script>
+            <script type="text/javascript" src="/library/calendar/js/calendar2.js"> // empty block </script>
 			</head>
 			<body>
 				<xsl:if test="$panelId">

@@ -30,6 +30,7 @@ import org.sakaiproject.content.cover.ContentHostingService;
 import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.util.Xml;
 import org.sakaiproject.util.ResourceLoader;
+import org.sakaiproject.util.DateWidgetFormat;
 import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.entity.cover.EntityManager;
 
@@ -118,6 +119,10 @@ public class XsltFunctions {
    }
 
    public static String formatDate(String date, String format) {
+      return formatDate(date, new SimpleDateFormat(format));
+   }
+
+   protected static String formatDate(String date, DateFormat format) {
       Date dateObject = null;
       if (date == null || date.equals("")) {
          return "";
@@ -125,7 +130,7 @@ public class XsltFunctions {
       else {
          try {
             dateObject = (Date) dateFormat.parseObject(date);
-            return new SimpleDateFormat(format).format(dateObject);
+            return format.format(dateObject);
          } catch (ParseException e) {
             throw new RuntimeException(e);
          }
@@ -155,6 +160,26 @@ public class XsltFunctions {
       Calendar cal = Calendar.getInstance();
       cal.setTime(dateObject);
       return cal.get(field);
+   }
+
+   public static String getDateWidget(String fieldId, String name) {
+      String calType = "2"; // default to US
+      DateWidgetFormat format = new DateWidgetFormat();
+
+      if (format.getLocaleDateFormat() == DateWidgetFormat.DD_MM_YYYY) {
+         calType = "1"; // European type
+      }
+
+      String javascript = "javascript:var cal"+fieldId+" = new calendar"+calType+
+         "(document.getElementById('"+name+"'));cal"+fieldId+".year_scroll = true;cal"+fieldId+
+         ".time_comp = false;cal"+fieldId+".popup('','/sakai-jsf-resource/inputDate/')";
+
+      return javascript;
+   }
+
+   public static String formatDateWidget(String date) {
+      DateWidgetFormat format = new DateWidgetFormat();
+      return formatDate(date, format.getLocaleDateFormat());
    }
 
    public static NodeList loopCounter(int start, int end) {

@@ -23,7 +23,6 @@ package org.sakaiproject.metaobj.shared.model;
 
 import java.text.MessageFormat;
 import java.text.Format;
-import java.text.SimpleDateFormat;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
@@ -34,7 +33,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.metaobj.utils.mvc.intf.FieldValueWrapper;
 import org.sakaiproject.metaobj.utils.xml.NormalizationException;
-import org.springframework.validation.Errors;
+import org.sakaiproject.util.DateWidgetFormat;
 
 public class DateBean implements FieldValueWrapper {
    protected final Log logger = LogFactory.getLog(getClass());
@@ -47,12 +46,15 @@ public class DateBean implements FieldValueWrapper {
    private String fullDate = null;
    boolean nullFlag = true;
 
-   private Format dateFormat = new SimpleDateFormat("MM'/'dd'/'yyyy");
+   private Format dateFormat;
+   private DateWidgetFormat dateFormatUtil = new DateWidgetFormat();
 
    public DateBean() {
+      dateFormat = dateFormatUtil.getLocaleDateFormat();
    }
 
    public DateBean(Date date) {
+      dateFormat = dateFormatUtil.getLocaleDateFormat();
       if (date != null) {
          setBackingDate(date);
       }
