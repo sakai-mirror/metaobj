@@ -1,68 +1,24 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ $URL: https://source.sakaiproject.org/svn/metaobj/trunk/metaobj-util/tool-lib/src/java/org/sakaiproject/metaobj/shared/control/AbstractStructuredArtifactDefinitionController.java $
-  ~ $Id: AbstractStructuredArtifactDefinitionController.java 14230 2006-09-05 18:02:51Z chmaurer@iupui.edu $
-  ~ **********************************************************************************
-  ~
-  ~  Copyright (c) 2004, 2005, 2006 The Sakai Foundation.
-  ~
-  ~  Licensed under the Educational Community License, Version 1.0 (the "License");
-  ~  you may not use this file except in compliance with the License.
-  ~  You may obtain a copy of the License at
-  ~
-  ~       http://www.opensource.org/licenses/ecl1.php
-  ~
-  ~  Unless required by applicable law or agreed to in writing, software
-  ~  distributed under the License is distributed on an "AS IS" BASIS,
-  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~  See the License for the specific language governing permissions and
-  ~  limitations under the License.
-  ~
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-<xsl:stylesheet version="2.0" xmlns="http://www.w3.org/1999/xhtml" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:osp="http://www.osportfolio.org/OspML" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:sakaifn="org.sakaiproject.metaobj.utils.xml.XsltFunctions">
-	<!--xsl:template match="formView">
-      <formView>
-            <xsl:copy-of select="*"></xsl:copy-of>
-      </formView>
-   </xsl:template-->
+<?xml version="1.0" encoding="UTF-8"?>
+<xsl:stylesheet version="1.0" xmlns="http://www.w3.org/1999/xhtml" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:sakaifn="org.sakaiproject.metaobj.utils.xml.XsltFunctions" exclude-result-prefixes="xs sakaifn">
+	<xsl:output method="xml" omit-xml-declaration="yes" doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN" />
 	<xsl:template match="formView">
-		<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+		<!--  note: equivalent to / -->
+		<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
 			<head>
 				<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 				<meta http-equiv="Content-Style-Type" content="text/css" />
 				<title>
 					<xsl:value-of select="formData/artifact/metaData/displayName" />
 				</title>
-				<script type="text/javascript" language="JavaScript" src="/library/js/headscripts.js"> // empty
-					block </script>
-				<xsl:for-each select="css/uri">
-					<link type="text/css" rel="stylesheet" media="all">
-						<xsl:attribute name="href">
-							<xsl:value-of select="." />
-						</xsl:attribute>
-					</link>
-				</xsl:for-each>
+				<link type="text/css" rel="stylesheet" media="all" href="/sakai-metaobj-tool/css/metaobj.css" />
+				<xsl:apply-templates select="css" />
 			</head>
-			<body>
-				<!-- todo: need to load js programatically - where are forms used? below will work if headscrips.js is linked to and the form is inside an iframe -->
-				<!-- <xsl:attribute name="onload">if(window.frameElement) setMainFrameHeight(window.frameElement.id);</xsl:attribute> -->
+			<body onload="(window.frameElement) ? setMainFrameHeight(window.frameElement.id):''" class="formDisplay">
 				<div class="portletBody">
-					<h3>
-						<xsl:value-of select="formData/artifact/metaData/displayName" />
-					</h3>
-					<p class="instruction">
-						<xsl:value-of disable-output-escaping="yes" select="formData/artifact/schema/instructions" />
-					</p>
 					<xsl:apply-templates select="formData/artifact/schema/element">
 						<xsl:with-param name="currentParent" select="formData/artifact/structuredData" />
 						<xsl:with-param name="rootNode" select="'true'" />
 					</xsl:apply-templates>
-					<xsl:if test="returnUrl">
-						<a>
-							<xsl:attribute name="href">
-								<xsl:value-of select="returnUrl" />
-							</xsl:attribute> Back </a>
-					</xsl:if>
 				</div>
 			</body>
 		</html>
@@ -71,224 +27,377 @@
 		<xsl:param name="currentParent" />
 		<xsl:param name="nodetype" />
 		<xsl:param name="rootNode" />
+		<xsl:param name="thisname" />
+		<xsl:param name="subform" />
 		<xsl:variable name="name" select="@name" />
 		<xsl:variable name="currentNode" select="$currentParent/node()[$name=name()]" />
+		<xsl:variable name="elementtype">
+			<!-- find out element type -->
+			<xsl:choose>
+				<xsl:when test="xs:simpleType/xs:restriction/@base='xs:boolean'">boolean</xsl:when>
+				<xsl:when test="xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value &lt; 99">shorttext</xsl:when>
+				<xsl:when test="xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value &gt;= 99">
+					<xsl:choose>
+						<xsl:when test="xs:annotation/xs:documentation[@source='ospi.isRichText']='true'">richtext</xsl:when>
+						<xsl:otherwise>longtext</xsl:otherwise>
+					</xsl:choose>
+				</xsl:when>
+				<xsl:when test="xs:simpleType/xs:restriction/@base='xs:date'">date</xsl:when>
+				<xsl:when test="xs:simpleType/xs:restriction/@base='xs:anyURI'">file</xsl:when>
+				<xsl:when test="xs:simpleType/xs:restriction[@base='xs:string']/xs:enumeration">select</xsl:when>
+				<!-- fallback element type -->
+				<xsl:otherwise>shorttext</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
 		<xsl:choose>
 			<xsl:when test="children">
 				<xsl:if test="$rootNode = 'true'">
-					<xsl:call-template name="produce-fields">
+					<xsl:call-template name="produce-label">
 						<xsl:with-param name="currentSchemaNode" select="." />
-						<xsl:with-param name="currentNode" select="$currentNode" />
+						<xsl:with-param name="elementtype" select="$elementtype" />
 						<xsl:with-param name="rootNode" select="$rootNode" />
+						<xsl:with-param name="itemCount" select="count($currentParent/*[name()=$name])" />
 					</xsl:call-template>
+					<!-- has children and this is a top level node, not a subform element  -->
+					<table class="top">
+						<xsl:attribute name="summary"><xsl:value-of select="sakaifn:getMessage('messages', 'table_top_summary')" /></xsl:attribute>
+						<xsl:call-template name="produce-fields">
+							<xsl:with-param name="currentSchemaNode" select="." />
+							<xsl:with-param name="currentNode" select="$currentNode" />
+							<xsl:with-param name="rootNode" select="$rootNode" />
+							<xsl:with-param name="thisname" select="name()" />
+						</xsl:call-template>
+					</table>
 				</xsl:if>
 				<xsl:if test="$rootNode='false'">
-					<!-- we have a subform datanode at hand -->
+					<!-- a darn subform -->
 					<tr>
-						<th colspan="2">
+						<td colspan="2" class="subformlabel">
 							<xsl:call-template name="produce-label">
 								<xsl:with-param name="currentSchemaNode" select="." />
+								<xsl:with-param name="itemCount" select="count($currentParent/*[name()=$name])" />
 							</xsl:call-template>
-							<xsl:if test="count($currentParent//node()[$name=name()]) > 1">
-								<span class="textPanelFooter"> (<xsl:value-of select="count($currentParent//node()[$name=name()])" /> items)</span>
-							</xsl:if>
-						</th>
+						</td>
 					</tr>
 					<tr>
 						<td colspan="2">
-							<div class="indnt1">
-								<xsl:call-template name="produce-fields-subform">
+							<table class="subformtable">
+								<xsl:attribute name="summary"><xsl:value-of select="sakaifn:getMessage('messages', 'table_subform_summary')" /></xsl:attribute>
+								<xsl:call-template name="elem">
 									<xsl:with-param name="currentSchemaNode" select="." />
-									<xsl:with-param name="currentNode" select="$currentNode" />
-									<xsl:with-param name="rootNode" select="$rootNode" />
+									<xsl:with-param name="elem" select="element" />
+									<xsl:with-param name="data" select="$currentNode" />
+									<xsl:with-param name="thisname" select="$thisname" />
+									<xsl:with-param name="name" select="$name" />
+									<xsl:with-param name="subform" select="'true'" />
 								</xsl:call-template>
-							</div>
+							</table>
 						</td>
 					</tr>
 				</xsl:if>
 			</xsl:when>
 			<xsl:otherwise>
-				<!-- just an element -->
-				<xsl:variable name="count" select="count($currentParent//node()[$name=name()])" />
-				<xsl:variable name="elementtype">
-					<!-- find out element type -->
-					<xsl:choose>
-						<xsl:when test="xs:simpleType/xs:restriction/@base='xs:boolean'">boolean</xsl:when>
-						<xsl:when test="xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value &lt; 109">shorttext</xsl:when>
-						<xsl:when test="xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value &gt;= 109">
-							<xsl:choose>
-								<xsl:when test="xs:annotation/xs:documentation[@source='ospi.isRichText']='true'">richtext</xsl:when>
-								<xsl:otherwise>longtext</xsl:otherwise>
-							</xsl:choose>
-						</xsl:when>
-						<xsl:when test="xs:simpleType/xs:restriction/@base='xs:date'">date</xsl:when>
-						<xsl:when test="xs:simpleType/xs:restriction/@base='xs:anyURI'">file</xsl:when>
-						<xsl:when test="xs:simpleType/xs:restriction[@base='xs:string']/xs:enumeration">select</xsl:when>
-						<xsl:otherwise>? </xsl:otherwise>
-					</xsl:choose>
-				</xsl:variable>
-				<xsl:choose>
-					<xsl:when test="$elementtype='longtext' or $elementtype='richtext'">
-						<!-- element data could be large - put it label and content in the same column -->
-						<tr>
-							<td colspan="2">
-								<h4><xsl:value-of select="$elementtype" /> - <xsl:call-template name="produce-label">
-										<xsl:with-param name="currentSchemaNode" select="." />
-									</xsl:call-template>
-									<xsl:if test="$count !=1">
-										<!--18-->
-										<span class="textPanelFooter"> (<xsl:value-of select="$count" /> items)</span>
-									</xsl:if>
-								</h4>
-								<xsl:for-each select="$currentParent/node()[$name=name()]">
-									<div class="textPanel" style="margin-top:0">
-										<xsl:choose>
-											<xsl:when test="$elementtype='richtext'">
-												<xsl:value-of disable-output-escaping="yes" select="$currentNode" />
-											</xsl:when>
-											<xsl:otherwise>
-												<xsl:value-of select="$currentNode" />
-											</xsl:otherwise>
-										</xsl:choose>
-									</div>
-								</xsl:for-each>
-							</td>
-						</tr>
-					</xsl:when>
-					<xsl:otherwise>
-						<!-- a 2 column display -->
-						<tr>
-							<th style="white-space: nowrap">
-								<xsl:call-template name="produce-label">
-									<xsl:with-param name="currentSchemaNode" select="." />
-								</xsl:call-template>
-								<xsl:if test="$count !=1">
-									<!-- if more than one element clone, tell user how many -->
-									<!-- todo: i18N -->
-									<div class="textPanelFooter">(<xsl:value-of select="$count" /> items)</div>
-								</xsl:if>
-							</th>
-							<td>
+				<!-- a plain old element - of which there are 2 types, big things to lay horizontally, short ones to lay vertically  -->
+				<xsl:if test="($thisname='element' or $thisname=$name) and $subform !='true'">
+					<tr>
+						<td colspan="2">
+							<table>
+								<xsl:attribute name="summary"><xsl:value-of select="sakaifn:getMessage('messages', 'table_item_summary')" /></xsl:attribute>
 								<xsl:choose>
-									<xsl:when test="$elementtype='file'">
-										<ul class="attachList" style="margin:0">
-											<xsl:for-each select="$currentParent/node()[$name=name()]">
-												<li>
-													<img src="/library/image/sakai/attachments.gif" />
-													<xsl:text> </xsl:text>
-													<a>
-														<xsl:attribute name="href">
-															<xsl:value-of select="sakaifn:getReferenceUrl(.)" />
-														</xsl:attribute>
-														<xsl:value-of select="sakaifn:getReferenceName(.)" />
-													</a>
-												</li>
-											</xsl:for-each>
-										</ul>
-									</xsl:when>
-									<xsl:when test="$elementtype='date'">
-										<xsl:for-each select="$currentParent/node()[$name=name()]">
-											<div class="textPanel" style="margin-top:0">
-												<xsl:call-template name="dateformat">
-													<xsl:with-param name="date" select="." />
-													<xsl:with-param name="format">mm/dd/yy</xsl:with-param>
+									<xsl:when test="$elementtype='longtext' or $elementtype='richtext'">
+										<xsl:attribute name="class">h</xsl:attribute>
+										<tr>
+											<td>
+												<xsl:call-template name="produce-label">
+													<xsl:with-param name="currentSchemaNode" select="." />
+													<xsl:with-param name="itemCount" select="count($currentParent/*[name()=$name])" />
+													<xsl:with-param name="elementtype" select="$elementtype" />
 												</xsl:call-template>
-											</div>
-										</xsl:for-each>
-									</xsl:when>
-									<xsl:when test="$elementtype='select'">
-										<!-- output all choices and selection? -->
-										<!--<ul class="textPanel" style="margin-top:0">
-											<xsl:for-each select="xs:simpleType/xs:restriction/xs:enumeration">
-												<li >
-													<xsl:choose>
-														<xsl:when test="@value=$currentParent/node()[$name=name()]">
-															<img src="/library/image/sakai/checkon.gif" />
-															<xsl:value-of select="@value" />
-														</xsl:when>
-														<xsl:otherwise>
-															<img src="/library/image/sakai/checkoff.gif" />
-															<xsl:value-of select="@value" />
-														</xsl:otherwise>
-													</xsl:choose>. </li>
-											</xsl:for-each>
-										</ul>
-											-->
-										<!--output just the selection -->
-										<xsl:for-each select="$currentParent/node()[$name=name()]">
-											<div class="textPanel" style="margin-top:0">
-												<xsl:value-of select="." />
-											</div>
-										</xsl:for-each>
-									</xsl:when>
-									<xsl:when test="$elementtype='boolean'">
-										<!-- need to test to see if ='true' and if so, render the check image, but cannot seem to save a boolean value -->
-										<img src="/library/image/sakai/checkon.gif" />
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<xsl:call-template name="h">
+													<xsl:with-param name="currentParent" select="$currentParent" />
+													<xsl:with-param name="currentSchemaNode" select="." />
+													<xsl:with-param name="currentNode" select="$currentNode" />
+													<xsl:with-param name="rootNode" select="$rootNode" />
+													<xsl:with-param name="thisname" select="name()" />
+													<xsl:with-param name="name" select="$name" />
+													<xsl:with-param name="elementtype" select="$elementtype" />
+												</xsl:call-template>
+											</td>
+										</tr>
 									</xsl:when>
 									<xsl:otherwise>
-										<xsl:for-each select="$currentParent/node()[$name=name()]">
-											<div class="textPanel" style="margin-top:0">
-												<xsl:value-of select="." />
-											</div>
-										</xsl:for-each>
+										<xsl:attribute name="class">v</xsl:attribute>
+										<tr>
+											<th>
+												<xsl:call-template name="produce-label">
+													<xsl:with-param name="currentSchemaNode" select="." />
+													<xsl:with-param name="elementtype" select="$elementtype" />
+													<xsl:with-param name="itemCount" select="count($currentParent/*[name()=$name])" />
+												</xsl:call-template>
+											</th>
+											<td>
+												<xsl:call-template name="v">
+													<xsl:with-param name="currentParent" select="$currentParent" />
+													<xsl:with-param name="currentSchemaNode" select="." />
+													<xsl:with-param name="currentNode" select="$currentNode" />
+													<xsl:with-param name="rootNode" select="$rootNode" />
+													<xsl:with-param name="thisname" select="name()" />
+													<xsl:with-param name="name" select="$name" />
+													<xsl:with-param name="elementtype" select="$elementtype" />
+												</xsl:call-template>
+											</td>
+										</tr>
 									</xsl:otherwise>
 								</xsl:choose>
-							</td>
-						</tr>
-					</xsl:otherwise>
-				</xsl:choose>
+							</table>
+						</td>
+					</tr>
+					<!--need to see if this is a subform-->
+				</xsl:if>
+				<xsl:if test="$subform='true'">
+					<xsl:if test="@name = $thisname">
+						<xsl:choose>
+							<xsl:when test="$elementtype='longtext' or $elementtype='richtext'">
+								<tr>
+									<th>
+										<xsl:call-template name="produce-label">
+											<xsl:with-param name="currentSchemaNode" select="." />
+											<xsl:with-param name="elementtype" select="$elementtype" />
+											<xsl:with-param name="itemCount" select="count($currentParent/*[name()=$name])" />
+										</xsl:call-template>
+									</th>
+								</tr>
+								<tr class="longtextsubform">
+									<td colspan="2">
+										<xsl:call-template name="h">
+											<xsl:with-param name="currentParent" select="$currentParent" />
+										</xsl:call-template>
+									</td>
+								</tr>
+							</xsl:when>
+							<xsl:otherwise>
+								<tr>
+									<th>
+										<xsl:call-template name="produce-label">
+											<xsl:with-param name="elementtype" select="$elementtype" />
+											<xsl:with-param name="currentSchemaNode" select="." />
+											<xsl:with-param name="itemCount" select="count($currentParent/*[name()=$name])" />
+										</xsl:call-template>
+									</th>
+									<td>
+										<xsl:call-template name="v">
+											<xsl:with-param name="currentParent" select="$currentParent" />
+										</xsl:call-template>
+									</td>
+								</tr>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:if>
+				</xsl:if>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
+	<!-- named templates  -->
 	<xsl:template name="produce-label">
 		<xsl:param name="currentSchemaNode" />
-		<xsl:choose>
-			<xsl:when test="$currentSchemaNode/xs:annotation/xs:documentation[@source='sakai.label']">
-				<xsl:value-of select="$currentSchemaNode/xs:annotation/xs:documentation[@source='sakai.label']" />
-			</xsl:when>
-			<xsl:when test="$currentSchemaNode/xs:annotation/xs:documentation[@source='ospi.label']">
-				<xsl:value-of select="$currentSchemaNode/xs:annotation/xs:documentation[@source='ospi.label']" />
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:for-each select="$currentSchemaNode">
-					<xsl:value-of select="@name" />
-				</xsl:for-each>
-			</xsl:otherwise>
-		</xsl:choose>
+		<xsl:param name="elementtype" />
+		<xsl:param name="rootNode" />
+		<xsl:param name="itemCount" />
+		<h4>
+			<xsl:choose>
+				<xsl:when test="$currentSchemaNode/xs:annotation/xs:documentation[@source='sakai.label']">
+					<xsl:value-of select="$currentSchemaNode/xs:annotation/xs:documentation[@source='sakai.label']" />
+				</xsl:when>
+				<xsl:when test="$currentSchemaNode/xs:annotation/xs:documentation[@source='ospi.label']">
+					<xsl:value-of select="$currentSchemaNode/xs:annotation/xs:documentation[@source='ospi.label']" />
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:for-each select="$currentSchemaNode">
+						<!-- todo: this is sort of a radical fallback -->
+						<xsl:value-of select="@name" />
+					</xsl:for-each>
+				</xsl:otherwise>
+			</xsl:choose>
+		</h4>
+		<xsl:if test="$rootNode='true'">
+			<xsl:call-template name="produce-metadata" />
+		</xsl:if>
+		<xsl:if test="$itemCount &gt; 1">
+			<div class="textPanelFooter">
+				<xsl:value-of select="$itemCount" /><xsl:text> </xsl:text>
+				<xsl:choose>
+					<xsl:when test="$elementtype='select'">
+						<xsl:value-of select="sakaifn:getMessage('messages', 'itemsselected')" />
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="sakaifn:getMessage('messages', 'items')" />
+					</xsl:otherwise>
+				</xsl:choose>
+			</div>
+		</xsl:if>
+		<!-- these - where to put these, do they even make sense in a form display? As a nicetitle hover? in the response but visible only on printing? 
+		<xsl:if test="$currentSchemaNode/xs:annotation/xs:documentation[@source='ospi.inlinedescription']/text()">
+			<p class="instruction clear"> (i) <xsl:value-of select="$currentSchemaNode/xs:annotation/xs:documentation[@source='ospi.inlinedescription']" />
+			</p>
+		</xsl:if>
+		<xsl:if test="$currentSchemaNode/xs:annotation/xs:documentation[@source='ospi.description']/text()">
+			<p class="instruction clear"> (d) <xsl:value-of select="$currentSchemaNode/xs:annotation/xs:documentation[@source='ospi.description']" />
+			</p>
+		</xsl:if>
+		-->
 	</xsl:template>
 	<xsl:template name="produce-fields">
 		<xsl:param name="currentSchemaNode" />
 		<xsl:param name="currentNode" />
 		<xsl:param name="rootNode" />
-		<table class="itemSummary">
-			<xsl:for-each select="$currentSchemaNode/children">
-				<xsl:apply-templates select="@*|node()">
-					<xsl:with-param name="currentParent" select="$currentNode" />
-					<xsl:with-param name="rootNode" select="'false'" />
-					<xsl:with-param name="nodetype">
-					</xsl:with-param>
-				</xsl:apply-templates>
-			</xsl:for-each>
-			<xsl:if test="$rootNode='true'">
-				<xsl:call-template name="produce-metadata" />
-			</xsl:if>
-		</table>
+		<xsl:param name="thisname" />
+		<xsl:param name="subform" />
+		<xsl:for-each select="$currentSchemaNode/children">
+			<xsl:apply-templates select="@*|node()">
+				<xsl:with-param name="currentParent" select="$currentNode" />
+				<xsl:with-param name="rootNode" select="'false'" />
+				<xsl:with-param name="currentNode" select="$currentNode" />
+				<xsl:with-param name="thisname" select="$thisname" />
+				<xsl:with-param name="subform" select="$subform" />
+			</xsl:apply-templates>
+		</xsl:for-each>
 	</xsl:template>
 	<xsl:template name="produce-metadata">
-		<tr class="textPanelFooter">
-			<th> Created </th>
-			<td>
-				<xsl:value-of select="/formView/formData/artifact/metaData/repositoryNode/created" />
-			</td>
-		</tr>
-		<tr class="textPanelFooter">
-			<th> Modified </th>
-			<td>
-				<xsl:value-of select="/formView/formData/artifact/metaData/repositoryNode/modified" />
-			</td>
-		</tr>
+		<div class="textPanelFooter">
+			<strong>
+				<xsl:value-of select="sakaifn:getMessage('messages', 'created')" />
+			</strong>
+			<xsl:text> </xsl:text>
+			<xsl:value-of select="/formView/formData/artifact/metaData/repositoryNode/created" />
+			<xsl:text> /  </xsl:text>
+			<strong>
+				<xsl:value-of select="sakaifn:getMessage('messages', 'modified')" />
+			</strong>
+			<xsl:text> </xsl:text>
+			<xsl:value-of select="/formView/formData/artifact/metaData/repositoryNode/modified" />
+		</div>
 	</xsl:template>
-	<!-- a crutch - since the date in datefields comes in on edit in a specific format, massage it here to render in any format. This template called with a "format" parameter which is not used but could be -->
+	<xsl:template name="elem">
+		<xsl:param name="elem" />
+		<xsl:param name="currentSchemaNode" />
+		<xsl:param name="data" />
+		<xsl:param name="thisname" />
+		<xsl:param name="name" />
+		<xsl:param name="subform" />
+		<xsl:for-each select="$data/*">
+			<xsl:call-template name="produce-fields">
+				<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
+				<xsl:with-param name="currentNode" select="." />
+				<xsl:with-param name="rootNode" select="false" />
+				<xsl:with-param name="thisname" select="name()" />
+				<xsl:with-param name="subform" select="$subform" />
+			</xsl:call-template>
+		</xsl:for-each>
+	</xsl:template>
+	<!-- a template for each element type group-->
+	<xsl:template name="v">
+		<xsl:param name="currentSchemaNode" />
+		<xsl:param name="currentParent" />
+		<xsl:param name="currentNode" />
+		<xsl:param name="rootNode" />
+		<xsl:param name="elementtype" />
+		<xsl:param name="thisname" />
+		<xsl:param name="name" />
+		<xsl:choose>
+			<!-- a root node (not a node in a subform) -->
+			<xsl:when test="$thisname='element'">
+				<xsl:for-each select="$currentParent/*[name()=$name]">
+					<xsl:choose>
+						<xsl:when test="$elementtype='shorttext'">
+							<div class="textPanel">
+								<xsl:value-of select="." />
+							</div>
+						</xsl:when>
+						<xsl:when test="$elementtype='date'">
+							<div class="textPanel">
+								<xsl:call-template name="dateformat">
+									<xsl:with-param name="date" select="." />
+									<xsl:with-param name="format">mm/dd/yy</xsl:with-param>
+								</xsl:call-template>
+							</div>
+						</xsl:when>
+						<xsl:when test="$elementtype='file'">
+							<div class="textPanel">
+								<img src="/library/image/sakai/attachments.gif" alt="attachment" />
+								<xsl:text> </xsl:text>
+								<a target="_blank">
+									<xsl:attribute name="href">
+										<xsl:value-of select="sakaifn:getReferenceUrl(.)" />
+									</xsl:attribute>
+									<xsl:value-of select="sakaifn:getReferenceName(.)" />
+								</a>
+							</div>
+						</xsl:when>
+						<xsl:when test="$elementtype='boolean'">
+							<xsl:if test=".='true'">
+								<div class="textPanel">
+									<img src="/library/image/sakai/checkon.gif" alt="checked " />
+								</div>
+							</xsl:if>
+						</xsl:when>
+						<xsl:otherwise> </xsl:otherwise>
+					</xsl:choose>
+				</xsl:for-each>
+				<!-- selects need their own iteration -->
+				<xsl:if test="$elementtype='select'">
+					<ul class="selectList">
+						<xsl:for-each select="$currentSchemaNode/xs:simpleType/xs:restriction/xs:enumeration">
+							<li>
+								<xsl:choose>
+									<xsl:when test="@value=$currentParent/node()[$name=name()]">
+										<img src="/library/image/sakai/checkon.gif" alt="checked" />
+										<xsl:value-of select="@value" />
+									</xsl:when>
+									<xsl:otherwise>
+										<img src="/library/image/sakai/checkoff.gif" alt="unchecked" />
+										<xsl:value-of select="@value" />
+									</xsl:otherwise>
+								</xsl:choose>. </li>
+						</xsl:for-each>
+					</ul>
+				</xsl:if>
+			</xsl:when>
+			<xsl:otherwise>
+				<!--- a subform node -->
+				<div class="textPanel">
+					<xsl:value-of select="$currentParent" />
+				</div>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template name="h">
+		<xsl:param name="currentSchemaNode" />
+		<xsl:param name="currentParent" />
+		<xsl:param name="currentNode" />
+		<xsl:param name="rootNode" />
+		<xsl:param name="thisname" />
+		<xsl:param name="name" />
+		<xsl:choose>
+			<!-- a root node (not a node in a subform) -->
+			<xsl:when test="$thisname='element'">
+				<xsl:for-each select="$currentParent/*[name()=$name]">
+					<div class="textPanel">
+						<xsl:value-of disable-output-escaping="yes" select="." />
+					</div>
+				</xsl:for-each>
+			</xsl:when>
+			<xsl:otherwise>
+				<!--- a subform node -->
+				<div class="textPanel">
+					<xsl:value-of disable-output-escaping="yes" select="$currentParent" />
+				</div>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
 	<xsl:template name="dateformat">
 		<xsl:param name="date" />
 		<xsl:param name="format" />
@@ -298,66 +407,10 @@
 		<xsl:variable name="day" select="substring-after($rest,'-')" />
 		<xsl:value-of select="$month" />/<xsl:value-of select="$day" />/<xsl:value-of select="$year" />
 	</xsl:template>
-	<xsl:template name="produce-fields-subform">
-		<xsl:param name="currentSchemaNode" />
-		<xsl:param name="currentNode" />
-		<xsl:param name="rootNode" />
-		<xsl:variable name="name" select="$currentSchemaNode/@name" />
-		<!-- need to probe - figure if there are longtext, or richtext nodes or even subforms - if so, produce a vertically stacked collection - bellow for small stuff -->
-		<!-- 5 shortext nodes - make it horizontal -->
-		<!-- more than 5 or mixed long, short - stack them up -->
-		<!-- or do so per node - probe schema -->
-		<table border="0" cellpadding="0" cellspacing="0">
-			<!-- rows mode -->
-			<!--			
-			<xsl:attribute name="class">listHier lines nolines textPanelFooter</xsl:attribute>
-			<xsl:attribute name="style">margin:.5em</xsl:attribute>
-			<xsl:for-each select="$currentNode">
-				<xsl:if test="position() =1">
-					<tr>
-						<th />
-						<xsl:for-each select="$currentSchemaNode/children/element">
-							<xsl:sort select="@name" />
-							<th>
-								<xsl:value-of select="xs:annotation/xs:documentation[@source='ospi.label']" />
-							</th>
-						</xsl:for-each>
-					</tr>
-				</xsl:if>
-				<tr>
-					<td>
-						<xsl:value-of select="position()" />
-					</td>
-					<xsl:for-each select="*">
-						<xsl:sort select="name()" />
-						<td>
-							<xsl:value-of select="." />
-						</td>
-					</xsl:for-each>
-				</tr>
-			</xsl:for-each>
-			-->
-			<!-- columns mode -->
-			<xsl:attribute name="class">itemSummary textPanelFooter</xsl:attribute>
-			<xsl:for-each select="$currentNode">
-				<xsl:for-each select="*">
-					<xsl:if test="$currentSchemaNode/children/element/@name=name()">
-						<tr>
-							<th>
-								<xsl:variable name="nameholder" select="name()" />
-								<xsl:value-of select="$currentSchemaNode/children/element[@name=$nameholder]/xs:annotation/xs:documentation[@source='ospi.label']" />
-							</th>
-							<td>
-								<xsl:value-of select="." />
-							</td>
-						</tr>
-					</xsl:if>
-				</xsl:for-each>
-				<tr>
-					<td />
-					<td />
-				</tr>
-			</xsl:for-each>
-		</table>
+	<xsl:template match="css">
+		<xsl:apply-templates />
+	</xsl:template>
+	<xsl:template match="uri">
+		<link href="{.}" type="text/css" rel="stylesheet" media="all" />
 	</xsl:template>
 </xsl:stylesheet>
