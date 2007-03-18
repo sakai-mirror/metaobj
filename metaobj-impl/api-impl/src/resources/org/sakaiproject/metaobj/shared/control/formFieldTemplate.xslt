@@ -103,37 +103,22 @@
 			<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
 		</xsl:call-template>
 		<div id="{$name}-node">
-         <xsl:attribute name="class">
+			<xsl:attribute name="class">
             <xsl:call-template
                name="fieldClass"><xsl:with-param
                name="schemaNode" select="$currentSchemaNode" /><xsl:with-param
                name="baseType" select="'shorttext'" /></xsl:call-template>
-         </xsl:attribute>
-         <xsl:if test="$currentSchemaNode/@minOccurs='1'">
-            <span class="reqStar">*</span>
-         </xsl:if>
+			</xsl:attribute>
+			<xsl:if test="$currentSchemaNode/@minOccurs='1'">
+				<span class="reqStar">*</span>
+			</xsl:if>
 			<xsl:call-template name="produce-label">
 				<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
 			</xsl:call-template>
 			<input type="text" id="{$name}" name="{$name}" value="{$currentNode}">
-				<!--calculate value of maxlength attribute, if absent set to 50, provide a title attribute with this value for the tooltip -->
-				<xsl:choose>
-					<xsl:when test="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value">
-						<xsl:attribute name="maxLength">
-							<xsl:value-of select="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value" />
-						</xsl:attribute>
-						<xsl:attribute name="title">
-							<!--info: convert node to string before passing it to the function-->
-							<xsl:value-of select="sakaifn:formatMessage('messages','max_chars',string($currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value))" />
-						</xsl:attribute>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:attribute name="maxLength">50</xsl:attribute>
-						<xsl:attribute name="title">
-							<xsl:value-of select="sakaifn:formatMessage('messages', 'max_chars',50)" />
-						</xsl:attribute>
-					</xsl:otherwise>
-				</xsl:choose>
+				<xsl:call-template name="calculateRestrictions">
+					<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
+				</xsl:call-template>
 			</input>
 			<!-- if @maxOccurs is not 1, then it is either a discreet number or unbounded, so add a link that will clone the node in the DOM
                 -->
@@ -192,15 +177,15 @@
 							<xsl:value-of select="name()" />-<xsl:value-of select="position()" />-node</xsl:otherwise>
 					</xsl:choose>
 				</xsl:attribute>
-            <xsl:attribute name="class">
+				<xsl:attribute name="class">
                <xsl:call-template
                   name="fieldClass"><xsl:with-param
                   name="schemaNode" select="$currentSchemaNode" /><xsl:with-param
                   name="baseType" select="'shorttext'" /></xsl:call-template>
-            </xsl:attribute>
-            <xsl:if test="$currentSchemaNode/@minOccurs='1'">
-               <span class="reqStar">*</span>
-            </xsl:if>
+				</xsl:attribute>
+				<xsl:if test="$currentSchemaNode/@minOccurs='1'">
+					<span class="reqStar">*</span>
+				</xsl:if>
 				<!-- call template that will produce the label in edit mode -->
 				<xsl:call-template name="produce-label-edit">
 					<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
@@ -211,22 +196,9 @@
 					<xsl:attribute name="id">
 						<xsl:value-of select="name()" />-<xsl:value-of select="position()" />
 					</xsl:attribute>
-					<!-- same maxlength calculations as previous template -->
-					<xsl:choose>
-						<xsl:when test="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value">
-							<xsl:attribute name="maxLength">
-								<xsl:value-of select="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value" />
-							</xsl:attribute>
-							<xsl:attribute name="title">
-								<xsl:value-of select="sakaifn:formatMessage('messages','max_chars',string($currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value))" />
-							</xsl:attribute>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:attribute name="title">
-								<xsl:value-of select="sakaifn:formatMessage('messages', 'max_chars',50)" />
-							</xsl:attribute>
-						</xsl:otherwise>
-					</xsl:choose>
+					<xsl:call-template name="calculateRestrictions">
+						<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
+					</xsl:call-template>
 				</input>
 				<xsl:if test="not($currentSchemaNode/@maxOccurs='1')">
 					<!-- calculate if this is an original node that can be cloned, an original node that has been cloned up to the max or a cloned node that can be deleted and render the appropriate links -->
@@ -266,12 +238,12 @@
 				</xsl:if>
 			</div>
 		</xsl:for-each>
-      <xsl:if test="not($currentSchemaNode/@maxOccurs='1')">
-         <div id="{$name}-hidden-fields" class="skipthis">
-            <input id="{$name}-count" type="text" value="{$count}" />
-            <input id="{$name}-max" type="text" value="{$currentSchemaNode/@maxOccurs}" />
-         </div>
-      </xsl:if>
+		<xsl:if test="not($currentSchemaNode/@maxOccurs='1')">
+			<div id="{$name}-hidden-fields" class="skipthis">
+				<input id="{$name}-count" type="text" value="{$count}" />
+				<input id="{$name}-max" type="text" value="{$currentSchemaNode/@maxOccurs}" />
+			</div>
+		</xsl:if>
 	</xsl:template>
 	<!-- same in most respects as shorttext element except  1) cannot be cloned, 2) cannot be required (there is always a default) - so create and edit templates are one and the same.
 		todo: required work
@@ -292,12 +264,12 @@
 				<xsl:when test="@maxOccurs='1' and count($currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:enumeration) &lt;= $htmldeterm">
 					<!-- this will resolve as a radio group control -->
 					<fieldset>
-                  <xsl:attribute name="class">
+						<xsl:attribute name="class">
                      <xsl:call-template
                         name="fieldClass"><xsl:with-param
                         name="schemaNode" select="$currentSchemaNode" /><xsl:with-param
                         name="baseType" select="'osp-radcheck'" /></xsl:call-template>
-                  </xsl:attribute>
+						</xsl:attribute>
 						<legend>
 							<xsl:if test="$currentSchemaNode/@minOccurs='1'">
 								<span class="reqStar">*</span>
@@ -322,16 +294,16 @@
 				</xsl:when>
 				<xsl:when test="@maxOccurs='1' and count($currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:enumeration) &gt; $htmldeterm">
 					<!-- this will resolve as a single select control-->
-               <xsl:attribute name="class">
+					<xsl:attribute name="class">
                   <xsl:call-template
                      name="fieldClass"><xsl:with-param
                      name="schemaNode" select="$currentSchemaNode" /><xsl:with-param
                      name="baseType" select="'shorttext'" /></xsl:call-template>
-               </xsl:attribute>
-               <xsl:if test="$currentSchemaNode/@minOccurs='1'">
-                  <span class="reqStar">*</span>
-               </xsl:if>
-               <xsl:call-template name="produce-label">
+					</xsl:attribute>
+					<xsl:if test="$currentSchemaNode/@minOccurs='1'">
+						<span class="reqStar">*</span>
+					</xsl:if>
+					<xsl:call-template name="produce-label">
 						<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
 					</xsl:call-template>
 					<select id="{$name}" name="{$name}">
@@ -348,12 +320,12 @@
 				<xsl:when test="@maxOccurs !='1' and count($currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:enumeration) &lt;= $htmldeterm">
 					<!-- this will resolve as a checkbox group control -->
 					<fieldset>
-                  <xsl:attribute name="class">
+						<xsl:attribute name="class">
                      <xsl:call-template
                         name="fieldClass"><xsl:with-param
                         name="schemaNode" select="$currentSchemaNode" /><xsl:with-param
                         name="baseType" select="'osp-radcheck'" /></xsl:call-template>
-                  </xsl:attribute>
+						</xsl:attribute>
 						<legend>
 							<xsl:if test="$currentSchemaNode/@minOccurs='1'">
 								<span class="reqStar">*</span>
@@ -394,15 +366,15 @@
 				</xsl:when>
 				<xsl:when test="@maxOccurs !='1' and count($currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:enumeration) &gt; $htmldeterm">
 					<!-- this will resolve as a multiple select control -->
-               <xsl:attribute name="class">
+					<xsl:attribute name="class">
                   <xsl:call-template
                      name="fieldClass"><xsl:with-param
                      name="schemaNode" select="$currentSchemaNode" /><xsl:with-param
                      name="baseType" select="'shorttext'" /></xsl:call-template>
-               </xsl:attribute>
-               <xsl:if test="$currentSchemaNode/@minOccurs='1'">
-                  <span class="reqStar">*</span>
-               </xsl:if>
+					</xsl:attribute>
+					<xsl:if test="$currentSchemaNode/@minOccurs='1'">
+						<span class="reqStar">*</span>
+					</xsl:if>
 					<xsl:call-template name="produce-label">
 						<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
 					</xsl:call-template>
@@ -439,15 +411,15 @@
 			<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
 		</xsl:call-template>
 		<div id="{$name}">
-         <xsl:attribute name="class">
+			<xsl:attribute name="class">
             <xsl:call-template
                name="fieldClass"><xsl:with-param
                name="schemaNode" select="$currentSchemaNode" /><xsl:with-param
                name="baseType" select="'longtext'" /></xsl:call-template>
-         </xsl:attribute>
-         <xsl:if test="$currentSchemaNode/@minOccurs='1'">
-            <span class="reqStar">*</span>
-         </xsl:if>
+			</xsl:attribute>
+			<xsl:if test="$currentSchemaNode/@minOccurs='1'">
+				<span class="reqStar">*</span>
+			</xsl:if>
 			<xsl:call-template name="produce-label">
 				<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
 				<xsl:with-param name="nodeType">longtext</xsl:with-param>
@@ -496,15 +468,15 @@
 			<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
 		</xsl:call-template>
 		<div id="{$name}-node">
-         <xsl:attribute name="class">
+			<xsl:attribute name="class">
             <xsl:call-template
                name="fieldClass"><xsl:with-param
                name="schemaNode" select="$currentSchemaNode" /><xsl:with-param
                name="baseType" select="'longtext'" /></xsl:call-template>
-         </xsl:attribute>
-         <xsl:if test="$currentSchemaNode/@minOccurs='1'">
-            <span class="reqStar">*</span>
-         </xsl:if>
+			</xsl:attribute>
+			<xsl:if test="$currentSchemaNode/@minOccurs='1'">
+				<span class="reqStar">*</span>
+			</xsl:if>
 			<!-- passing a nodeType param to the label producing template creates a label with the css class "block" so that it renders label and textarea in 2 separate lines -->
 			<xsl:call-template name="produce-label">
 				<xsl:with-param name="nodeType">longtext</xsl:with-param>
@@ -512,29 +484,10 @@
 			</xsl:call-template>
 			<!-- maxlength expressed as a title attribute as in shorttext, no default maxlength, however, and some rough calculations for rendered sized of the textarea based on the maxLength value -->
 			<textarea id="{$name}" name="{$name}">
-				<xsl:if test="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value">
-					<xsl:attribute name="title">
-						<xsl:value-of select="sakaifn:formatMessage('messages','max_chars',string($currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value))" />
-					</xsl:attribute>
-					<xsl:choose>
-						<xsl:when test="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value &lt; 600">
-							<xsl:attribute name="rows">3</xsl:attribute>
-							<xsl:attribute name="cols">45</xsl:attribute>
-						</xsl:when>
-						<xsl:when test="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value &lt; 800">
-							<xsl:attribute name="rows">5</xsl:attribute>
-							<xsl:attribute name="cols">45</xsl:attribute>
-						</xsl:when>
-						<xsl:when test="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value &lt; 1000">
-							<xsl:attribute name="rows">7</xsl:attribute>
-							<xsl:attribute name="cols">45</xsl:attribute>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:attribute name="rows">9</xsl:attribute>
-							<xsl:attribute name="cols">45</xsl:attribute>
-						</xsl:otherwise>
-					</xsl:choose>
-				</xsl:if>
+				<xsl:call-template name="calculateRestrictions">
+					<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
+					<xsl:with-param name="nodeType" select="longtext" />
+				</xsl:call-template>
 				<xsl:choose>
 					<xsl:when test="string($currentNode) = ''" />
 					<xsl:otherwise>
@@ -593,16 +546,16 @@
 							<xsl:value-of select="name()" />-<xsl:value-of select="position()" />-node</xsl:otherwise>
 					</xsl:choose>
 				</xsl:attribute>
-            <xsl:attribute name="class">
+				<xsl:attribute name="class">
                <xsl:call-template
                   name="fieldClass"><xsl:with-param
                   name="schemaNode" select="$currentSchemaNode" /><xsl:with-param
                   name="baseType" select="'longtext'" /></xsl:call-template>
-            </xsl:attribute>
-            <xsl:if test="$currentSchemaNode/@minOccurs='1'">
-               <span class="reqStar">*</span>
-            </xsl:if>
-            <xsl:call-template name="produce-label-edit">
+				</xsl:attribute>
+				<xsl:if test="$currentSchemaNode/@minOccurs='1'">
+					<span class="reqStar">*</span>
+				</xsl:if>
+				<xsl:call-template name="produce-label-edit">
 					<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
 					<xsl:with-param name="sep">-</xsl:with-param>
 					<xsl:with-param name="nodeType">longtext</xsl:with-param>
@@ -612,29 +565,10 @@
 					<xsl:attribute name="id">
 						<xsl:value-of select="name()" />-<xsl:value-of select="position()" />
 					</xsl:attribute>
-					<xsl:if test="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value">
-						<xsl:attribute name="title">
-							<xsl:value-of select="sakaifn:formatMessage('messages','max_chars',string($currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value))" />
-						</xsl:attribute>
-						<xsl:choose>
-							<xsl:when test="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value &lt; 600">
-								<xsl:attribute name="rows">3</xsl:attribute>
-								<xsl:attribute name="cols">45</xsl:attribute>
-							</xsl:when>
-							<xsl:when test="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value &lt; 800">
-								<xsl:attribute name="rows">5</xsl:attribute>
-								<xsl:attribute name="cols">45</xsl:attribute>
-							</xsl:when>
-							<xsl:when test="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value &lt; 1000">
-								<xsl:attribute name="rows">7</xsl:attribute>
-								<xsl:attribute name="cols">45</xsl:attribute>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:attribute name="rows">9</xsl:attribute>
-								<xsl:attribute name="cols">45</xsl:attribute>
-							</xsl:otherwise>
-						</xsl:choose>
-					</xsl:if>
+					<xsl:call-template name="calculateRestrictions">
+						<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
+						<xsl:with-param name="nodeType" select="longtext" />
+					</xsl:call-template>
 					<xsl:choose>
 						<xsl:when test="string($currentNode) = ''" />
 						<xsl:otherwise>
@@ -679,12 +613,12 @@
 				</xsl:if>
 			</div>
 		</xsl:for-each>
-      <xsl:if test="not($currentSchemaNode/@maxOccurs='1')">
-         <div id="{$name}-hidden-fields" class="skipthis">
-            <input id="{$name}-count" type="text" value="1" />
-            <input id="{$name}-max" type="text" value="{$currentSchemaNode/@maxOccurs}" />
-         </div>
-      </xsl:if>
+		<xsl:if test="not($currentSchemaNode/@maxOccurs='1')">
+			<div id="{$name}-hidden-fields" class="skipthis">
+				<input id="{$name}-count" type="text" value="1" />
+				<input id="{$name}-max" type="text" value="{$currentSchemaNode/@maxOccurs}" />
+			</div>
+		</xsl:if>
 	</xsl:template>
 	<xsl:template name="checkBox-field">
 		<xsl:param name="currentSchemaNode" />
@@ -696,23 +630,23 @@
 			<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
 		</xsl:call-template>
 		<div id="{$name}parent">
-         <xsl:attribute name="class">
+			<xsl:attribute name="class">
             <xsl:call-template
                name="fieldClass"><xsl:with-param
                name="schemaNode" select="$currentSchemaNode" /><xsl:with-param
                name="baseType" select="'checkbox indnt1'" /></xsl:call-template>
-         </xsl:attribute>
-         <xsl:if test="$currentSchemaNode/@minOccurs='1'">
-            <span class="reqStar">*</span>
-         </xsl:if>
+			</xsl:attribute>
+			<xsl:if test="$currentSchemaNode/@minOccurs='1'">
+				<span class="reqStar">*</span>
+			</xsl:if>
 			<xsl:call-template name="checkbox-widget">
 				<xsl:with-param name="name" select="$name" />
 				<xsl:with-param name="currentNode" select="$currentNode" />
 			</xsl:call-template>
 			<xsl:call-template name="produce-label">
 				<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
-            <xsl:with-param name="fieldName" select="concat($name, '_checkbox')"/>
-         </xsl:call-template>
+				<xsl:with-param name="fieldName" select="concat($name, '_checkbox')" />
+			</xsl:call-template>
 			<xsl:if test="@maxOccurs='-1'">
 				<a href="javascript:addItem('{$name}parent');" class="addEl">
 					<xsl:attribute name="title">
@@ -729,8 +663,8 @@
 		<xsl:param name="currentNode" />
 		<input type="checkbox" id="{$name}_checkbox" name="{$name}_checkbox">
 			<xsl:if test="$currentNode = 'true'">
-				<xsl:attribute name="checked"/>
-         </xsl:if>
+				<xsl:attribute name="checked" />
+			</xsl:if>
 			<xsl:attribute name="onChange">form['<xsl:value-of select="$name" />'].value=this.checked </xsl:attribute>
 		</input>
 		<input type="hidden" name="{$name}" value="{$currentNode}" />
@@ -747,15 +681,15 @@
 		</xsl:call-template>
 		<div>
 			<div id="{$name}parent">
-            <xsl:attribute name="class">
+				<xsl:attribute name="class">
                <xsl:call-template
                   name="fieldClass"><xsl:with-param
                   name="schemaNode" select="$currentSchemaNode" /><xsl:with-param
                   name="baseType" select="'shorttext'" /></xsl:call-template>
-            </xsl:attribute>
-            <xsl:if test="$currentSchemaNode/@minOccurs='1'">
-               <span class="reqStar">*</span>
-            </xsl:if>
+				</xsl:attribute>
+				<xsl:if test="$currentSchemaNode/@minOccurs='1'">
+					<span class="reqStar">*</span>
+				</xsl:if>
 				<xsl:call-template name="produce-label">
 					<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
 				</xsl:call-template>
@@ -786,11 +720,11 @@
 						<xsl:for-each select="$currentParent/node()[$name=name()]">
 							<li>
 								<img>
-                           <xsl:attribute name="src">
-                              <xsl:value-of select="sakaifn:getImageUrl(.)" />
-                           </xsl:attribute>
-                        </img>
-                        <input type="hidden" name="{$name}" value="{.}" />
+									<xsl:attribute name="src">
+										<xsl:value-of select="sakaifn:getImageUrl(.)" />
+									</xsl:attribute>
+								</img>
+								<input type="hidden" name="{$name}" value="{.}" />
 								<a target="_blank">
 									<xsl:attribute name="href">
 										<xsl:value-of select="sakaifn:getReferenceUrl(.)" />
@@ -822,15 +756,15 @@
 			<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
 		</xsl:call-template>
 		<div id="{$name}-node">
-         <xsl:attribute name="class">
+			<xsl:attribute name="class">
             <xsl:call-template
                name="fieldClass"><xsl:with-param
                name="schemaNode" select="$currentSchemaNode" /><xsl:with-param
                name="baseType" select="'shorttext'" /></xsl:call-template>
-         </xsl:attribute>
-         <xsl:if test="$currentSchemaNode/@minOccurs='1'">
-            <span class="reqStar">*</span>
-         </xsl:if>
+			</xsl:attribute>
+			<xsl:if test="$currentSchemaNode/@minOccurs='1'">
+				<span class="reqStar">*</span>
+			</xsl:if>
 			<xsl:call-template name="produce-label">
 				<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
 			</xsl:call-template>
@@ -894,15 +828,15 @@
 							<xsl:value-of select="name()" />-<xsl:value-of select="position()" />-node</xsl:otherwise>
 					</xsl:choose>
 				</xsl:attribute>
-            <xsl:attribute name="class">
+				<xsl:attribute name="class">
                <xsl:call-template
                   name="fieldClass"><xsl:with-param
                   name="schemaNode" select="$currentSchemaNode" /><xsl:with-param
                   name="baseType" select="'shorttext'" /></xsl:call-template>
-            </xsl:attribute>
-            <xsl:if test="$currentSchemaNode/@minOccurs='1'">
-               <span class="reqStar">*</span>
-            </xsl:if>
+				</xsl:attribute>
+				<xsl:if test="$currentSchemaNode/@minOccurs='1'">
+					<span class="reqStar">*</span>
+				</xsl:if>
 				<xsl:call-template name="produce-label-edit">
 					<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
 					<xsl:with-param name="sep">-</xsl:with-param>
@@ -954,12 +888,12 @@
 				</xsl:if>
 			</div>
 		</xsl:for-each>
-      <xsl:if test="not($currentSchemaNode/@maxOccurs='1')">
-         <div id="{$name}-hidden-fields" class="skipthis">
-            <input id="{$name}-count" type="text" value="{$count}" />
-            <input id="{$name}-max" type="text" value="{$currentSchemaNode/@maxOccurs}" />
-         </div>
-      </xsl:if>
+		<xsl:if test="not($currentSchemaNode/@maxOccurs='1')">
+			<div id="{$name}-hidden-fields" class="skipthis">
+				<input id="{$name}-count" type="text" value="{$count}" />
+				<input id="{$name}-max" type="text" value="{$currentSchemaNode/@maxOccurs}" />
+			</div>
+		</xsl:if>
 	</xsl:template>
 	<xsl:template name="calendar-widget">
 		<xsl:param name="schemaNode" />
@@ -971,12 +905,12 @@
 		<xsl:variable name="fieldId" select="generate-id()" />
 		<input type="text" size="10" name="{$schemaNode/@name}.fullDate" id="{$schemaNode/@name}">
 			<xsl:attribute name="value">
-            <xsl:value-of select="sakaifn:formatDateWidget($dataNode)"/>
-         </xsl:attribute>
-         <xsl:attribute name="title">
-            <xsl:value-of select="sakaifn:getMessage('messages', 'date_format_hint')"/>
-         </xsl:attribute>
-      </input>
+				<xsl:value-of select="sakaifn:formatDateWidget($dataNode)" />
+			</xsl:attribute>
+			<xsl:attribute name="title">
+				<xsl:value-of select="sakaifn:getMessage('messages', 'date_format_hint')" />
+			</xsl:attribute>
+		</input>
 		<!-- hidden field to hold the value of the unique id the calendar needs, and use it by increment to call the calendar in the context of any cloned nodes -->
 		<input type="hidden" value="{$fieldId}" id="{$schemaNode/@name}-dateWId" />
 		<!-- since there are two links to the right of the input  put some space between them to avoid confusion -->
@@ -1006,12 +940,12 @@
 				<xsl:value-of select="position()" />
 			</xsl:attribute>
 			<xsl:attribute name="value">
-            <xsl:value-of select="sakaifn:formatDateWidget($val)"/>
+				<xsl:value-of select="sakaifn:formatDateWidget($val)" />
 			</xsl:attribute>
-         <xsl:attribute name="title">
-            <xsl:value-of select="sakaifn:getMessage('messages', 'date_format_hint')"/>
-         </xsl:attribute>
-      </input>
+			<xsl:attribute name="title">
+				<xsl:value-of select="sakaifn:getMessage('messages', 'date_format_hint')" />
+			</xsl:attribute>
+		</input>
 		<input type="hidden" value="" id="{$schemaNode/@name}-dateWId" />
 		<xsl:text>&#xa0;</xsl:text>
 		<img width="16" height="16" style="cursor:pointer;" border="0" src="/sakai-jsf-resource/inputDate/images/calendar.gif">
@@ -1020,7 +954,7 @@
 			</xsl:attribute>
 			<xsl:attribute name="onclick"><xsl:value-of select="sakaifn:getDateWidget(concat($fieldIdclone, $num),
 			   concat($schemaNode/@name, $num))" /></xsl:attribute>
-      </img>
+		</img>
 		<xsl:text>&#xa0;&#xa0;</xsl:text>
 	</xsl:template>
 	<xsl:template name="month-option">
@@ -1036,15 +970,15 @@
 	</xsl:template>
 	<xsl:template name="produce-label">
 		<xsl:param name="currentSchemaNode" />
-      <xsl:param name="nodeType" />
+		<xsl:param name="nodeType" />
 		<xsl:param name="sep" />
 		<xsl:param name="num" />
-      <xsl:param name="fieldName" />
+		<xsl:param name="fieldName" />
 		<label for="{@name}">
-         <xsl:if test="$fieldName">
+			<xsl:if test="$fieldName">
             <xsl:attribute name="for"><xsl:value-of select="$fieldName"/></xsl:attribute>
-         </xsl:if>
-         <xsl:if test="$nodeType='longtext'">
+			</xsl:if>
+			<xsl:if test="$nodeType='longtext'">
 				<xsl:attribute name="class">block</xsl:attribute>
 			</xsl:if>
 			<!--output the ospi.descripion as a title in a link (using nicetitle)  -->
@@ -1210,14 +1144,121 @@
 		<xsl:variable name="day" select="substring-after($rest,'-')" />
 		<xsl:value-of select="$month" />/<xsl:value-of select="$day" />/<xsl:value-of select="$year" />
 	</xsl:template>
-
-   <xsl:template name="fieldClass">
-      <xsl:param name="schemaNode"/>
-      <xsl:param name="baseType"/>
-      <xsl:variable name="name" select="$schemaNode/@name" />
+	<xsl:template name="fieldClass">
+		<xsl:param name="schemaNode" />
+		<xsl:param name="baseType" />
+		<xsl:variable name="name" select="$schemaNode/@name" />
       <xsl:value-of select="$baseType"/> <xsl:if
          test="$schemaNode/@minOccurs = '1'"> required </xsl:if> <xsl:if
          test="//formView/errors/error[@field=$name]"> validFail </xsl:if>
-   </xsl:template>
-
+	</xsl:template>
+	<!-- all UI restriction driven hints here -->
+	<xsl:template name="calculateRestrictions">
+		<xsl:param name="currentSchemaNode" />
+		<xsl:attribute name="size">20</xsl:attribute>
+		<xsl:choose>
+			<!-- textarea restrictions and UI hints -->
+			<xsl:when test="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value and $currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value &gt; 99">
+				<xsl:attribute name="title">
+					<xsl:value-of select="sakaifn:formatMessage('messages','max_chars',string($currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value))" />
+				</xsl:attribute>
+				<xsl:choose>
+					<xsl:when test="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value &lt; 600">
+						<xsl:attribute name="rows">3</xsl:attribute>
+						<xsl:attribute name="cols">45</xsl:attribute>
+					</xsl:when>
+					<xsl:when test="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value &lt; 800">
+						<xsl:attribute name="rows">5</xsl:attribute>
+						<xsl:attribute name="cols">45</xsl:attribute>
+					</xsl:when>
+					<xsl:when test="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value &lt; 1000">
+						<xsl:attribute name="rows">7</xsl:attribute>
+						<xsl:attribute name="cols">45</xsl:attribute>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:attribute name="rows">9</xsl:attribute>
+						<xsl:attribute name="cols">45</xsl:attribute>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			<!-- string restrictions and UI hints -->
+			<xsl:when test="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value">
+				<xsl:attribute name="maxLength">
+					<xsl:value-of select="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value" />
+				</xsl:attribute>
+				<xsl:attribute name="title">
+					<xsl:value-of select="sakaifn:formatMessage('messages','max_chars',string($currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value))" />
+				</xsl:attribute>
+				<xsl:attribute name="size">
+					<xsl:choose>
+						<xsl:when test="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value &gt; 25"> 25 </xsl:when>
+						<xsl:otherwise>
+							<xsl:value-of select="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value" />
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:attribute>
+			</xsl:when>
+			<xsl:when test="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:length/@value">
+				<xsl:attribute name="maxLength">
+					<xsl:value-of select="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:length/@value" />
+				</xsl:attribute>
+				<xsl:attribute name="title">
+					<xsl:value-of select="sakaifn:formatMessage('messages','exactly',string($currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:length/@value))" />
+				</xsl:attribute>
+				<xsl:attribute name="size">
+					<xsl:choose>
+						<xsl:when test="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:length/@value &gt; 25"> 25 </xsl:when>
+						<xsl:otherwise>
+							<xsl:value-of select="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:length/@value" />
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:attribute>
+			</xsl:when>
+			<xsl:when test="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:minLength/@value">
+				<xsl:attribute name="title">
+					<xsl:value-of select="sakaifn:formatMessage('messages','at_least',string($currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:string']/xs:minLength/@value))" />
+				</xsl:attribute>
+			</xsl:when>
+			<!-- integer restrictions and UI hints -->
+			<xsl:when test="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:integer']/xs:totalDigits/@value">
+				<xsl:attribute name="maxLength">
+					<xsl:value-of select="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:integer']/xs:totalDigits/@value" />
+				</xsl:attribute>
+				<xsl:attribute name="title">
+					<xsl:value-of select="sakaifn:formatMessage('messages','max_digs',string($currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:integer']/xs:totalDigits/@value))" />
+				</xsl:attribute>
+				<xsl:attribute name="size">
+					<xsl:choose>
+						<xsl:when test="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:integer']/xs:totalDigits/@value &gt; 20"> 20 </xsl:when>
+						<xsl:otherwise>
+							<xsl:value-of select="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:integer']/xs:totalDigits/@value" />
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:attribute>
+			</xsl:when>
+			<xsl:when test="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:integer']/xs:maxInclusive/@value">
+				<xsl:attribute name="title">
+					<xsl:value-of select="sakaifn:formatMessage('messages','less_or_equal_to',string($currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:integer']/xs:maxInclusive/@value))" />
+				</xsl:attribute>
+			</xsl:when>
+			<xsl:when test="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:integer']/xs:minInclusive/@value">
+				<xsl:attribute name="title">
+					<xsl:value-of select="sakaifn:formatMessage('messages','more_than_or_equal_to',string($currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:integer']/xs:minInclusive/@value))" />
+				</xsl:attribute>
+			</xsl:when>
+			<xsl:when test="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:integer']/xs:minExclusive/@value">
+				<xsl:attribute name="title">
+					<xsl:value-of select="sakaifn:formatMessage('messages','less_than',string($currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:integer']/xs:minExclusive/@value))" />
+				</xsl:attribute>
+			</xsl:when>
+			<xsl:when test="$currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:integer']/xs:maxExclusive/@value">
+				<xsl:attribute name="title">
+					<xsl:value-of select="sakaifn:formatMessage('messages','more_than',string($currentSchemaNode/xs:simpleType/xs:restriction[@base='xs:integer']/xs:maxExclusive/@value))" />
+				</xsl:attribute>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:attribute name="size">20</xsl:attribute>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
 </xsl:stylesheet>
