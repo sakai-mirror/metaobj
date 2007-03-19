@@ -134,7 +134,7 @@ public class FormResourceType implements ResourceType {
     *
     * @return
     */
-   public String getIconLocation() {
+   public String getIconLocation(ContentEntity entity) {
       return "sakai/form.gif";
    }
 
