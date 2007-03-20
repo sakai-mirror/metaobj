@@ -107,6 +107,9 @@ public class EditedArtifactStorage {
    }
 
    public void pushCurrentPath(String s) {
+      if (getCurrentPath() != null && getCurrentPath().length() > 0) {
+         s = getCurrentPath() + "/" + s;
+      }
       setCurrentPath(s);
       pathStack.push(s);
    }
