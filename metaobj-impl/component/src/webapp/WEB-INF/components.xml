@@ -149,6 +149,7 @@
       <property name="structuredArtifactFinder">
            <ref bean="org.sakaiproject.metaobj.shared.ArtifactFinder.structuredArtifacts"/>
       </property>
+      <property name="autoDdl"><value>${auto.ddl}</value></property>
    </bean>
 
    <bean id="structuredArtifactDefinitionManager"

@@ -87,6 +87,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
    private boolean replaceViews = true;
    private List formConsumers;
    private SecurityService securityService;
+   private boolean autoDdl = true;
 
    public StructuredArtifactDefinitionManagerImpl() {
    }
@@ -604,28 +605,31 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       FunctionManager.registerFunction(SharedFunctionConstants.DELETE_ARTIFACT_DEF);
       FunctionManager.registerFunction(SharedFunctionConstants.PUBLISH_ARTIFACT_DEF);
       FunctionManager.registerFunction(SharedFunctionConstants.SUGGEST_GLOBAL_PUBLISH_ARTIFACT_DEF);
-      updateSchemaHash();
 
       addConsumer(this);
 
-      org.sakaiproject.tool.api.Session sakaiSession = SessionManager.getCurrentSession();
-      String userId = sakaiSession.getUserId();
-      sakaiSession.setUserId("admin");
-      sakaiSession.setUserEid("admin");
+      if (isAutoDdl()) {
 
-      try {
-         createResource("/org/sakaiproject/metaobj/shared/control/formCreate.xslt", "formCreate.xslt",
-            "used for default rendering of form add and update", "text/xml", isReplaceViews(), true);
-
-         createResource("/org/sakaiproject/metaobj/shared/control/formFieldTemplate.xslt", "formFieldTemplate.xslt",
-            "used for default rendering of form fields", "text/xml", isReplaceViews(), true);
-
-         createResource("/org/sakaiproject/metaobj/shared/control/formView.xslt", "formView.xslt",
-            "used for default rendering of form viewing", "text/xml", isReplaceViews(), true);
-      }
-      finally{
-         sakaiSession.setUserEid(userId);
-         sakaiSession.setUserId(userId);
+         updateSchemaHash();
+         org.sakaiproject.tool.api.Session sakaiSession = SessionManager.getCurrentSession();
+         String userId = sakaiSession.getUserId();
+         sakaiSession.setUserId("admin");
+         sakaiSession.setUserEid("admin");
+   
+         try {
+            createResource("/org/sakaiproject/metaobj/shared/control/formCreate.xslt", "formCreate.xslt",
+               "used for default rendering of form add and update", "text/xml", isReplaceViews(), true);
+   
+            createResource("/org/sakaiproject/metaobj/shared/control/formFieldTemplate.xslt", "formFieldTemplate.xslt",
+               "used for default rendering of form fields", "text/xml", isReplaceViews(), true);
+   
+            createResource("/org/sakaiproject/metaobj/shared/control/formView.xslt", "formView.xslt",
+               "used for default rendering of form viewing", "text/xml", isReplaceViews(), true);
+         }
+         finally{
+            sakaiSession.setUserEid(userId);
+            sakaiSession.setUserId(userId);
+         }
       }
 
    }
@@ -1270,5 +1274,13 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
 
    public void setStructuredArtifactFinder(ArtifactFinder structuredArtifactFinder) {
       this.structuredArtifactFinder = structuredArtifactFinder;
+   }
+
+   public boolean isAutoDdl() {
+      return autoDdl;
+   }
+
+   public void setAutoDdl(boolean autoDdl) {
+      this.autoDdl = autoDdl;
    }
 }
