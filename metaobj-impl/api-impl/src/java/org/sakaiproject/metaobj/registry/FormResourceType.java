@@ -1,9 +1,6 @@
 package org.sakaiproject.metaobj.registry;
 
-import org.sakaiproject.content.api.ResourceType;
-import org.sakaiproject.content.api.ResourceToolAction;
-import org.sakaiproject.content.api.ContentEntity;
-import org.sakaiproject.content.api.ResourceTypeRegistry;
+import org.sakaiproject.content.api.*;
 import org.sakaiproject.content.cover.ContentHostingService;
 import org.sakaiproject.content.util.BaseInteractionAction;
 import org.sakaiproject.content.util.BaseServiceLevelAction;
@@ -24,7 +21,7 @@ import java.util.*;
  * Time: 10:02:07 AM
  * To change this template use File | Settings | File Templates.
  */
-public class FormResourceType implements ResourceType {
+public class FormResourceType implements SiteSpecificResourceType {
 
    private EnumMap<ResourceToolAction.ActionType, List<ResourceToolAction>> actionMap =
       new EnumMap<ResourceToolAction.ActionType, List<ResourceToolAction>>(ResourceToolAction.ActionType.class);
@@ -121,7 +118,7 @@ public class FormResourceType implements ResourceType {
 
    /**
     * @param actionId
-    * @return
+    * @return action that equates to this actionId
     */
    public ResourceToolAction getAction(String actionId) {
       return actions.get(actionId);
@@ -132,7 +129,7 @@ public class FormResourceType implements ResourceType {
     * If null, the mimetype of the resource will be used to find an icon.
     * The reference should refer to an icon in the l
     *
-    * @return
+    * @return form icod
     */
    public String getIconLocation(ContentEntity entity) {
       return "sakai/form.gif";
@@ -141,14 +138,14 @@ public class FormResourceType implements ResourceType {
    /**
     * Access the identifier for this type (which must be unique within the registry and must be limited to alphnumeric characters).
     *
-    * @return
+    * @return type id
     */
    public String getId() {
       return FORM_TYPE_ID;
    }
 
    /**
-    * @return
+    * @return i18n label
     */
    public String getLabel() {
       return rb.getString("form_item");
@@ -162,7 +159,7 @@ public class FormResourceType implements ResourceType {
     * used.
     *
     * @param member The resource that's being displayed
-    * @return
+    * @return i18n label of the form type
     */
    public String getLocalizedHoverText(ContentEntity member) {
       StructuredArtifactDefinitionBean home = getStructuredArtifactDefinitionManager().loadHome(
@@ -250,4 +247,12 @@ public class FormResourceType implements ResourceType {
       this.structuredArtifactDefinitionManager = structuredArtifactDefinitionManager;
    }
 
+   /**
+    * Determine whether the type is enabled by default.
+    *
+    * @return true if the type is enabled by default and false otherwise.
+    */
+   public boolean isEnabledByDefault() {
+      return true;
+   }
 }
