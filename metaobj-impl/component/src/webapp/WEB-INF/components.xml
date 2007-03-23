@@ -281,12 +281,6 @@
    <bean id="org.sakaiproject.entity.api.HttpAccess.metaobj"
       class="org.sakaiproject.metaobj.shared.mgt.impl.MetaobjHttpAccess"
       singleton="true" init-method="init">
-      <property name="structuredArtifactDefinitionManager">
-         <ref bean="structuredArtifactDefinitionManager"/>
-      </property>
-      <property name="xsltLocation">
-         <value>/org/sakaiproject/metaobj/shared/control/formView.xslt</value>
-      </property>
    </bean>
 
    <bean id="org.sakaiproject.entity.api.EntityProducer.metaobj"

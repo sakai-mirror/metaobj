@@ -68,10 +68,6 @@ public class MetaobjHttpAccess extends HttpAccessBase {
 
    protected final transient Log logger = LogFactory.getLog(getClass());
 
-   private StructuredArtifactDefinitionManager structuredArtifactDefinitionManager;
-   private String xsltLocation = "/org/sakaiproject/metaobj/shared/control/formView.xslt";
-   private Templates templates;
-
    public void handleAccess(HttpServletRequest req, HttpServletResponse res, Reference ref,
                             Collection copyrightAcceptedRefs) throws EntityPermissionException, EntityNotDefinedException, EntityAccessOverloadException, EntityCopyrightException {
       String helperId = "sakai.metaobj.formView";
@@ -104,37 +100,8 @@ public class MetaobjHttpAccess extends HttpAccessBase {
 
    }
 
-   public StructuredArtifactDefinitionManager getStructuredArtifactDefinitionManager() {
-      return structuredArtifactDefinitionManager;
-   }
-
-   public void setStructuredArtifactDefinitionManager(StructuredArtifactDefinitionManager structuredArtifactDefinitionManager) {
-      this.structuredArtifactDefinitionManager = structuredArtifactDefinitionManager;
-   }
-
    public void init() {
       logger.info("init()");
-      try {
-         URL url = getClass().getResource(getXsltLocation());
-         String urlPath = url.toString();
-         String systemId = urlPath.substring(0, urlPath.lastIndexOf('/') + 1);
-
-         templates = TransformerFactory.newInstance().newTemplates(new StreamSource(url.openStream(), systemId));
-      }
-      catch (TransformerConfigurationException e) {
-         logger.error("org.sakaiproject.metaobj.shared.mgt.impl.MetaobjHttpAccess:init", e);
-      }
-      catch (IOException e) {
-         logger.error("org.sakaiproject.metaobj.shared.mgt.impl.MetaobjHttpAccess:init", e);
-      }
-
    }
 
-   public String getXsltLocation() {
-      return xsltLocation;
-   }
-
-   public void setXsltLocation(String xsltLocation) {
-      this.xsltLocation = xsltLocation;
-   }
 }
