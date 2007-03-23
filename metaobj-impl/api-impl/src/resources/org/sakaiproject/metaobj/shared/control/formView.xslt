@@ -10,6 +10,7 @@
 				<title>
 					<xsl:value-of select="formData/artifact/metaData/displayName" />
 				</title>
+				<script type="text/javascript" language="JavaScript" src="/library/js/headscripts.js"> <![CDATA[ ]]></script>
 				<link type="text/css" rel="stylesheet" media="all" href="/sakai-metaobj-tool/css/metaobj.css" />
 				<xsl:apply-templates select="css" />
 			</head>
