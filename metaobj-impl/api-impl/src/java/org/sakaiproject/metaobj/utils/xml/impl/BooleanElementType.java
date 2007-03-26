@@ -34,22 +34,20 @@ import org.sakaiproject.metaobj.utils.xml.SchemaNode;
  * To change this template use File | Settings | File Templates.
  */
 public class BooleanElementType extends BaseElementType {
-
+   private boolean required = false;
 
    public BooleanElementType(String typeName, Element schemaElement,
                              SchemaNode parentNode, Namespace xsdNamespace) {
       super(typeName, schemaElement, parentNode, xsdNamespace);
+      required = parentNode.getMinOccurs() >= 1;
    }
 
    public String getSchemaNormalizedValue(Object value) throws NormalizationException {
-      //CWM check pattern?
-      
-      if (getEnumeration() != null && !getEnumeration().contains(value)) {
-         //throw new NormalizationException("Invalid string pattern",
-         //      "Value {0} must match {1}", new Object[]{value, getEnumeration()});
+      if (required && (value == null || !(Boolean) value)) {
          throw new NormalizationException("Required field",
                NormalizationException.REQIRED_FIELD_ERROR_CODE, new Object[0]);
       }
+
       return value.toString();
    }
 
