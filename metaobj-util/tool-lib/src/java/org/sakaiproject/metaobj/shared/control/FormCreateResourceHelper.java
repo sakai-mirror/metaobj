@@ -11,11 +11,13 @@ import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.api.ActiveTool;
 import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.tool.cover.SessionManager;
+import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.exception.IdUnusedException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.validation.Errors;
 
-import java.util.Map;
-import java.util.Hashtable;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -51,13 +53,29 @@ public class FormCreateResourceHelper implements Controller, FormController, Can
     * @param request
     * @param command
     * @param errors
-    * @return
+    * @return ref data
     */
    public Map referenceData(Map request, Object command, Errors errors) {
       Map ref = new Hashtable();
 
-      ref.put("formList", getStructuredArtifactDefinitionManager().findHomes(false));
-
+      Map<String, List> homes = getStructuredArtifactDefinitionManager().findCategorizedHomes(false);
+      List categorizedHomes = new ArrayList();
+      for (Iterator<String> i=homes.keySet().iterator();i.hasNext();) {
+         try {
+            Site site = SiteService.getSite(i.next());
+            List homesList = homes.get(site.getId());
+            Collections.sort(homesList);
+            categorizedHomes.add(new SiteHomeWrapper(site, homesList));
+         } catch (IdUnusedException e) {
+            throw new RuntimeException(e);
+         }
+      }
+      Collections.sort(categorizedHomes);
+      
+      ref.put("categorizedFormList", categorizedHomes);
+      List globalHomes = getStructuredArtifactDefinitionManager().findGlobalHomes();
+      Collections.sort(globalHomes);
+      ref.put("globalForms", globalHomes);
       return ref;
    }
 

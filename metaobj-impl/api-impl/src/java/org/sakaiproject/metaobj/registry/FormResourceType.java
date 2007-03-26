@@ -162,10 +162,15 @@ public class FormResourceType implements SiteSpecificResourceType {
     * @return i18n label of the form type
     */
    public String getLocalizedHoverText(ContentEntity member) {
-      StructuredArtifactDefinitionBean home = getStructuredArtifactDefinitionManager().loadHome(
-         (String)member.getProperties().get(ResourceProperties.PROP_STRUCTOBJ_TYPE));
+      String formName = "";
+      
+      if (member != null) {
+         StructuredArtifactDefinitionBean home = getStructuredArtifactDefinitionManager().loadHome(
+            (String)member.getProperties().get(ResourceProperties.PROP_STRUCTOBJ_TYPE));
+         formName = home.getDescription();
+      }
 
-      return rb.getFormattedMessage("form_item_tip", new Object[]{home.getDescription()});
+      return rb.getFormattedMessage("form_item_tip", new Object[]{formName});
    }
 
    /**

@@ -131,6 +131,10 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
    }
 
    public List findHomes(boolean includeHidden) {
+      return findHomes(true, includeHidden);
+   }
+   
+   public List findHomes(boolean includeGlobal, boolean includeHidden) {
       // only for the appropriate worksites
       List sites = getWorksiteManager().getUserSites();
       List<StructuredArtifactDefinitionBean> returned = new ArrayList<StructuredArtifactDefinitionBean>();
@@ -138,8 +142,29 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
          returned.addAll(findHomes(sites.subList(0, getExpressionMax() - 1), false, includeHidden));
          sites.subList(0, getExpressionMax() - 1).clear();
       }
-      returned.addAll(findHomes(sites, true, includeHidden));
+      returned.addAll(findHomes(sites, includeGlobal, includeHidden));
       return returned;
+   }
+
+   public Map findCategorizedHomes(boolean includeHidden) {
+      List homes = findHomes(false, includeHidden);
+      
+      Map<String, List> catHomes = new Hashtable<String, List>();
+      
+      for (Iterator<StructuredArtifactDefinitionBean> i = homes.iterator();i.hasNext();) {
+         StructuredArtifactDefinitionBean bean = i.next();
+         
+         List beanList = catHomes.get(bean.getSiteId());
+         
+         if (beanList == null) {
+            beanList = new ArrayList();
+            catHomes.put(bean.getSiteId(), beanList);
+         }
+         
+         beanList.add(bean);
+      }
+      
+      return catHomes;
    }
 
    protected List findHomes(List sites, boolean includeGlobal, boolean includeHidden) {
@@ -147,14 +172,16 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       Object[] params;
 
       if (includeGlobal) {
-         query = "from StructuredArtifactDefinitionBean where (owner = ? or globalState = ? or (siteState = ?  and siteId in (";
-         params = new Object[]{getAuthManager().getAgent(),
-                               new Integer(StructuredArtifactDefinitionBean.STATE_PUBLISHED),
+         query = "from StructuredArtifactDefinitionBean where ((globalState = ? or (owner = ? and siteId = null)) or " +
+            "((owner = ? or siteState = ?)  and siteId in (";
+         params = new Object[]{new Integer(StructuredArtifactDefinitionBean.STATE_PUBLISHED),
+                               getAuthManager().getAgent(),getAuthManager().getAgent(),
                                new Integer(StructuredArtifactDefinitionBean.STATE_PUBLISHED)};
       }
       else {
-         query = "from StructuredArtifactDefinitionBean where (owner != ? and (siteState = ?  and siteId in (";
-         params = new Object[]{getAuthManager().getAgent(),
+         query = "from StructuredArtifactDefinitionBean where (globalState != ? and (owner = ? or siteState = ?) and siteId in (";
+         params = new Object[]{new Integer(StructuredArtifactDefinitionBean.STATE_PUBLISHED),
+                               getAuthManager().getAgent(),
                                new Integer(StructuredArtifactDefinitionBean.STATE_PUBLISHED)};
       }
 

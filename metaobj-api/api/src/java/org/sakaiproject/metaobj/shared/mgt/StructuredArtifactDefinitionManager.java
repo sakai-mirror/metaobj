@@ -53,6 +53,8 @@ public interface StructuredArtifactDefinitionManager {
    public List findHomes();
 
    public List findHomes(boolean includeHidden);
+   
+   public Map findCategorizedHomes(boolean includeHidden);
 
    /**
     * @return list of all published globals or global sad owned by current user
