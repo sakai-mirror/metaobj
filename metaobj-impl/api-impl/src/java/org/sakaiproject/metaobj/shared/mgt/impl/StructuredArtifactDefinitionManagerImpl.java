@@ -218,7 +218,16 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
    }
 
    public List findHomes(Id currentWorksiteId, boolean includeHidden) {
-      return findHomes(currentWorksiteId, "findHomesIncludeHidden");
+      return findHomes(currentWorksiteId, includeHidden, true);
+   }
+
+   public List findHomes(Id currentWorksiteId, boolean includeHidden, boolean includeGlobal) {
+      if (includeGlobal) {
+         return findHomes(currentWorksiteId, includeHidden?"findHomesIncludeHidden":"findHomes");
+      }
+      else {
+         return findHomes(currentWorksiteId, includeHidden?"findWorksiteHomesIncludeHidden":"findWorksiteHomes");
+      }
    }
 
    public StructuredArtifactDefinitionBean loadHome(String type) {

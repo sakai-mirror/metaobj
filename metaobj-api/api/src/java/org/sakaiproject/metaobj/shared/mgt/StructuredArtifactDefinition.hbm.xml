@@ -36,6 +36,14 @@
    	from StructuredArtifactDefinitionBean where globalState = ? or (siteId = ? and (owner = ? or siteState = ? ))
 	</query>
 
+   <query name="findWorksiteHomes">
+   	from StructuredArtifactDefinitionBean where (globalState != ? and (siteId = ? and (owner = ? or siteState = ? ))) and systemOnly != true
+	</query>
+
+   <query name="findWorksiteHomesIncludeHidden">
+   	from StructuredArtifactDefinitionBean where globalState != ? and (siteId = ? and (owner = ? or siteState = ? ))
+	</query>
+
    <query name="loadHomeByExternalType">
 		from StructuredArtifactDefinitionBean a where externalType=? AND (globalState=? OR siteId=?)
 	</query>

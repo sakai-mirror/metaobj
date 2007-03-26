@@ -106,7 +106,8 @@ abstract public class AbstractStructuredArtifactDefinitionController extends Abs
          types = getStructuredArtifactDefinitionManager().findGlobalHomes();
       }
       else {
-         types = getStructuredArtifactDefinitionManager().findHomes(getWorksiteManager().getCurrentWorksiteId(), true);
+         types = getStructuredArtifactDefinitionManager().findHomes(
+            getWorksiteManager().getCurrentWorksiteId(), true, false);
       }
 
       Collections.sort(types);

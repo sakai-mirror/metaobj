@@ -147,4 +147,5 @@ public interface StructuredArtifactDefinitionManager {
 
    public void addConsumer(FormConsumer consumer);
 
+   List findHomes(Id currentWorksiteId, boolean includeHidden, boolean includeGlobal);
 }
