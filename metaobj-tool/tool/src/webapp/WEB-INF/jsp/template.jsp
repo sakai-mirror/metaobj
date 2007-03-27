@@ -8,7 +8,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" type="text/css" media="all" href="<c:url value="/css/eport.css"/>" />
+    <link rel="stylesheet" type="text/css" media="all" href="<c:url value="/css/metaobj.css"/>" />
     <link href="<c:out value="${sakai_skin_base}"/>"
           type="text/css"
           rel="stylesheet"
