@@ -8,6 +8,12 @@
 <p class="instruction"><fmt:message key='form_type_instructions'/></p>
 <form method="POST">
 
+<spring:bind path="bean.formId">
+   <c:if test="${status.error}">
+      <div class="validation"><c:out value="${status.errorMessage}"/></div>
+   </c:if>
+</spring:bind>
+   
    <div class="sidebyside">
       <select name="formId" size="15">
          <optgroup label="<fmt:message key='form_type_global'/>" class="main">

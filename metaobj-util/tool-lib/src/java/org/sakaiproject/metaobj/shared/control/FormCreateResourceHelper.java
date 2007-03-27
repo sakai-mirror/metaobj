@@ -33,6 +33,12 @@ public class FormCreateResourceHelper implements Controller, FormController, Can
    public ModelAndView handleRequest(Object requestModel,
                                      Map request, Map session, Map application, Errors errors) {
       FormCreateHelperBean bean = (FormCreateHelperBean) requestModel;
+      
+      if (bean.getFormId() == null || bean.getFormId().length() == 0) {
+         errors.rejectValue("formId", "FORM_ID_REQUIRED");
+         return null;
+      }
+      
       session.put(ResourceEditingHelper.CREATE_SUB_TYPE, bean.getFormId());
 
       return new ModelAndView("formHelper");
