@@ -86,14 +86,16 @@ public class ListScrollTag extends BodyTagSupport {
          writer.write(">");
 
          //  <input type="button" value="Next" onclick="window.document.location='url'">
-
+         writer.write("<div class=\"instruction\">");
+         writer.write(viewing);
+         writer.write("</div>");
          writer.write("<input type=\"button\" value=\"" + first + "\" onclick=\"window.document.location=\'");
          writer.write(listUrl + "&" + ListScroll.STARTING_INDEX_TAG + "=0");
          writer.write("\'\"");
          if (listScroll.getPrevIndex() == -1) {
             writer.write(" disabled=\"disabled\" ");
          }
-         writer.write(" >");
+         writer.write(" />");
 
          writer.write("&nbsp;");
 
@@ -103,20 +105,19 @@ public class ListScrollTag extends BodyTagSupport {
          if (listScroll.getPrevIndex() == -1) {
             writer.write(" disabled=\"disabled\" ");
          }
-         writer.write(" >");
+         writer.write(" />");
 
-         writer.write("&nbsp;");
-         writer.write(viewing);
          
-         writer.write("&nbsp;");
-
+         
+         
+         
          writer.write("<input type=\"button\" value=\"" + next + "\" onclick=\"window.document.location=\'");
          writer.write(listUrl + "&" + ListScroll.STARTING_INDEX_TAG + "=" + listScroll.getNextIndex());
          writer.write("\'\"");
          if (listScroll.getNextIndex() == -1) {
             writer.write(" disabled=\"disabled\" ");
          }
-         writer.write(" >");
+         writer.write(" />");
 
          writer.write("&nbsp;");
 
@@ -126,7 +127,7 @@ public class ListScrollTag extends BodyTagSupport {
          if (listScroll.getNextIndex() == -1) {
             writer.write(" disabled=\"disabled\" ");
          }
-         writer.write(" >");
+         writer.write(" />");
 
          writer.write("</div>");
 
