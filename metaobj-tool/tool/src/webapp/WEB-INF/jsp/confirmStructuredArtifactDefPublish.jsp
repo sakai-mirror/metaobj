@@ -48,8 +48,8 @@
 
 
 <p class="act">
-<input name="publish" type="submit" value="<fmt:message key="button_yes"/>"/>
-<input name="_cancel" type="submit" value="<fmt:message key="button_no"/>"/>
+<input name="publish" type="submit" value="<fmt:message key="button_yes"/>" accesskey="s"  class="active"/>
+<input name="_cancel" type="submit" value="<fmt:message key="button_no"/>"accesskey="x" />
 </p>
 
 </form>

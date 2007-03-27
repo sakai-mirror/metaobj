@@ -139,6 +139,11 @@ body.formDisplay
 .formDisplay	.textPanel{
 		line-height:1.7em;
 	}
-
-
-
+/*form picker*/
+.sidebyside optgroup{
+	color:#333;
+	font-style: normal
+}
+.sidebyside option{
+	color:#000
+}

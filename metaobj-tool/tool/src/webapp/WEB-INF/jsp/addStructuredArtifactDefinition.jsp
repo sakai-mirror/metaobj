@@ -43,15 +43,15 @@
 
 <p class="shorttext">
 <spring:bind path="bean.description">
-<span class="reqStar">*</span><label><fmt:message key="label_name"/></label>
-<input type="text" name="<c:out value="${status.expression}"/>" value="<c:out value="${status.value}"/>"/>
+<span class="reqStar">*</span><label for="<c:out value="${status.expression}"/>-id"><fmt:message key="label_name"/></label>
+<input type="text" name="<c:out value="${status.expression}"/>" id="<c:out value="${status.expression}"/>-id"  value="<c:out value="${status.value}"/>"/>
 <span class="error_message"><c:out value="${status.errorMessage}"/></span>
 </spring:bind>
 </p>
 
 <p class="shorttext">
 <c:if test="${empty bean.id}"><span class="reqStar">*</span></c:if>
-<label><fmt:message key="label_schemaFile"/></label>
+<label for=""><fmt:message key="label_schemaFile"/></label>
 <spring:bind path="bean.schemaFileName">
 <input type="text" id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>"
       disabled="true" value="<c:out value="${status.value}" />" />
@@ -72,7 +72,7 @@
 
 <p class="shorttext">
 <spring:bind path="bean.documentRoot">
-<label><fmt:message key="label_documentRoot"/></label>
+<label for="<c:out value="${status.expression}" />"><fmt:message key="label_documentRoot"/></label>
 <select name="<c:out value="${status.expression}" />" id="<c:out value="${status.expression}" />">
 <c:forEach var="element" items="${elements}" varStatus="status">
 <option value="<c:out value="${element}"/>"><c:out value="${element}"/></option>
@@ -96,9 +96,9 @@
 
 <spring:bind path="bean.systemOnly">
    <div class="checkbox indnt1">
-      <input type="checkbox" name="<c:out value="${status.expression}"/>" value="true"
+      <input type="checkbox" name="<c:out value="${status.expression}"/>" value="true"  id="<c:out value="${status.expression}"/>-id" 
         <c:if test="${status.value}">checked</c:if> />
-      <legend class="checkbox"><fmt:message key="label_hiddenForm"/></legend>
+      <label for="<c:out value="${status.expression}"/>-id"><fmt:message key="label_hiddenForm"/></legend>
    </div>
 </spring:bind>
 
@@ -109,16 +109,16 @@
 </c:if>
 
 <c:if test="${!empty bean.id}">
-<input name="action" type="submit" class="active" value="<fmt:message key="button_saveEdit"/>"/>
+<input name="action" type="submit" class="active" value="<fmt:message key="button_saveEdit"/>" accesskey="s"/>
 </c:if>
 <input type="button" value="<fmt:message key="button_preview"/>" onclick="document.forms[0]['previewAction'].value='preview';
-      document.forms[0].submit();return false;">
+      document.forms[0].submit();return false;" accesskey="v">
 
-<input name="previewAction" id="previewAction" type="hidden" value=""/>
-<input name="action" id="action" type="hidden" value=""/>
-<input name="filePickerAction" id="filePickerAction" type="hidden" value="" />
-<input name="filePickerFrom" id="filePickerFrom" type="hidden" value="" />
-<input type="button" value="<fmt:message key="button_cancel"/>" onclick="window.document.location='<osp:url value="listStructuredArtifactDefinitions.osp"/>'">
+<input name="previewAction" id="previewAction" type="hidden" value="" class="skip"/>
+<input name="action" id="action" type="hidden" value="" class="skip"/>
+<input name="filePickerAction" id="filePickerAction" type="hidden" value="" class="skip"/>
+<input name="filePickerFrom" id="filePickerFrom" type="hidden" value="" class="skip"/>
+<input type="button" value="<fmt:message key="button_cancel"/>" onclick="window.document.location='<osp:url value="listStructuredArtifactDefinitions.osp"/>'" accesskey="x" >
 </p>
 
 </form>

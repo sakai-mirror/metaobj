@@ -37,12 +37,12 @@
 </div>
 
 <osp:url var="listUrl" value="listStructuredArtifactDefinitions.osp"/>
-<osp:listScroll listUrl="${listUrl}" className="navIntraTool" />
+<osp:listScroll listUrl="${listUrl}" className="listNav" />
 
 
 <h3><fmt:message key="title_formManager"/></h3>
 <c:if test="${!empty types}">
- <table class="listHier" cellspacing="0" >
+ <table class="listHier lines nolines" cellspacing="0" cellpadding="0" summary="<fmt:message key="table_header_summary"/>">
    <thead>
       <tr>
          <th scope="col"><fmt:message key="table_header_name"/></th>
@@ -61,7 +61,7 @@
       <TD nowrap>
          <c:out value="${home.type.description}" />
          <c:if test="${home.modifiable}">
-            <div class="itemAction">
+            <div class="itemAction indnt1">
                 <c:if test="${can.edit}"><a href="<osp:url value="/editStructuredArtifactDefinition.osp"/>&id=<c:out value="${home.id}" />"><fmt:message key="table_action_edit"/></a></c:if>
                 
                 <c:if test="${can.export}">| <a href="<osp:url includeQuestion="false" value="/repository/1=1"/>&manager=structuredArtifactDefinitionManager&formId=<c:out value="${home.id.value}" />/<c:out value="${home.type.description}" /> Form.zip"><fmt:message key="table_action_export"/></a>

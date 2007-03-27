@@ -29,8 +29,8 @@
     <br/>
     
     <div class="act">
-      <input type="submit" value="<osp:message key="metaobj.import.importButton" bundle="${msgs}" />" alignment="center" class="active"> 
-      <input type="button" value="<osp:message key="metaobj.import.cancelButton" bundle="${msgs}" />" onclick="window.document.location='<osp:url value="listStructuredArtifactDefinitions.osp"/>'">
+      <input type="submit" value="<osp:message key="metaobj.import.importButton" bundle="${msgs}" />" alignment="center" class="active" accesskey="s"> 
+      <input type="button" value="<osp:message key="metaobj.import.cancelButton" bundle="${msgs}" />" onclick="window.document.location='<osp:url value="listStructuredArtifactDefinitions.osp"/>'" accesskey="x">
     </div>
 
 </form>
