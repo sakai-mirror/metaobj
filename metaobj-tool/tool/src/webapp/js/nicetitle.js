@@ -428,7 +428,10 @@ addEvent(window, "load", NiceTitles.autoCreation);
 			else if (newItem.childNodes[i].nodeName=="DIV")
 			{
 			newItem.childNodes[i].setAttribute('id','');
+			if (newItem.childNodes[i].firstChild)
+			{
 			newItem.childNodes[i].firstChild.nodeValue='';
+			}
 			}
 			//retouch the onclick attribute of the calendar img link 
 				else if (newItem.childNodes[i].nodeName=="IMG")
@@ -469,11 +472,11 @@ addEvent(window, "load", NiceTitles.autoCreation);
 		var used = document.getElementById(baseid + '-count').value;
 		if (maxNumber<0)
 		{
-			displayTotal.firstChild.nodeValue = '(' + (used ++) + '/?)'
+			displayTotal.innerHTML = '(' + (used ++) + '/?)'
 		}
 			else
 		{
-		displayTotal.firstChild.nodeValue = '(' + (used ++) + '/' + maxNumber + ')'
+			displayTotal.innerHTML = '(' + (used ++) + '/' + maxNumber + ')'
 		}
 		//pass the focus to the new control (if it is an input[type=text] or a textarea)
 		if (clonedInputId !='');
