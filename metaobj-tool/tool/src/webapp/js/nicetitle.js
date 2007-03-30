@@ -483,7 +483,7 @@ addEvent(window, "load", NiceTitles.autoCreation);
 		{
 			document.getElementById(clonedInputId).focus();
 		}
-
+			resizeFrame()
 	}
 	
 	
@@ -521,4 +521,23 @@ addEvent(window, "load", NiceTitles.autoCreation);
 		{
 		displayTotal.firstChild.nodeValue = '(' +  (used --	) + '/' + maxNumber + ')'
 		}
+		resizeFrame('shrink')	
+}
+//this function needs jquery 1.1.2 or later - it resizes the parent iframe without bringing the scroll to the top
+function resizeFrame(updown) {
+  var frame = parent.document.getElementById( window.name );
+    
+  if( frame ) {
+	if(updown=='shrink')
+	{
+    var clientH = document.body.clientHeight - 30;
+  }
+  else
+  {
+  var clientH = document.body.clientHeight + 30;
+  }
+    $( frame ).height( clientH );
+  } else {
+    throw( "resizeFrame did not get the frame (using name=" + window.name + ")" );
+  }
 }
