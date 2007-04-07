@@ -4,6 +4,7 @@ import org.sakaiproject.metaobj.utils.mvc.intf.Controller;
 import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.CancelableController;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
+import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.content.api.ResourceEditingHelper;
 import org.sakaiproject.content.api.ResourceToolActionPipe;
 import org.sakaiproject.content.api.ResourceToolAction;
@@ -80,9 +81,20 @@ public class FormCreateResourceHelper implements Controller, FormController, Can
       
       ref.put("categorizedFormList", categorizedHomes);
       List globalHomes = getStructuredArtifactDefinitionManager().findGlobalHomes();
+      globalHomes = filterHidden(globalHomes);
       Collections.sort(globalHomes);
       ref.put("globalForms", globalHomes);
       return ref;
+   }
+
+   protected List filterHidden(List globalHomes) {
+      for (Iterator<StructuredArtifactDefinitionBean> i=globalHomes.iterator();i.hasNext();) {
+         if (i.next().isSystemOnly()) {
+            i.remove();
+         }
+      }
+      
+      return globalHomes;
    }
 
    public boolean isCancel(Map request) {
