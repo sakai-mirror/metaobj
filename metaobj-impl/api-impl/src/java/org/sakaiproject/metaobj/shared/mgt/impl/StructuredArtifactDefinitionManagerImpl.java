@@ -179,7 +179,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
                                new Integer(StructuredArtifactDefinitionBean.STATE_PUBLISHED)};
       }
       else {
-         query = "from StructuredArtifactDefinitionBean where (globalState != ? and (owner = ? or siteState = ?) and siteId in (";
+         query = "from StructuredArtifactDefinitionBean where ((globalState != ? and (owner = ? or siteState = ?) and siteId in (";
          params = new Object[]{new Integer(StructuredArtifactDefinitionBean.STATE_PUBLISHED),
                                getAuthManager().getAgent(),
                                new Integer(StructuredArtifactDefinitionBean.STATE_PUBLISHED)};
