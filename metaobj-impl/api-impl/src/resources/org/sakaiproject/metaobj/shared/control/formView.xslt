@@ -16,7 +16,7 @@
 				<xsl:apply-templates select="css" />
 			</head>
 			<body onload="(window.frameElement) ? setMainFrameHeight(window.frameElement.id):''" class="formDisplay">
-				<div class="portletBody">
+				<div class="portletBodyForm" style="padding:1em 0">
 					<xsl:apply-templates select="formData/artifact/schema/element">
 						<xsl:with-param name="currentParent" select="formData/artifact/structuredData" />
 						<xsl:with-param name="rootNode" select="'true'" />
@@ -315,9 +315,16 @@
 				<xsl:for-each select="$currentParent/*[name()=$name]">
 					<xsl:choose>
 						<xsl:when test="$elementtype='shorttext'">
-							<div class="textPanel">
-								<xsl:value-of select="." />
-							</div>
+								<xsl:choose>
+									<xsl:when test="$currentSchemaNode/xs:annotation/xs:documentation[@source='ospi.isRichText']='true'">
+										<xsl:value-of disable-output-escaping="yes" select="." />
+									</xsl:when>
+									<xsl:otherwise>
+										<div class="textPanel">
+										<xsl:value-of select="." />
+										</div>
+									</xsl:otherwise>
+								</xsl:choose>
 						</xsl:when>
 						<xsl:when test="$elementtype='date'">
 							<div class="textPanel">
