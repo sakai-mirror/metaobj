@@ -10,12 +10,13 @@
 				<title>
 					<xsl:value-of select="formData/artifact/metaData/displayName" />
 				</title>
-				<script type="text/javascript" language="JavaScript" src="/library/js/headscripts.js"> <![CDATA[ ]]></script>
+				<script type="text/javascript" language="JavaScript" src="/library/js/headscripts.js">  // empty
+					block </script>
 				<link type="text/css" rel="stylesheet" media="all" href="/sakai-metaobj-tool/css/metaobj.css" />
 				<xsl:apply-templates select="css" />
 			</head>
 			<body onload="(window.frameElement) ? setMainFrameHeight(window.frameElement.id):''" class="formDisplay">
-				<div class="portletBody">
+				<div class="portletBodyForm" style="padding:1em 0">
 					<xsl:apply-templates select="formData/artifact/schema/element">
 						<xsl:with-param name="currentParent" select="formData/artifact/structuredData" />
 						<xsl:with-param name="rootNode" select="'true'" />
@@ -39,7 +40,7 @@
 				<xsl:when test="xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value &lt; 99">shorttext</xsl:when>
 				<xsl:when test="xs:simpleType/xs:restriction[@base='xs:string']/xs:maxLength/@value &gt;= 99">
 					<xsl:choose>
-						<xsl:when test="xs:annotation/xs:documentation[@source='ospi.isRichText']='true'">richtext</xsl:when>
+						<xsl:when test="xs:annotation/xs:documentation[@source='ospi.isRichText' or @source='sakai.isRichText']='true'">richtext</xsl:when>
 						<xsl:otherwise>longtext</xsl:otherwise>
 					</xsl:choose>
 				</xsl:when>
@@ -314,9 +315,16 @@
 				<xsl:for-each select="$currentParent/*[name()=$name]">
 					<xsl:choose>
 						<xsl:when test="$elementtype='shorttext'">
-							<div class="textPanel">
-								<xsl:value-of select="." />
-							</div>
+								<xsl:choose>
+									<xsl:when test="$currentSchemaNode/xs:annotation/xs:documentation[@source='ospi.isRichText']='true'">
+										<xsl:value-of disable-output-escaping="yes" select="." />
+									</xsl:when>
+									<xsl:otherwise>
+										<div class="textPanel">
+										<xsl:value-of select="." />
+										</div>
+									</xsl:otherwise>
+								</xsl:choose>
 						</xsl:when>
 						<xsl:when test="$elementtype='date'">
 							<div class="textPanel">
