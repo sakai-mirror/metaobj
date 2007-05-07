@@ -21,6 +21,8 @@
       <property name="schema" column="schemaData" type="binary" not-null="true" length="2147483647"/>
       <property name="instruction" type="text"/>
       <property name="schemaHash" column="schema_hash" type="string"/>
+      <property name="alternateCreateXslt" column="alternateCreateXslt" length="36" type="org.sakaiproject.metaobj.shared.IdType" />
+      <property name="alternateViewXslt" column="alternateViewXslt" length="36" type="org.sakaiproject.metaobj.shared.IdType" />
    </class>
    
    

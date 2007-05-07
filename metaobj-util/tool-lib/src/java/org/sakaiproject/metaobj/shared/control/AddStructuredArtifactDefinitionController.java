@@ -25,11 +25,17 @@ import java.util.List;
 import java.util.Map;
 
 import org.sakaiproject.component.cover.ComponentManager;
+import org.sakaiproject.content.api.ContentHostingService;
+import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.content.api.FilePickerHelper;
 import org.sakaiproject.entity.api.Reference;
+import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.exception.PermissionException;
+import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.metaobj.security.AuthorizationFailedException;
 import org.sakaiproject.metaobj.shared.SharedFunctionConstants;
 import org.sakaiproject.metaobj.shared.FormHelper;
+import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.PersistenceException;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.utils.mvc.intf.CustomCommandController;
@@ -49,6 +55,7 @@ public class AddStructuredArtifactDefinitionController extends AbstractStructure
    protected static final String SAD_SESSION_TAG =
          "org.sakaiproject.metaobj.shared.control.AddStructuredArtifactDefinitionController.sad";
    private SessionManager sessionManager;
+   private ContentHostingService contentHosting;
 
    public Object formBackingObject(Map request, Map session, Map application) {
 
@@ -74,10 +81,21 @@ public class AddStructuredArtifactDefinitionController extends AbstractStructure
       StructuredArtifactDefinitionBean sad = (StructuredArtifactDefinitionBean) requestModel;
 
       if (StructuredArtifactDefinitionValidator.PICK_SCHEMA_ACTION.equals(sad.getFilePickerAction()) ||
-            StructuredArtifactDefinitionValidator.PICK_TRANSFORM_ACTION.equals(sad.getFilePickerAction())) {
+            StructuredArtifactDefinitionValidator.PICK_TRANSFORM_ACTION.equals(sad.getFilePickerAction()) ||
+            StructuredArtifactDefinitionValidator.PICK_ALTCREATEXSLT_ACTION.equals(sad.getFilePickerAction()) ||
+            StructuredArtifactDefinitionValidator.PICK_ALTVIEWXSLT_ACTION.equals(sad.getFilePickerAction())) {
          session.put(SAD_SESSION_TAG, sad);
+         
+         //set the filter for xsl files since it is 3 out of 4 cases
          session.put(FilePickerHelper.FILE_PICKER_RESOURCE_FILTER,
-               ComponentManager.get("org.sakaiproject.content.api.ContentResourceFilter.metaobjFile"));
+               ComponentManager.get("org.sakaiproject.content.api.ContentResourceFilter.metaobjFile.xsl"));
+         
+         if (StructuredArtifactDefinitionValidator.PICK_SCHEMA_ACTION.equals(sad.getFilePickerAction())) {
+            //set the filter for xsd files only in this case
+            session.put(FilePickerHelper.FILE_PICKER_RESOURCE_FILTER,
+                  ComponentManager.get("org.sakaiproject.content.api.ContentResourceFilter.metaobjFile"));
+         }
+         
          session.put(FilePickerHelper.FILE_PICKER_MAX_ATTACHMENTS, new Integer(1));
          return new ModelAndView("pickSchema");
       }
@@ -157,6 +175,16 @@ public class AddStructuredArtifactDefinitionController extends AbstractStructure
                sad.setSchemaFile(getIdManager().getId(ref.getId()));
                sad.setSchemaFileName(ref.getProperties().getProperty(ref.getProperties().getNamePropDisplayName()));
             }
+            else if (StructuredArtifactDefinitionValidator.PICK_ALTCREATEXSLT_ACTION.equals(sad.getFilePickerAction())) {
+               Id id = getIdManager().getId(getContentHosting().getUuid(ref.getId()));
+               sad.setAlternateCreateXslt(id);
+               sad.setAlternateCreateXsltName(ref.getProperties().getProperty(ref.getProperties().getNamePropDisplayName()));
+            }
+            else if (StructuredArtifactDefinitionValidator.PICK_ALTVIEWXSLT_ACTION.equals(sad.getFilePickerAction())) {
+               Id id = getIdManager().getId(getContentHosting().getUuid(ref.getId()));
+               sad.setAlternateViewXslt(id);
+               sad.setAlternateViewXsltName(ref.getProperties().getProperty(ref.getProperties().getNamePropDisplayName()));
+            }
             else if (StructuredArtifactDefinitionValidator.PICK_TRANSFORM_ACTION.equals(sad.getFilePickerAction())) {
                sad.setXslConversionFileId(getIdManager().getId(ref.getId()));
                sad.setXslFileName(ref.getProperties().getProperty(ref.getProperties().getNamePropDisplayName()));
@@ -178,7 +206,40 @@ public class AddStructuredArtifactDefinitionController extends AbstractStructure
             errors.rejectValue("schemaFile", errorMessage, errorMessage);
          }
       }
+      if (sad.getAlternateCreateXslt() != null){
+         ContentResource resource = getContentResource(sad.getAlternateCreateXslt());
+         String name = resource.getProperties().getProperty(
+               resource.getProperties().getNamePropDisplayName());
+         sad.setAlternateCreateXsltName(name);
+      }
+      if (sad.getAlternateViewXslt() != null){
+         ContentResource resource = getContentResource(sad.getAlternateViewXslt());
+         String name = resource.getProperties().getProperty(
+               resource.getProperties().getNamePropDisplayName());
+         sad.setAlternateViewXsltName(name);
+      }      
       return base;
+   }
+   
+   protected ContentResource getContentResource(Id fileId) {
+      String id = getContentHosting().resolveUuid(fileId.getValue());
+      //String ref = getContentHosting().getReference(id);
+      //getSecurityService().pushAdvisor(
+      //      new AllowMapSecurityAdvisor(ContentHostingService.EVENT_RESOURCE_READ, ref));
+      ContentResource resource = null;
+      try {
+         resource = getContentHosting().getResource(id);
+      } catch (PermissionException e) {
+         logger.error("", e);
+         throw new RuntimeException(e);
+      } catch (IdUnusedException e) {
+         logger.error("", e);
+         throw new RuntimeException(e);
+      } catch (TypeException e) {
+         logger.error("", e);
+         throw new RuntimeException(e);
+      }
+      return resource;
    }
 
    public SessionManager getSessionManager() {
@@ -188,5 +249,15 @@ public class AddStructuredArtifactDefinitionController extends AbstractStructure
    public void setSessionManager(SessionManager sessionManager) {
       this.sessionManager = sessionManager;
    }
+
+   public ContentHostingService getContentHosting() {
+      return contentHosting;
+   }
+
+   public void setContentHosting(ContentHostingService contentHosting) {
+      this.contentHosting = contentHosting;
+   }
+
+
 
 }

@@ -32,6 +32,7 @@ import org.sakaiproject.authz.api.SecurityAdvisor;
 import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.component.cover.ServerConfigurationService;
+import org.sakaiproject.content.api.ContentCollection;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.content.api.ContentCollectionEdit;
@@ -50,9 +51,13 @@ import org.sakaiproject.metaobj.utils.xml.SchemaNode;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.service.legacy.resource.DuplicatableToolService;
 import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.tool.api.Placement;
 import org.sakaiproject.tool.api.ToolManager;
 import org.sakaiproject.tool.cover.SessionManager;
+import org.sakaiproject.user.api.User;
+import org.sakaiproject.user.cover.UserDirectoryService;
+import org.sakaiproject.util.ResourceLoader;
 import org.sakaiproject.event.cover.NotificationService;
 import org.sakaiproject.entity.api.ResourcePropertiesEdit;
 import org.sakaiproject.entity.api.ResourceProperties;
@@ -73,6 +78,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
 
    static final private String DOWNLOAD_FORM_ID_PARAM = "formId";
    private static final String SYSTEM_COLLECTION_ID = "/system/";
+   static final private String IMPORT_BASE_FOLDER_ID = "importedForms";
 
    private AuthorizationFacade authzManager = null;
    private IdManager idManager;
@@ -764,7 +770,15 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       attrNode = new Element("documentRootNode");
       attrNode.addContent(new CDATA(bean.getDocumentRoot()));
       rootNode.addContent(attrNode);
-
+      
+      attrNode = new Element("altCreateXslt");
+      attrNode.addContent(new CDATA(bean.getAlternateCreateXslt().getValue()));
+      rootNode.addContent(attrNode);
+      
+      attrNode = new Element("altViewXslt");
+      attrNode.addContent(new CDATA(bean.getAlternateViewXslt().getValue()));
+      rootNode.addContent(attrNode);
+      
       return new Document(rootNode);
    }
 
@@ -801,6 +815,10 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       zos.putNextEntry(schemeFile);
       zos.write(bean.getSchema());
       zos.closeEntry();
+      
+      List existingEntries = new ArrayList();
+      storeFile(zos, bean.getAlternateCreateXslt(), existingEntries);
+      storeFile(zos, bean.getAlternateViewXslt(), existingEntries);
 
    }
 
@@ -926,7 +944,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
          zis.closeEntry();
          currentEntry = zis.getNextEntry();
       }
-      
+      /*
       if (currentEntry != null) {
          if (currentEntry.getName().endsWith("xml")) {
             readSADfromXML(bean, zis);
@@ -953,9 +971,121 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       if (!hasXML || !hasXSD) {
          return null;
       }
+      */
+      
+      try {
+         Hashtable<Id, Id> fileMap = new Hashtable<Id, Id>();
+         String tempDirName = getIdManager().createId().getValue();
+         ContentCollectionEdit fileParent = getExpandedFileDir(tempDirName);
+         boolean gotFile = false;
+         
+         while (currentEntry != null) {
+            logger.debug("current entry name: " + currentEntry.getName());
+   
+            if (currentEntry.getName().endsWith("xml")) {
+               readSADfromXML(bean, zis);
+               hasXML = true;
+            }
+            else if (currentEntry.getName().endsWith("xsd")) {
+               readSADSchemaFromXML(bean, zis);
+               hasXSD = true;
+            }
+            else if (!currentEntry.isDirectory()) {
+               gotFile = true;
+               processFile(currentEntry, zis, fileMap, fileParent);
+               
+            }
+   
+            zis.closeEntry();
+            currentEntry = zis.getNextEntry();
+         }
+         
+         if (gotFile) {
+            fileParent.getPropertiesEdit().addProperty(
+                  ResourceProperties.PROP_DISPLAY_NAME, bean.getDescription());
+            getContentHosting().commitCollection(fileParent);
+         }
+         else {
+            getContentHosting().cancelCollection(fileParent);
+         }
+         
+         if (bean.getAlternateCreateXslt() != null)
+            bean.setAlternateCreateXslt((Id)fileMap.get(bean.getAlternateCreateXslt()));
+         
+         if (bean.getAlternateViewXslt() != null)
+            bean.setAlternateViewXslt((Id)fileMap.get(bean.getAlternateViewXslt()));
+         
+      }
+      catch (Exception exp) {
+         throw new RuntimeException(exp);
+      }
+      
 
       bean.setSchemaHash(calculateSchemaHash(bean));
       return bean;
+   }
+   
+   /**
+    * This gets the directory in which the import places files into.
+    * 
+    * This method gets the current users base collection, creates an imported directory,
+    * then uses the param to create a new directory.
+    * 
+    * this uses the bean property importFolderName to name the
+    * 
+    * @param origName String
+    * @return ContentCollectionEdit
+    * @throws InconsistentException
+    * @throws PermissionException
+    * @throws IdUsedException
+    * @throws IdInvalidException
+    * @throws IdUnusedException
+    * @throws TypeException
+    */
+   protected ContentCollectionEdit getExpandedFileDir(String origName) throws TypeException, IdUnusedException, PermissionException, IdUsedException, IdInvalidException, InconsistentException {
+      ContentCollection userCollection = getUserCollection();
+      
+      try {
+         //TODO use the bean org.theospi.portfolio.admin.model.IntegrationOption.siteOption 
+         // in common/components to get the name and id for this site.
+         
+         ResourceLoader rb = new ResourceLoader("org/sakaiproject/metaobj/registry/messages");
+         
+         ContentCollectionEdit groupCollection = getContentHosting().addCollection(userCollection.getId() + IMPORT_BASE_FOLDER_ID);
+         groupCollection.getPropertiesEdit().addProperty(ResourceProperties.PROP_DISPLAY_NAME, rb.getString("form_import_folder"));
+         getContentHosting().commitCollection(groupCollection);
+      }
+      catch (IdUsedException e) {
+         // ignore... it is already there.
+          if (logger.isDebugEnabled()) {
+              logger.debug(e);
+          } 
+      }
+      catch (Exception e) {
+         throw new RuntimeException(e);
+      }
+      
+      ContentCollection collection = getContentHosting().getCollection(userCollection.getId() + IMPORT_BASE_FOLDER_ID + "/");
+      
+      String childId = collection.getId() + origName;
+      return getContentHosting().addCollection(childId);
+   }
+   
+   /**
+    * gets the current user's resource collection
+    * 
+    * @return ContentCollection
+    * @throws TypeException
+    * @throws IdUnusedException
+    * @throws PermissionException
+    */
+   protected ContentCollection getUserCollection() throws TypeException, IdUnusedException, PermissionException {
+      User user = UserDirectoryService.getCurrentUser();
+      String userId = user.getId();
+      String wsId = SiteService.getUserSiteId(userId);
+      String wsCollectionId = getContentHosting().getSiteCollection(wsId);
+      ContentCollection collection = getContentHosting().getCollection(wsCollectionId);
+      return collection;
    }
 
    private StructuredArtifactDefinitionBean readSADfromXML(StructuredArtifactDefinitionBean bean, InputStream inStream) {
@@ -977,6 +1107,8 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
          bean.setDescription(new String(topNode.getChildTextTrim("description").getBytes(), "UTF-8"));
          bean.setInstruction(new String(topNode.getChildTextTrim("instruction").getBytes(), "UTF-8"));
          bean.setDocumentRoot(new String(topNode.getChildTextTrim("documentRootNode").getBytes(), "UTF-8"));
+         bean.setAlternateCreateXslt(getIdManager().getId(new String(topNode.getChildTextTrim("altCreateXslt").getBytes(), "UTF-8")));
+         bean.setAlternateViewXslt(getIdManager().getId(new String(topNode.getChildTextTrim("altViewXslt").getBytes(), "UTF-8")));
       }
       catch (Exception jdome) {
          logger.error(jdome);
@@ -1103,8 +1235,16 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
    public InputStream getTransformer(String type, boolean readOnly) {
       try {
          String viewLocation = "/group/PortfolioAdmin/system/formCreate.xslt";
+         StructuredArtifactDefinitionBean sadb = loadHome(type);
+         if (sadb.getAlternateCreateXslt() != null) {
+            viewLocation = getContentHosting().resolveUuid(sadb.getAlternateCreateXslt().getValue());
+         }
+         
          if (readOnly) {
             viewLocation = "/group/PortfolioAdmin/system/formView.xslt";
+            if (sadb.getAlternateViewXslt() != null) {
+               viewLocation = getContentHosting().resolveUuid(sadb.getAlternateViewXslt().getValue());
+            }
          }
          return getContentHosting().getResource(viewLocation).streamContent();
       } catch (ServerOverloadException e) {
@@ -1259,6 +1399,144 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
          throw new RuntimeException(e);
       }
       return resource.getId();
+   }
+   
+   protected void storeFile(ZipOutputStream zos, Id fileId, List existingEntries) throws IOException {
+      if (fileId == null) {
+         return;
+      }
+      try {
+         String userId = SessionManager.getCurrentSessionUserId();
+         String id = getContentHosting().resolveUuid(fileId.getValue());
+         String ref = getContentHosting().getReference(id);
+         //getSecurityService().pushAdvisor(
+         //      new SimpleSecurityAdvisor(userId, ContentHostingService.EVENT_RESOURCE_READ, ref));
+         
+         getSecurityService().pushAdvisor(new SecurityAdvisor()
+            {
+               public SecurityAdvice isAllowed(String userId, String function, String reference)
+               {
+                  return SecurityAdvice.ALLOWED;
+               }
+            });
+            
+         ContentResource resource = getContentHosting().getResource(id);
+         String newName = resource.getProperties().getProperty(
+               resource.getProperties().getNamePropDisplayName());
+         String cleanedName = newName.substring(newName.lastIndexOf('\\')+1);
+         
+         if (!existingEntries.contains(fileId)) {
+            existingEntries.add(fileId);
+            storeFileInZip(zos, resource.streamContent(),
+                  resource.getContentType() + File.separator +
+                  fileId.getValue() + File.separator + cleanedName);
+         }
+         getSecurityService().popAdvisor();
+      } catch (PermissionException e) {
+         logger.error("", e);
+         throw new RuntimeException(e);
+      } catch (IdUnusedException e) {
+         logger.error("", e);
+         throw new RuntimeException(e);
+      } catch (TypeException e) {
+         logger.error("", e);
+         throw new RuntimeException(e);
+      } catch (ServerOverloadException e) {
+         logger.error("", e);
+         throw new RuntimeException(e);
+      }
+   }
+
+   protected void storeFileInZip(ZipOutputStream zos, InputStream in, String entryName)
+      throws IOException {
+
+      byte data[] = new byte[1024 * 10];
+
+      if (File.separatorChar == '\\') {
+         entryName = entryName.replace('\\', '/');
+      }
+
+      ZipEntry newfileEntry = new ZipEntry(entryName);
+
+      zos.putNextEntry(newfileEntry);
+
+      BufferedInputStream origin = new BufferedInputStream(in, data.length);
+
+      int count;
+      while ((count = origin.read(data, 0, data.length)) != -1) {
+         zos.write(data, 0, count);
+      }
+      zos.closeEntry();
+      in.close();
+   }
+   
+   protected void processFile(ZipEntry currentEntry, ZipInputStream zis,
+         Hashtable fileMap, ContentCollection fileParent) throws IOException {
+
+      File file = new File(currentEntry.getName());
+
+      MimeType mimeType = new MimeType(file.getParentFile().getParentFile().getParentFile().getName(),
+            file.getParentFile().getParentFile().getName());
+
+      String contentType = mimeType.getValue();
+
+      Id oldId = getIdManager().getId(file.getParentFile().getName());
+
+      try {
+         ByteArrayOutputStream bos = new ByteArrayOutputStream();
+         int c = zis.read();
+
+         while (c != -1) {
+            bos.write(c);
+            c = zis.read();
+         }
+
+         String fileName = findUniqueFileName(fileParent.getId(), file.getName());
+         ResourcePropertiesEdit resourceProperties = getContentHosting().newResourceProperties();
+         resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, fileName);
+         ContentResource /*Edit*/ resource;
+
+         resource = getContentHosting().addResource(fileParent.getId() + fileName, contentType, bos.toByteArray(),
+               resourceProperties, NotificationService.NOTI_NONE);
+//       ResourcePropertiesEdit resourceProperties = resource.getPropertiesEdit();
+//       resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, file.getName());
+//       resource.setContent(bos.toByteArray());
+//       resource.setContentType(contentType);
+//       getContentHosting().commitResource(resource);
+
+         Id newId = getIdManager().getId(getContentHosting().getUuid(resource.getId()));
+         fileMap.put(oldId, newId);
+      }
+      catch (Exception exp) {
+         throw new RuntimeException(exp);
+      }
+   }
+   
+   protected String findUniqueFileName(String id, String name) throws TypeException, PermissionException {
+      String orig = name;
+      String testId = id + name;
+      int current = 0;
+      while (resourceExists(testId)) {
+         current++;
+         int dotPos = orig.lastIndexOf('.');
+         if (dotPos == -1) {
+            name = orig + current;
+         }
+         else {
+            name = orig.substring(0, dotPos) + "-" + current + orig.substring(dotPos);
+         }
+         testId = id + name;
+      }
+
+      return name;
+   }
+   
+   protected boolean resourceExists(String returned) throws TypeException, PermissionException {
+      try {
+         return getContentHosting().getResource(returned) != null;
+      } catch (IdUnusedException e) {
+         return false;
+      }
    }
 
    public boolean isReplaceViews() {

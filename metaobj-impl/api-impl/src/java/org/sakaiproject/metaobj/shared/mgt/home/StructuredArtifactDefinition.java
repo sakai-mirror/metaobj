@@ -30,7 +30,6 @@ import org.sakaiproject.metaobj.utils.xml.SchemaNode;
 
 import java.io.ByteArrayInputStream;
 import java.io.Serializable;
-import java.text.MessageFormat;
 import java.util.Date;
 
 
@@ -60,6 +59,10 @@ public class StructuredArtifactDefinition extends StructuredArtifactHome impleme
    private String schemaFileName;
    private String xslFileName;
    private SchemaNode schema;
+   private Id alternateCreateXslt;
+   private String alternateCreateXsltName;
+   private Id alternateViewXslt;
+   private String alternateViewXsltName;
 
    /**
     * should be one of the following states
@@ -90,11 +93,8 @@ public class StructuredArtifactDefinition extends StructuredArtifactHome impleme
     */
    private String action;
 
-   private static final MessageFormat format =
-         new MessageFormat("<META HTTP-EQUIV=\"Refresh\" CONTENT=\"0;URL={0}/member/viewArtifact.osp?artifactId={1}&artifactType={2}\">");
-
    public StructuredArtifactDefinition() {
-      ;
+      
    }
 
    public StructuredArtifactDefinition(StructuredArtifactDefinitionBean bean) {
@@ -129,6 +129,10 @@ public class StructuredArtifactDefinition extends StructuredArtifactHome impleme
       this.setExternalType(bean.getExternalType());
       this.setInstruction(bean.getInstruction());
       this.decoratedDescription = bean.getDecoratedDescription();
+      this.alternateCreateXslt = bean.getAlternateCreateXslt();
+      this.alternateViewXslt = bean.getAlternateViewXslt();
+      this.alternateCreateXsltName = bean.getAlternateCreateXsltName();
+      this.alternateViewXsltName = bean.getAlternateViewXsltName();
       
       if (getId() != null)
          this.setTypeId(getId().getValue());
@@ -434,6 +438,38 @@ public class StructuredArtifactDefinition extends StructuredArtifactHome impleme
 
    public void setDecoratedDescription(String decoratedDescription) {
       this.decoratedDescription = decoratedDescription;
+   }
+
+   public Id getAlternateCreateXslt() {
+      return alternateCreateXslt;
+   }
+
+   public void setAlternateCreateXslt(Id alternateCreateXslt) {
+      this.alternateCreateXslt = alternateCreateXslt;
+   }
+
+   public String getAlternateCreateXsltName() {
+      return alternateCreateXsltName;
+   }
+
+   public void setAlternateCreateXsltName(String alternateCreateXsltName) {
+      this.alternateCreateXsltName = alternateCreateXsltName;
+   }
+
+   public Id getAlternateViewXslt() {
+      return alternateViewXslt;
+   }
+
+   public void setAlternateViewXslt(Id alternateViewXslt) {
+      this.alternateViewXslt = alternateViewXslt;
+   }
+
+   public String getAlternateViewXsltName() {
+      return alternateViewXsltName;
+   }
+
+   public void setAlternateViewXsltName(String alternateViewXsltName) {
+      this.alternateViewXsltName = alternateViewXsltName;
    }
 
 }

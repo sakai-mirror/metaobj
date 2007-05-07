@@ -102,6 +102,46 @@
    </div>
 </spring:bind>
 
+<h4><fmt:message key="header_advancedOptions"/></h4>
+<p class="shorttext">
+<label for=""><fmt:message key="label_altCreateFile"/></label>
+<spring:bind path="bean.alternateCreateXsltName">
+<input type="text" id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>"
+      disabled="true" value="<c:out value="${status.value}" />" />
+</spring:bind>
+<spring:bind path="bean.alternateCreateXslt">
+<input type="hidden" name="<c:out value="${status.expression}"/>" id="<c:out value="${status.expression}"/>"
+      value="<c:out value="${status.value}"/>" />
+
+     <span class="error_message"><c:out value="${status.errorMessage}"/></span>
+<a href="#"
+   onclick="document.forms[0]['filePickerAction'].value='pickAltCreate';
+      document.forms[0]['filePickerFrom'].value='<spring:message
+         code="filePickerMessage.pickAltCreateXsl" />';
+      document.forms[0].submit();return false;">
+<fmt:message key="text_selectAltCreateXsl"/></a>
+</spring:bind>
+</p>
+
+<p class="shorttext">
+<label for=""><fmt:message key="label_altViewFile"/></label>
+<spring:bind path="bean.alternateViewXsltName">
+<input type="text" id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>"
+      disabled="true" value="<c:out value="${status.value}" />" />
+</spring:bind>
+<spring:bind path="bean.alternateViewXslt">
+<input type="hidden" name="<c:out value="${status.expression}"/>" id="<c:out value="${status.expression}"/>"
+      value="<c:out value="${status.value}"/>" />
+
+     <span class="error_message"><c:out value="${status.errorMessage}"/></span>
+<a href="#"
+   onclick="document.forms[0]['filePickerAction'].value='pickAltView';
+      document.forms[0]['filePickerFrom'].value='<spring:message
+         code="filePickerMessage.pickAltViewXsl" />';
+      document.forms[0].submit();return false;">
+<fmt:message key="text_selectAltViewXsl"/></a>
+</spring:bind>
+</p>
 
 <p class="act">
 <c:if test="${empty bean.id}">

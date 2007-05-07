@@ -22,7 +22,6 @@
 package org.sakaiproject.metaobj.shared.control;
 
 import org.sakaiproject.component.cover.ComponentManager;
-import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.content.api.FilePickerHelper;
 import org.sakaiproject.entity.api.EntityManager;
@@ -31,7 +30,6 @@ import org.sakaiproject.exception.*;
 import org.sakaiproject.metaobj.shared.model.FormUploadForm;
 import org.sakaiproject.metaobj.shared.model.InvalidUploadException;
 import org.sakaiproject.metaobj.utils.mvc.intf.Controller;
-import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolSession;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -42,8 +40,6 @@ import java.util.*;
 public class ImportStructuredArtifactDefinitionController extends AddStructuredArtifactDefinitionController
       implements Controller, Validator {
 
-   private SessionManager sessionManager;
-   private ContentHostingService contentHosting = null;
    private EntityManager entityManager;
 
    public Object formBackingObject(Map request, Map session, Map application) {
@@ -52,11 +48,6 @@ public class ImportStructuredArtifactDefinitionController extends AddStructuredA
       return backingObject;
    }
 
-   /*
-public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
-return prepareListView(request, null);
-}
-*/
    public ModelAndView handleRequest(Object requestModel, Map request, Map session,
                                      Map application, Errors errors) {
 
@@ -206,22 +197,6 @@ return prepareListView(request, null);
     */
    public Object fillBackingObject(Object incomingModel, Map request, Map session, Map application) throws Exception {
       return incomingModel;
-   }
-
-   public SessionManager getSessionManager() {
-      return sessionManager;
-   }
-
-   public void setSessionManager(SessionManager sessionManager) {
-      this.sessionManager = sessionManager;
-   }
-
-   public ContentHostingService getContentHosting() {
-      return contentHosting;
-   }
-
-   public void setContentHosting(ContentHostingService contentHosting) {
-      this.contentHosting = contentHosting;
    }
 
    public EntityManager getEntityManager() {

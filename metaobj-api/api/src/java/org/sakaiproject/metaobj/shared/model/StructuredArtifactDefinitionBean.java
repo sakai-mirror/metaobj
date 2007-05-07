@@ -25,7 +25,6 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.cover.SiteService;
 
-import java.text.MessageFormat;
 import java.util.Date;
 
 /**
@@ -37,7 +36,6 @@ public class StructuredArtifactDefinitionBean extends IdentifiableObject impleme
    public static final int STATE_WAITING_APPROVAL = 1;
    public static final int STATE_PUBLISHED = 2;
 
-   private Id id;
    private String documentRoot;
    private Agent owner;
    private Date created = new Date();
@@ -58,6 +56,10 @@ public class StructuredArtifactDefinitionBean extends IdentifiableObject impleme
    private String externalType;
    private String instruction;
    private String filePickerAction;
+   private Id alternateCreateXslt;
+   private String alternateCreateXsltName;
+   private Id alternateViewXslt;
+   private String alternateViewXsltName;
 
    private transient String decoratedDescription;
 
@@ -89,9 +91,6 @@ public class StructuredArtifactDefinitionBean extends IdentifiableObject impleme
     * used in publishing web form to set action (publish to site, global, approve, etc)
     */
    private String action;
-
-   private static final MessageFormat format =
-         new MessageFormat("<META HTTP-EQUIV=\"Refresh\" CONTENT=\"0;URL={0}/member/viewArtifact.osp?artifactId={1}&artifactType={2}\">");
 
 
    /**
@@ -445,5 +444,37 @@ public class StructuredArtifactDefinitionBean extends IdentifiableObject impleme
 
    public void setDecoratedDescription(String decoratedDescription) {
       this.decoratedDescription = decoratedDescription;
+   }
+
+   public Id getAlternateCreateXslt() {
+      return alternateCreateXslt;
+   }
+
+   public void setAlternateCreateXslt(Id alternateCreateXslt) {
+      this.alternateCreateXslt = alternateCreateXslt;
+   }
+
+   public Id getAlternateViewXslt() {
+      return alternateViewXslt;
+   }
+
+   public void setAlternateViewXslt(Id alternateViewXslt) {
+      this.alternateViewXslt = alternateViewXslt;
+   }
+
+   public String getAlternateCreateXsltName() {
+      return alternateCreateXsltName;
+   }
+
+   public void setAlternateCreateXsltName(String alternateCreateXsltName) {
+      this.alternateCreateXsltName = alternateCreateXsltName;
+   }
+
+   public String getAlternateViewXsltName() {
+      return alternateViewXsltName;
+   }
+
+   public void setAlternateViewXsltName(String alternateViewXsltName) {
+      this.alternateViewXsltName = alternateViewXsltName;
    }
 }
