@@ -21,6 +21,8 @@
 
 package org.sakaiproject.metaobj.shared.control;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -97,6 +99,23 @@ public class AddStructuredArtifactDefinitionController extends AbstractStructure
          }
          
          session.put(FilePickerHelper.FILE_PICKER_MAX_ATTACHMENTS, new Integer(1));
+         
+         List files = new ArrayList();
+         if (StructuredArtifactDefinitionValidator.PICK_ALTCREATEXSLT_ACTION.equals(sad.getFilePickerAction())) {
+            String id = getContentHosting().resolveUuid(sad.getAlternateCreateXslt().getValue());
+            Reference ref = getEntityManager().newReference(getContentHosting().getReference(id));
+            files.add(ref);
+            
+            session.put(FilePickerHelper.FILE_PICKER_ATTACHMENTS, files);
+         }
+         else if (StructuredArtifactDefinitionValidator.PICK_ALTVIEWXSLT_ACTION.equals(sad.getFilePickerAction())) {
+            String id = getContentHosting().resolveUuid(sad.getAlternateViewXslt().getValue());
+            Reference ref = getEntityManager().newReference(getContentHosting().getReference(id));
+            files.add(ref);
+            
+            session.put(FilePickerHelper.FILE_PICKER_ATTACHMENTS, files);
+         }
+         
          return new ModelAndView("pickSchema");
       }
 

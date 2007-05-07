@@ -31,6 +31,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.entity.api.EntityManager;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.security.AuthorizationFacade;
 import org.sakaiproject.metaobj.security.AuthorizationFailedException;
@@ -51,16 +52,13 @@ abstract public class AbstractStructuredArtifactDefinitionController extends Abs
    protected final Log logger = LogFactory.getLog(getClass());
    private HomeFactory homeFactory;
    private AuthenticationManager authManager;
-   //private FileArtifactFinder fileArtifactFinder;
    private StructuredArtifactDefinitionManager structuredArtifactDefinitionManager;
-   //private RepositoryManager repositoryManager;
    private IdManager idManager;
    private AuthorizationFacade authzManager = null;
    private WorksiteManager worksiteManager = null;
+   private EntityManager entityManager;
    private String toolId;
    private ListScrollIndexer listScrollIndexer;
-   
-   //TODO removed references to repositoryManager and fileArtifactFinder 
 
    public void checkPermission(String function) throws AuthorizationFailedException {
       if (getStructuredArtifactDefinitionManager().isGlobal()) {
@@ -177,20 +175,6 @@ abstract public class AbstractStructuredArtifactDefinitionController extends Abs
       this.homeFactory = homeFactory;
    }
 
-   /**
-    * @return Returns the fileArtifactFinder.
-    */
-   //public FileArtifactFinder getFileArtifactFinder() {
-   //   return fileArtifactFinder;
-   //}
-
-   /**
-    * @param fileArtifactFinder The fileArtifactFinder to set.
-    */
-   //public void setFileArtifactFinder(FileArtifactFinder fileArtifactFinder) {
-   //   this.fileArtifactFinder = fileArtifactFinder;
-   //}
-
    public StructuredArtifactDefinitionManager getStructuredArtifactDefinitionManager() {
       return structuredArtifactDefinitionManager;
    }
@@ -198,20 +182,6 @@ abstract public class AbstractStructuredArtifactDefinitionController extends Abs
    public void setStructuredArtifactDefinitionManager(StructuredArtifactDefinitionManager structuredArtifactDefinitionManager) {
       this.structuredArtifactDefinitionManager = structuredArtifactDefinitionManager;
    }
-
-   /**
-    * @return Returns the repositoryManager.
-    */
-   //public RepositoryManager getRepositoryManager() {
-   //   return repositoryManager;
-   //}
-
-   /**
-    * @param repositoryManager The repositoryManager to set.
-    */
-   //public void setRepositoryManager(RepositoryManager repositoryManager) {
-   //   this.repositoryManager = repositoryManager;
-   //}
 
    /**
     * @return Returns the idManager.
@@ -241,6 +211,14 @@ abstract public class AbstractStructuredArtifactDefinitionController extends Abs
 
    public void setWorksiteManager(WorksiteManager worksiteManager) {
       this.worksiteManager = worksiteManager;
+   }
+   
+   public EntityManager getEntityManager() {
+      return entityManager;
+   }
+
+   public void setEntityManager(EntityManager entityManager) {
+      this.entityManager = entityManager;
    }
 
    public void setToolId(String toolId) {

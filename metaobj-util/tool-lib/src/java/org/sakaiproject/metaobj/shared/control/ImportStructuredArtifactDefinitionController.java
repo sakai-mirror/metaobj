@@ -40,7 +40,7 @@ import java.util.*;
 public class ImportStructuredArtifactDefinitionController extends AddStructuredArtifactDefinitionController
       implements Controller, Validator {
 
-   private EntityManager entityManager;
+   
 
    public Object formBackingObject(Map request, Map session, Map application) {
 
@@ -197,14 +197,6 @@ public class ImportStructuredArtifactDefinitionController extends AddStructuredA
     */
    public Object fillBackingObject(Object incomingModel, Map request, Map session, Map application) throws Exception {
       return incomingModel;
-   }
-
-   public EntityManager getEntityManager() {
-      return entityManager;
-   }
-
-   public void setEntityManager(EntityManager entityManager) {
-      this.entityManager = entityManager;
    }
 }
 
