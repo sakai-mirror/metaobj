@@ -167,7 +167,9 @@ public class FormResourceType implements SiteSpecificResourceType {
       if (member != null) {
          StructuredArtifactDefinitionBean home = getStructuredArtifactDefinitionManager().loadHome(
             (String)member.getProperties().get(ResourceProperties.PROP_STRUCTOBJ_TYPE));
-         formName = home.getDescription();
+         if (home != null) {
+            formName = home.getDescription();
+         }
       }
 
       return rb.getFormattedMessage("form_item_tip", new Object[]{formName});
