@@ -121,9 +121,9 @@ body.formDisplay
 .formDisplay .longtextsubform .textPanel{margin-left:2.2em}
 .formDisplay ul.selectList{
 	margin:.2em 0 0 0;
+	padding: 0;
 	}
 .formDisplay ul.selectList li{
-	margin-left:-2em;
 	padding:.3em 0;
 	list-style:none;
 	}
