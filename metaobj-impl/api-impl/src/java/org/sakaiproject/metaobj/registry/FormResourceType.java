@@ -262,10 +262,4 @@ public class FormResourceType implements SiteSpecificResourceType {
    public boolean isEnabledByDefault() {
       return true;
    }
-   
-	public boolean isExpandable() {
-	    // form-items are not expandable
-	    return false;
-    }
-
 }
