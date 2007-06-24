@@ -30,6 +30,7 @@ import org.sakaiproject.metaobj.utils.TypedMap;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.FatalBeanException;
+import org.springframework.beans.PropertyValue;
 
 public class MapWrapper extends BeanWrapperBase {
    protected final Log logger = LogFactory.getLog(getClass());
@@ -126,5 +127,7 @@ public class MapWrapper extends BeanWrapperBase {
       return ((TypedMap) getWrappedInstance()).getType(propertyName);
    }
 
-
+   public void setPropertyValue(PropertyValue pv) throws BeansException {
+      setPropertyValue(pv.getName(), pv.getValue());
+   }
 }

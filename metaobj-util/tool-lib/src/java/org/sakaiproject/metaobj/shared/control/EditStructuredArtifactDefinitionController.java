@@ -21,20 +21,19 @@
 
 package org.sakaiproject.metaobj.shared.control;
 
-import java.util.Map;
-import java.util.Iterator;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
 
-import org.sakaiproject.metaobj.shared.SharedFunctionConstants;
-import org.sakaiproject.metaobj.shared.ArtifactFinder;
-import org.sakaiproject.metaobj.shared.ArtifactFinderManager;
-import org.sakaiproject.metaobj.shared.model.PersistenceException;
-import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
-import org.sakaiproject.metaobj.shared.model.StructuredArtifact;
-import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
-import org.sakaiproject.metaobj.utils.mvc.impl.BindExceptionBase;
-import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.authz.api.SecurityAdvisor;
+import org.sakaiproject.authz.api.SecurityService;
+import org.sakaiproject.metaobj.shared.ArtifactFinder;
+import org.sakaiproject.metaobj.shared.SharedFunctionConstants;
+import org.sakaiproject.metaobj.shared.model.PersistenceException;
+import org.sakaiproject.metaobj.shared.model.StructuredArtifact;
+import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
+import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
+import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ObjectError;
 
@@ -82,7 +81,7 @@ public class EditStructuredArtifactDefinitionController extends AddStructuredArt
                if (obj instanceof StructuredArtifact) {
                   StructuredArtifact artifact = (StructuredArtifact)obj;
                   artifact.setHome(getStructuredArtifactDefinitionManager().convertToHome(sad));
-                  Errors artifactErrors = new BindExceptionBase(artifact, "bean");
+                  Errors artifactErrors = new BindException(artifact, "bean");
                   validator.validate(artifact, artifactErrors);
                   if (artifactErrors.getErrorCount() > 0) {
                      if (sad.getXslConversionFileId() == null ||

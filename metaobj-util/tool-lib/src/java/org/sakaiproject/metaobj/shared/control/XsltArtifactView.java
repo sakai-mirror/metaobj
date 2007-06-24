@@ -27,6 +27,7 @@ import org.springframework.web.util.NestedServletException;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.BindingResultUtils;
 import org.jdom.transform.JDOMSource;
 import org.jdom.Element;
 import org.jdom.Document;
@@ -68,7 +69,6 @@ public class XsltArtifactView extends AbstractXsltView {
       "org.sakaiproject.metaobj.shared.control.XsltArtifactView.stylesheetLocation";
    private String uriResolverBeanName;
    private URIResolver uriResolver;
-   private TransformerFactory transformerFactory = TransformerFactory.newInstance();
    private boolean readOnly;
 
    protected Source createXsltSource(Map map, String string, HttpServletRequest httpServletRequest,
@@ -123,7 +123,7 @@ public class XsltArtifactView extends AbstractXsltView {
       httpServletRequest.setAttribute(STYLESHEET_LOCATION,
          getStructuredArtifactDefinitionManager().getTransformer(homeType, readOnly));
 
-      Errors errors = (Errors) map.get("org.springframework.validation.BindException.bean");
+      Errors errors = BindingResultUtils.getBindingResult(map, "bean");
       if (errors != null && errors.hasErrors()) {
          Element errorsElement = new Element("errors");
 
@@ -313,14 +313,6 @@ public class XsltArtifactView extends AbstractXsltView {
    public void setUriResolver(URIResolver uriResolver) {
       this.uriResolver = uriResolver;
       getTransformerFactory().setURIResolver(uriResolver);
-   }
-
-   public TransformerFactory getTransformerFactory() {
-      return transformerFactory;
-   }
-
-   public void setTransformerFactory(TransformerFactory transformerFactory) {
-      this.transformerFactory = transformerFactory;
    }
 
    public boolean isReadOnly() {
