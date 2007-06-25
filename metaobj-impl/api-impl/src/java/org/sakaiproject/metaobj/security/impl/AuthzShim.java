@@ -75,6 +75,9 @@ public class AuthzShim implements AuthorizationFacade {
       if (agent == null) {
          agentId = getUserDirectoryService().getCurrentUser().getId();
       }
+      else {
+         agentId = agent.getId().getValue();
+      }
       if (function.equals("maintain")) {
          return checkMaintain(agentId);
       }
