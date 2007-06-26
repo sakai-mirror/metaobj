@@ -26,8 +26,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.MessageFormat;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import org.jdom.*;
 import org.jdom.input.SAXBuilder;
@@ -49,6 +48,7 @@ import org.sakaiproject.content.cover.ContentHostingService;
 import org.sakaiproject.content.api.ContentResourceEdit;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.exception.*;
+import org.sakaiproject.util.ResourceLoader;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -73,6 +73,7 @@ public class StructuredArtifactHome extends XmlElementHome
    private IdManager idManager;
    private String siteId;
    private ArtifactFinder artifactFinder;
+   private ResourceLoader rl = new ResourceLoader();
 
    private static final MessageFormat format =
          new MessageFormat("<META HTTP-EQUIV=\"Refresh\" CONTENT=\"0;URL={0}/member/viewArtifact.osp?artifactId={1}&artifactType={2}&pid={3}\">");
@@ -297,7 +298,11 @@ public class StructuredArtifactHome extends XmlElementHome
 
       Element schemaData = new Element("schema");
       schemaData.addContent(createInstructions());
-      schemaData.addContent(addSchemaInfo(getRootSchema()));
+      try {
+         schemaData.addContent(addSchemaInfo(getRootSchema()));
+      } catch (JDOMException e) {
+         throw new RuntimeException("Invalid schema info");
+      }
 
       // for now, don't call this... we may add this when
       // we need to store id rather than ref... for now, keep
@@ -384,7 +389,7 @@ public class StructuredArtifactHome extends XmlElementHome
       return instructions;
    }
 
-   protected Element addSchemaInfo(SchemaNode schema) {
+   protected Element addSchemaInfo(SchemaNode schema) throws JDOMException {
       Element schemaElement = new Element("element");
       schemaElement.setAttribute("name", schema.getName());
       if (schema.getType() != null && schema.getType().getBaseType() != null) {
@@ -395,7 +400,7 @@ public class StructuredArtifactHome extends XmlElementHome
       Element annotation = schema.getSchemaElement().getChild("annotation", schema.getSchemaElement().getNamespace());
 
       if (annotation != null) {
-         schemaElement.addContent((Content) annotation.clone());
+         schemaElement.addContent(i18nFilterAnnotations(annotation));
       }
 
       Element simpleType = schema.getSchemaElement().getChild("simpleType", schema.getSchemaElement().getNamespace());
@@ -417,6 +422,42 @@ public class StructuredArtifactHome extends XmlElementHome
       }
 
       return schemaElement;
+   }
+
+   protected Content i18nFilterAnnotations(Element content) throws JDOMException {
+      Locale locale = rl.getLocale();
+      Map<String, Element> documentElements = new Hashtable<String, Element>();
+
+      filterElements(documentElements, content, null);
+      filterElements(documentElements, content, locale.getLanguage());
+      filterElements(documentElements, content, locale.getLanguage() 
+         + "_" + locale.getCountry());
+      filterElements(documentElements, content, locale.getLanguage() 
+         + "_" + locale.getCountry() + "_" + locale.getVariant());
+
+      Element returned = (Element) content.clone();
+      returned.removeChildren("documentation", content.getNamespace());
+      
+      for (Iterator<Element> i=documentElements.values().iterator();i.hasNext();) {
+         returned.addContent((Content) i.next().clone());
+      }
+      
+      return returned;
+   }
+
+   protected void filterElements(Map<String, Element> documentElements, Element content, String lang) throws JDOMException {
+      XPath docPath;
+      if (lang == null) {
+         docPath = XPath.newInstance("xs:documentation[not(@xml:lang)]");   
+      }
+      else {
+         docPath = XPath.newInstance("xs:documentation[lang('"+lang+"')]");
+      }
+      List elements = docPath.selectNodes(content);
+      for (Iterator<Element> i=elements.iterator();i.hasNext();) {
+         Element child = i.next();
+         documentElements.put(child.getAttributeValue("source"), child);
+      }
    }
 
    public String getSiteId() {
