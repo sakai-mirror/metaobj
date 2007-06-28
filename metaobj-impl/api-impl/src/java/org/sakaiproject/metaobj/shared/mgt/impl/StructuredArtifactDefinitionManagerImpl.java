@@ -774,13 +774,17 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       attrNode.addContent(new CDATA(bean.getDocumentRoot()));
       rootNode.addContent(attrNode);
       
-      attrNode = new Element("altCreateXslt");
-      attrNode.addContent(new CDATA(bean.getAlternateCreateXslt().getValue()));
-      rootNode.addContent(attrNode);
+      if ( bean.getAlternateCreateXslt() != null ) {
+         attrNode = new Element("altCreateXslt");
+         attrNode.addContent(new CDATA(bean.getAlternateCreateXslt().getValue()));
+         rootNode.addContent(attrNode);
+      }
       
-      attrNode = new Element("altViewXslt");
-      attrNode.addContent(new CDATA(bean.getAlternateViewXslt().getValue()));
-      rootNode.addContent(attrNode);
+      if ( bean.getAlternateViewXslt() != null ) {
+         attrNode = new Element("altViewXslt");
+         attrNode.addContent(new CDATA(bean.getAlternateViewXslt().getValue()));
+         rootNode.addContent(attrNode);
+      }
       
       return new Document(rootNode);
    }
