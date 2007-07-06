@@ -111,7 +111,8 @@
 							<xsl:with-param name="currentParent" select="formData/artifact/structuredData" />
 							<xsl:with-param name="rootNode" select="'true'" />
 						</xsl:apply-templates>
-						<input type="hidden" name="childPath" value="" />
+                  <input type="hidden" name="childPath" value="" />
+                  <input type="hidden" name="childFieldLabel" value="" />
 						<input type="hidden" name="childIndex" value="" />
 						<input type="hidden" name="fileHelper" value="" />
 						<input type="hidden" name="editButton" value="" />

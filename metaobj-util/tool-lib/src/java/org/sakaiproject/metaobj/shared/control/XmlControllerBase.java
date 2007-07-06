@@ -37,6 +37,7 @@ import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.entity.cover.EntityManager;
+import org.sakaiproject.util.ResourceLoader;
 
 import java.util.*;
 
@@ -47,6 +48,7 @@ public class XmlControllerBase {
    private StructuredArtifactDefinitionManager structuredArtifactDefinitionManager;
    private static final String FILE_ATTACHMENTS_FIELD =
       "org.sakaiproject.metaobj.shared.control.XmlControllerBase.field";
+   private ResourceLoader rl = new ResourceLoader("messages");
 
    protected ModelAndView handleNonSubmit(ElementBean bean, Map request,
                                           Map session, Map application, Errors errors) {
@@ -256,8 +258,17 @@ public class XmlControllerBase {
 
    public ModelAndView processFileAttachments(Map request, Map session, ElementBean currentBean, Errors errors) {
       String fieldName = (String) request.get("childPath");
+      String fieldLabel = (String) request.get("childFieldLabel");
+      
+      if (fieldLabel == null) {
+         fieldLabel = fieldName;
+      }
+      
       session.put(FILE_ATTACHMENTS_FIELD, fieldName);
-
+      String title = rl.getString("attachment_file_helper_title_single");
+      String instructionKey = "attachment_file_helper_instructions_single";
+      int limit = 0;
+      
       //ToolSession toolSession = getSessionManager().getCurrentToolSession();
       List attachmentRefs = new ArrayList();
 
@@ -268,13 +279,25 @@ public class XmlControllerBase {
          attachmentRefs.addAll(convertToRefList(currentIds));
          session.put(FilePickerHelper.FILE_PICKER_MAX_ATTACHMENTS,
             currentIds.getUpperLimit());
+         title = rl.getString("attachment_file_helper_title_multiple");
+         if (currentIds.getUpperLimit() == Integer.MAX_VALUE) {
+            instructionKey = "attachment_file_helper_instructions_multiple_unlim";
+         }
+         else {
+            limit = currentIds.getUpperLimit();
+            instructionKey = "attachment_file_helper_instructions_multiple";
+         }
       }
       else if (currentBean.get(fieldName) != null) {
          attachmentRefs.add(convertToRef(currentBean.get(fieldName).toString()));
       }
 
+      session.put(FilePickerHelper.FILE_PICKER_TITLE_TEXT, title);
+      session.put(FilePickerHelper.FILE_PICKER_INSTRUCTION_TEXT, rl.getFormattedMessage(
+         instructionKey, new Object[]{fieldLabel, limit}));
+
       session.put(FilePickerHelper.FILE_PICKER_ATTACHMENTS, attachmentRefs);
-      session.put(FilePickerHelper.START_HELPER, "true");
+      //session.put(FilePickerHelper.START_HELPER, "true");
 
       return new ModelAndView("fileHelper");
    }
