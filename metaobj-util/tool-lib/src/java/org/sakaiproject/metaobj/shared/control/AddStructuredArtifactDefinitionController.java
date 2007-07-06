@@ -104,18 +104,22 @@ public class AddStructuredArtifactDefinitionController extends AbstractStructure
          
          List files = new ArrayList();
          if (StructuredArtifactDefinitionValidator.PICK_ALTCREATEXSLT_ACTION.equals(sad.getFilePickerAction())) {
-            String id = getContentHosting().resolveUuid(sad.getAlternateCreateXslt().getValue());
-            Reference ref = getEntityManager().newReference(getContentHosting().getReference(id));
-            files.add(ref);
+            if (sad.getAlternateCreateXslt() != null) {
+               String id = getContentHosting().resolveUuid(sad.getAlternateCreateXslt().getValue());
+               Reference ref = getEntityManager().newReference(getContentHosting().getReference(id));
+               files.add(ref);
+            }
             
             session.put(FilePickerHelper.FILE_PICKER_ATTACHMENTS, files);
             session.put(FilePickerHelper.FILE_PICKER_TITLE_TEXT, getMessage("text_selectAltCreateXsl"));
             session.put(FilePickerHelper.FILE_PICKER_INSTRUCTION_TEXT, getMessage("text_selectAltCreateXsl_instructions"));
          }
          else if (StructuredArtifactDefinitionValidator.PICK_ALTVIEWXSLT_ACTION.equals(sad.getFilePickerAction())) {
-            String id = getContentHosting().resolveUuid(sad.getAlternateViewXslt().getValue());
-            Reference ref = getEntityManager().newReference(getContentHosting().getReference(id));
-            files.add(ref);
+            if (sad.getAlternateViewXslt() != null) {
+               String id = getContentHosting().resolveUuid(sad.getAlternateViewXslt().getValue());
+               Reference ref = getEntityManager().newReference(getContentHosting().getReference(id));
+               files.add(ref);
+            }
             
             session.put(FilePickerHelper.FILE_PICKER_ATTACHMENTS, files);
             session.put(FilePickerHelper.FILE_PICKER_TITLE_TEXT, getMessage("text_selectAltViewXsl"));
