@@ -46,6 +46,7 @@ import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.ToolConfiguration;
 import org.sakaiproject.tool.cover.ToolManager;
+import org.sakaiproject.util.ResourceLoader;
 import org.springframework.web.servlet.ModelAndView;
 
 abstract public class AbstractStructuredArtifactDefinitionController extends AbstractFormController {
@@ -59,6 +60,7 @@ abstract public class AbstractStructuredArtifactDefinitionController extends Abs
    private EntityManager entityManager;
    private String toolId;
    private ListScrollIndexer listScrollIndexer;
+   private ResourceLoader rl = new ResourceLoader("messages");
 
    public void checkPermission(String function) throws AuthorizationFailedException {
       if (getStructuredArtifactDefinitionManager().isGlobal()) {
@@ -235,5 +237,9 @@ abstract public class AbstractStructuredArtifactDefinitionController extends Abs
 
    public void setListScrollIndexer(ListScrollIndexer listScrollIndexer) {
       this.listScrollIndexer = listScrollIndexer;
+   }
+   
+   protected String getMessage(String key) {
+      return rl.getString(key);
    }
 }

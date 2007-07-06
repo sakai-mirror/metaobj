@@ -96,6 +96,8 @@ public class AddStructuredArtifactDefinitionController extends AbstractStructure
             //set the filter for xsd files only in this case
             session.put(FilePickerHelper.FILE_PICKER_RESOURCE_FILTER,
                   ComponentManager.get("org.sakaiproject.content.api.ContentResourceFilter.metaobjFile"));
+            session.put(FilePickerHelper.FILE_PICKER_TITLE_TEXT, getMessage("text_selectXSD"));
+            session.put(FilePickerHelper.FILE_PICKER_INSTRUCTION_TEXT, getMessage("text_selectXSD_instructions"));
          }
          
          session.put(FilePickerHelper.FILE_PICKER_MAX_ATTACHMENTS, new Integer(1));
@@ -107,6 +109,8 @@ public class AddStructuredArtifactDefinitionController extends AbstractStructure
             files.add(ref);
             
             session.put(FilePickerHelper.FILE_PICKER_ATTACHMENTS, files);
+            session.put(FilePickerHelper.FILE_PICKER_TITLE_TEXT, getMessage("text_selectAltCreateXsl"));
+            session.put(FilePickerHelper.FILE_PICKER_INSTRUCTION_TEXT, getMessage("text_selectAltCreateXsl_instructions"));
          }
          else if (StructuredArtifactDefinitionValidator.PICK_ALTVIEWXSLT_ACTION.equals(sad.getFilePickerAction())) {
             String id = getContentHosting().resolveUuid(sad.getAlternateViewXslt().getValue());
@@ -114,6 +118,8 @@ public class AddStructuredArtifactDefinitionController extends AbstractStructure
             files.add(ref);
             
             session.put(FilePickerHelper.FILE_PICKER_ATTACHMENTS, files);
+            session.put(FilePickerHelper.FILE_PICKER_TITLE_TEXT, getMessage("text_selectAltViewXsl"));
+            session.put(FilePickerHelper.FILE_PICKER_INSTRUCTION_TEXT, getMessage("text_selectAltViewXsl_instructions"));
          }
          
          return new ModelAndView("pickSchema");
