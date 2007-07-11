@@ -56,6 +56,7 @@ import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.event.cover.NotificationService;
 import org.sakaiproject.entity.api.ResourcePropertiesEdit;
 import org.sakaiproject.entity.api.ResourceProperties;
+import org.sakaiproject.thread_local.cover.ThreadLocalManager;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import javax.xml.transform.TransformerException;
@@ -73,6 +74,8 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
 
    static final private String DOWNLOAD_FORM_ID_PARAM = "formId";
    private static final String SYSTEM_COLLECTION_ID = "/system/";
+
+   private static final String HAS_HOMES_TAG = "org.sakaiproject.metaobj.hasHomes";
 
    private AuthorizationFacade authzManager = null;
    private IdManager idManager;
@@ -1119,7 +1122,10 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
    }
 
    public boolean hasHomes() {
-      return findHomes(false).size() > 0;
+      if (ThreadLocalManager.get(HAS_HOMES_TAG) == null) {
+         ThreadLocalManager.set(HAS_HOMES_TAG, new Boolean(findHomes(false).size() > 0));
+      }
+      return ((Boolean)ThreadLocalManager.get(HAS_HOMES_TAG)).booleanValue();
    }
 
    public void addConsumer(FormConsumer consumer) {
