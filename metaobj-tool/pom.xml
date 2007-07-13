@@ -4,10 +4,10 @@
   <packaging>pom</packaging>
   <artifactId>holder-metaobj-tool</artifactId>
   <parent>
-    <artifactId>master</artifactId>
+    <artifactId>metaobj-base</artifactId>
     <groupId>org.sakaiproject</groupId>
     <version>M2</version>
-    <relativePath>../../master/pom.xml</relativePath>
+    <relativePath>../pom.xml</relativePath>
   </parent>
   <name>sakai-metaobj-tool</name>
   <groupId>org.sakaiproject</groupId>
@@ -18,13 +18,6 @@
   <inceptionYear>2004</inceptionYear>
   <dependencies/>
   <build>
-    
-    
-    
-    
-    
-    
-    
     <resources/>
   </build>
 </project>
