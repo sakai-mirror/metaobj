@@ -39,6 +39,8 @@ import org.sakaiproject.content.api.ContentCollectionEdit;
 import org.sakaiproject.exception.*;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.security.AuthorizationFacade;
+import org.sakaiproject.metaobj.security.AllowMapSecurityAdvisor;
+import org.sakaiproject.metaobj.security.AllowChildrenMapSecurityAdvisor;
 import org.sakaiproject.metaobj.shared.ArtifactFinder;
 import org.sakaiproject.metaobj.shared.DownloadableManager;
 import org.sakaiproject.metaobj.shared.SharedFunctionConstants;
@@ -1253,6 +1255,13 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
                viewLocation = getContentHosting().resolveUuid(sadb.getAlternateViewXslt().getValue());
             }
          }
+         List refs = new ArrayList();
+         refs.add(getContentHosting().getReference(viewLocation));
+         refs.add(getContentHosting().getReference("/group/PortfolioAdmin/system"));
+         Map funcs = new HashMap();
+         funcs.put(ContentHostingService.EVENT_RESOURCE_READ, refs);
+         funcs.put(ContentHostingService.AUTH_RESOURCE_HIDDEN, refs);
+         getSecurityService().pushAdvisor(new AllowChildrenMapSecurityAdvisor(funcs));
          return getContentHosting().getResource(viewLocation).streamContent();
       } catch (ServerOverloadException e) {
          throw new RuntimeException(e);
