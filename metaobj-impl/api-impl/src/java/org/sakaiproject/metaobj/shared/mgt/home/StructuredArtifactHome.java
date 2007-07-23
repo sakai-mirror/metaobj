@@ -408,6 +408,13 @@ public class StructuredArtifactHome extends XmlElementHome
       if (simpleType != null) {
          schemaElement.addContent((Content) simpleType.clone());
       }
+      else if (schema.getSchemaElement().getAttribute("type") != null) {
+         Element externalType = getSimpleType(schema.getSchemaElement().getAttributeValue("type"), 
+            schema.getSchemaElement().getDocument().getRootElement());
+         if (externalType != null) {
+            schemaElement.addContent((Content) externalType.clone());
+         }
+      }
 
       List children = schema.getChildren();
       Element childElement = new Element("children");
@@ -424,24 +431,35 @@ public class StructuredArtifactHome extends XmlElementHome
       return schemaElement;
    }
 
+   protected Element getSimpleType(String attribute, Element rootElement) throws JDOMException {
+      XPath docPath = XPath.newInstance("xs:simpleType[@name='"+attribute+"']");
+      List elements = docPath.selectNodes(rootElement);
+
+      if (elements.size() == 0) {
+         return null;
+      }
+
+      return (Element) elements.get(0);
+   }
+
    protected Content i18nFilterAnnotations(Element content) throws JDOMException {
       Locale locale = rl.getLocale();
       Map<String, Element> documentElements = new Hashtable<String, Element>();
 
       filterElements(documentElements, content, null);
       filterElements(documentElements, content, locale.getLanguage());
-      filterElements(documentElements, content, locale.getLanguage() 
+      filterElements(documentElements, content, locale.getLanguage()
          + "_" + locale.getCountry());
-      filterElements(documentElements, content, locale.getLanguage() 
+      filterElements(documentElements, content, locale.getLanguage()
          + "_" + locale.getCountry() + "_" + locale.getVariant());
 
       Element returned = (Element) content.clone();
       returned.removeChildren("documentation", content.getNamespace());
-      
+
       for (Iterator<Element> i=documentElements.values().iterator();i.hasNext();) {
          returned.addContent((Content) i.next().clone());
       }
-      
+
       return returned;
    }
 
