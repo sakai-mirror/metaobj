@@ -22,7 +22,6 @@
 package org.sakaiproject.metaobj.shared.control;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -197,27 +196,36 @@ public class AddStructuredArtifactDefinitionController extends AbstractStructure
             session.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS) != null) {
          // here is where we setup the id
          List refs = (List) session.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
+         
+         Id nodeId = null;
+         Id nodeUuid = null;
+         String nodeName = "";
+         
          if (refs != null && refs.size() > 0) {
             Reference ref = (Reference) refs.get(0);
+            
+            nodeId = getIdManager().getId(ref.getId());
+            nodeUuid = getIdManager().getId(getContentHosting().getUuid(ref.getId()));
+            nodeName = ref.getProperties().getProperty(ref.getProperties().getNamePropDisplayName());
+         }
    
-            if (StructuredArtifactDefinitionValidator.PICK_SCHEMA_ACTION.equals(sad.getFilePickerAction())) {
-               sad.setSchemaFile(getIdManager().getId(ref.getId()));
-               sad.setSchemaFileName(ref.getProperties().getProperty(ref.getProperties().getNamePropDisplayName()));
-            }
-            else if (StructuredArtifactDefinitionValidator.PICK_ALTCREATEXSLT_ACTION.equals(sad.getFilePickerAction())) {
-               Id id = getIdManager().getId(getContentHosting().getUuid(ref.getId()));
-               sad.setAlternateCreateXslt(id);
-               sad.setAlternateCreateXsltName(ref.getProperties().getProperty(ref.getProperties().getNamePropDisplayName()));
-            }
-            else if (StructuredArtifactDefinitionValidator.PICK_ALTVIEWXSLT_ACTION.equals(sad.getFilePickerAction())) {
-               Id id = getIdManager().getId(getContentHosting().getUuid(ref.getId()));
-               sad.setAlternateViewXslt(id);
-               sad.setAlternateViewXsltName(ref.getProperties().getProperty(ref.getProperties().getNamePropDisplayName()));
-            }
-            else if (StructuredArtifactDefinitionValidator.PICK_TRANSFORM_ACTION.equals(sad.getFilePickerAction())) {
-               sad.setXslConversionFileId(getIdManager().getId(ref.getId()));
-               sad.setXslFileName(ref.getProperties().getProperty(ref.getProperties().getNamePropDisplayName()));
-            }
+         if (StructuredArtifactDefinitionValidator.PICK_SCHEMA_ACTION.equals(sad.getFilePickerAction())) {
+            sad.setSchemaFile(nodeId);
+            sad.setSchemaFileName(nodeName);
+         }
+         else if (StructuredArtifactDefinitionValidator.PICK_ALTCREATEXSLT_ACTION.equals(sad.getFilePickerAction())) {
+            //Id id = getIdManager().getId(getContentHosting().getUuid(ref.getId()));
+            sad.setAlternateCreateXslt(nodeUuid);
+            sad.setAlternateCreateXsltName(nodeName);
+         }
+         else if (StructuredArtifactDefinitionValidator.PICK_ALTVIEWXSLT_ACTION.equals(sad.getFilePickerAction())) {
+            //Id id = getIdManager().getId(getContentHosting().getUuid(ref.getId()));
+            sad.setAlternateViewXslt(nodeUuid);
+            sad.setAlternateViewXsltName(nodeName);
+         }
+         else if (StructuredArtifactDefinitionValidator.PICK_TRANSFORM_ACTION.equals(sad.getFilePickerAction())) {
+            sad.setXslConversionFileId(nodeId);
+            sad.setXslFileName(nodeName);
          }
       }
 
