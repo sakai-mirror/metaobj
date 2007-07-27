@@ -1116,8 +1116,10 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
          bean.setDescription(new String(topNode.getChildTextTrim("description").getBytes(), "UTF-8"));
          bean.setInstruction(new String(topNode.getChildTextTrim("instruction").getBytes(), "UTF-8"));
          bean.setDocumentRoot(new String(topNode.getChildTextTrim("documentRootNode").getBytes(), "UTF-8"));
-         bean.setAlternateCreateXslt(getIdManager().getId(new String(topNode.getChildTextTrim("altCreateXslt").getBytes(), "UTF-8")));
-         bean.setAlternateViewXslt(getIdManager().getId(new String(topNode.getChildTextTrim("altViewXslt").getBytes(), "UTF-8")));
+         if (topNode.getChildTextTrim("altCreateXslt") != null)
+            bean.setAlternateCreateXslt(getIdManager().getId(new String(topNode.getChildTextTrim("altCreateXslt").getBytes(), "UTF-8")));
+         if (topNode.getChildTextTrim("altViewXslt") != null)
+            bean.setAlternateViewXslt(getIdManager().getId(new String(topNode.getChildTextTrim("altViewXslt").getBytes(), "UTF-8")));
       }
       catch (Exception jdome) {
          logger.error(jdome);
