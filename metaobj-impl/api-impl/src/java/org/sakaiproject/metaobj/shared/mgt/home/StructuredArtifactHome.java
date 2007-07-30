@@ -474,7 +474,11 @@ public class StructuredArtifactHome extends XmlElementHome
       List elements = docPath.selectNodes(content);
       for (Iterator<Element> i=elements.iterator();i.hasNext();) {
          Element child = i.next();
-         documentElements.put(child.getAttributeValue("source"), child);
+         String source = child.getAttributeValue("source");
+         
+         if (source != null) {
+            documentElements.put(child.getAttributeValue("source"), child);
+         }
       }
    }
 
