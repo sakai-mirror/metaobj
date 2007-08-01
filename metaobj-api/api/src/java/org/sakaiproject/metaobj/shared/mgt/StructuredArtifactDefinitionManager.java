@@ -39,6 +39,8 @@ import java.util.Map;
 
 public interface StructuredArtifactDefinitionManager {
    public final static String GLOBAL_SAD_QUALIFIER = "theospi.share.sad.global";
+   public static final String SAD_SESSION_TAG =
+      "org.sakaiproject.metaobj.shared.control.AddStructuredArtifactDefinitionController.sad";
 
    public Map getHomes();
 

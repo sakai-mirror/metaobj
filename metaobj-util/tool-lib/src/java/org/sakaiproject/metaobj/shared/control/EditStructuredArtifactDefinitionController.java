@@ -29,6 +29,7 @@ import org.sakaiproject.authz.api.SecurityAdvisor;
 import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.metaobj.shared.ArtifactFinder;
 import org.sakaiproject.metaobj.shared.SharedFunctionConstants;
+import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
 import org.sakaiproject.metaobj.shared.model.PersistenceException;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifact;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
@@ -43,8 +44,8 @@ public class EditStructuredArtifactDefinitionController extends AddStructuredArt
    private SecurityService securityService;
 
    public Object fillBackingObject(Object incomingModel, Map request, Map session, Map application) throws Exception {
-      if (session.get(SAD_SESSION_TAG) != null) {
-         return session.remove(SAD_SESSION_TAG);
+      if (session.get(StructuredArtifactDefinitionManager.SAD_SESSION_TAG) != null) {
+         return session.remove(StructuredArtifactDefinitionManager.SAD_SESSION_TAG);
       }
 
       StructuredArtifactDefinitionBean home = (StructuredArtifactDefinitionBean) incomingModel;

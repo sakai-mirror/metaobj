@@ -39,7 +39,6 @@ import org.sakaiproject.content.api.ContentCollectionEdit;
 import org.sakaiproject.exception.*;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.security.AuthorizationFacade;
-import org.sakaiproject.metaobj.security.AllowMapSecurityAdvisor;
 import org.sakaiproject.metaobj.security.AllowChildrenMapSecurityAdvisor;
 import org.sakaiproject.metaobj.shared.ArtifactFinder;
 import org.sakaiproject.metaobj.shared.DownloadableManager;
@@ -56,6 +55,7 @@ import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.tool.api.Placement;
 import org.sakaiproject.tool.api.ToolManager;
+import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.cover.UserDirectoryService;
@@ -1247,13 +1247,17 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       try {
          String viewLocation = "/group/PortfolioAdmin/system/formCreate.xslt";
          StructuredArtifactDefinitionBean sadb = loadHome(type);
-         if (sadb.getAlternateCreateXslt() != null) {
+         if (sadb == null) {
+            ToolSession toolSession = SessionManager.getCurrentToolSession();
+            sadb = (StructuredArtifactDefinitionBean)toolSession.getAttribute(SAD_SESSION_TAG);
+         }
+         if (sadb != null && sadb.getAlternateCreateXslt() != null) {
             viewLocation = getContentHosting().resolveUuid(sadb.getAlternateCreateXslt().getValue());
          }
          
          if (readOnly) {
             viewLocation = "/group/PortfolioAdmin/system/formView.xslt";
-            if (sadb.getAlternateViewXslt() != null) {
+            if (sadb != null && sadb.getAlternateViewXslt() != null) {
                viewLocation = getContentHosting().resolveUuid(sadb.getAlternateViewXslt().getValue());
             }
          }

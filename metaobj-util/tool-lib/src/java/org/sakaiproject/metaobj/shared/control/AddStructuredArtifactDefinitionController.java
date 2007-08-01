@@ -36,6 +36,7 @@ import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.metaobj.security.AuthorizationFailedException;
 import org.sakaiproject.metaobj.shared.SharedFunctionConstants;
 import org.sakaiproject.metaobj.shared.FormHelper;
+import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.PersistenceException;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
@@ -53,8 +54,8 @@ import org.springframework.web.servlet.ModelAndView;
 public class AddStructuredArtifactDefinitionController extends AbstractStructuredArtifactDefinitionController
       implements CustomCommandController, FormController, LoadObjectController {
 
-   protected static final String SAD_SESSION_TAG =
-         "org.sakaiproject.metaobj.shared.control.AddStructuredArtifactDefinitionController.sad";
+   //protected static final String SAD_SESSION_TAG =
+   //      "org.sakaiproject.metaobj.shared.control.AddStructuredArtifactDefinitionController.sad";
    private SessionManager sessionManager;
    private ContentHostingService contentHosting;
 
@@ -69,8 +70,8 @@ public class AddStructuredArtifactDefinitionController extends AbstractStructure
    }
 
    public Object fillBackingObject(Object incomingModel, Map request, Map session, Map application) throws Exception {
-      if (session.get(SAD_SESSION_TAG) != null) {
-         return session.remove(SAD_SESSION_TAG);
+      if (session.get(StructuredArtifactDefinitionManager.SAD_SESSION_TAG) != null) {
+         return session.remove(StructuredArtifactDefinitionManager.SAD_SESSION_TAG);
       }
       else {
          return incomingModel;
@@ -85,7 +86,7 @@ public class AddStructuredArtifactDefinitionController extends AbstractStructure
             StructuredArtifactDefinitionValidator.PICK_TRANSFORM_ACTION.equals(sad.getFilePickerAction()) ||
             StructuredArtifactDefinitionValidator.PICK_ALTCREATEXSLT_ACTION.equals(sad.getFilePickerAction()) ||
             StructuredArtifactDefinitionValidator.PICK_ALTVIEWXSLT_ACTION.equals(sad.getFilePickerAction())) {
-         session.put(SAD_SESSION_TAG, sad);
+         session.put(StructuredArtifactDefinitionManager.SAD_SESSION_TAG, sad);
          
          //set the filter for xsl files since it is 3 out of 4 cases
          session.put(FilePickerHelper.FILE_PICKER_RESOURCE_FILTER,
@@ -146,7 +147,7 @@ public class AddStructuredArtifactDefinitionController extends AbstractStructure
       }
 
       if ("preview".equals(request.get("previewAction"))) {
-         session.put(SAD_SESSION_TAG, sad);
+         session.put(StructuredArtifactDefinitionManager.SAD_SESSION_TAG, sad);
          session.put(FormHelper.PREVIEW_HOME_TAG, sad);
          return new ModelAndView("preview");
       }
