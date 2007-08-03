@@ -136,7 +136,9 @@ public class XsltArtifactView extends AbstractXsltView {
                FieldError fieldError = (FieldError) error;
                errorElement.setAttribute("field", fieldError.getField());
                Element rejectedValue = new Element("rejectedValue");
-               rejectedValue.addContent(fieldError.getRejectedValue().toString());
+               if (fieldError.getRejectedValue() != null) {
+                  rejectedValue.addContent(fieldError.getRejectedValue().toString());
+               }
                errorElement.addContent(rejectedValue);
             }
             Element message = new Element("message");
