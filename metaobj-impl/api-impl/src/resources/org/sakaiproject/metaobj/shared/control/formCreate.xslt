@@ -21,6 +21,7 @@
 					<xsl:value-of select="formData/artifact/schema/element/xs:annotation/xs:documentation[@source='ospi.label']" />
 				</title>
 				<xsl:for-each select="css/uri">
+               <xsl:sort select="@order" data-type="number" />
 					<link type="text/css" rel="stylesheet" media="all">
 						<xsl:attribute name="href">
 							<xsl:value-of select="." />

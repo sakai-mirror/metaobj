@@ -46,4 +46,6 @@ public interface FormHelper {
 
    public static final String NEW_FORM_DISPLAY_NAME_TAG = "metaobj.displayName";
    
+   public static final String FORM_STYLES = "metaobj.styles";
+   
 }

@@ -158,6 +158,19 @@ public class XsltArtifactView extends AbstractXsltView {
          Element uri = new Element("uri");
          uri.setText((String) toolSession.getAttribute(ResourceEditingHelper.CUSTOM_CSS));
          root.getChild("css").addContent(uri);
+         uri.setAttribute("order", "100");
+      }
+
+      if (toolSession.getAttribute(FormHelper.FORM_STYLES) != null) {
+         List styles = (List) toolSession.getAttribute(FormHelper.FORM_STYLES);
+         int index = 101;
+         for (Iterator<String> i=styles.iterator();i.hasNext();) {
+            Element uri = new Element("uri");
+            uri.setText(i.next());
+            root.getChild("css").addContent(uri);
+            uri.setAttribute("order", "" + index);
+            index++;
+         }
       }
 
       Document doc = new Document(root);

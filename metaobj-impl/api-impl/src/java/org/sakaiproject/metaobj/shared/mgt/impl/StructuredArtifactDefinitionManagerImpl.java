@@ -1198,9 +1198,11 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       }
       String skinRepo = ServerConfigurationService.getString("skin.repo");
       Element uri = new Element("uri");
+      uri.setAttribute("order", "1");
       uri.setText(skinRepo + "/tool_base.css");
       css.addContent(uri);
       uri = new Element("uri");
+      uri.setAttribute("order", "2");
       uri.setText(skinRepo + "/" + skin + "/tool.css");
       css.addContent(uri);
       root.addContent(css);
