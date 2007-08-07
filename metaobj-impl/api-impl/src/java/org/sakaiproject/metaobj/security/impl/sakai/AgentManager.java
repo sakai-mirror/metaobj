@@ -255,7 +255,7 @@ public class AgentManager extends SecurityBase implements org.sakaiproject.metao
     * @return
     */
    public List findByProperty(String type, Object object) {
-      if (type.equals("displayName")) {
+      if (type.equals(TYPE_DISPLAY_NAME)) {
          try {
             List users = new ArrayList();
             users.add(morphAgent(getDirectoryService().getUser((String) object)));
@@ -266,7 +266,18 @@ public class AgentManager extends SecurityBase implements org.sakaiproject.metao
             return null;
          }
       }
-      if (type.equals("email")) {
+      else if (type.equals(TYPE_EID)) {
+         try {
+            List users = new ArrayList();
+            users.add(morphAgent(getDirectoryService().getUserByEid((String) object)));
+            return users;
+         }
+         catch (UserNotDefinedException e) {
+            // user not found, return null
+            return null;
+         }
+      }
+      else if (type.equals(TYPE_EMAIL)) {
          List users = new ArrayList();
          Collection directoryUsers = getDirectoryService().findUsersByEmail((String) object);
          if ((directoryUsers == null) || (directoryUsers.isEmpty())) {
@@ -299,6 +310,9 @@ public class AgentManager extends SecurityBase implements org.sakaiproject.metao
 
          // set id
          uEdit.setId(agent.getId().getValue());
+
+         // set (external id) eid
+         uEdit.setEid(agent.getId().getValue());
 
          // set the guest user type
          uEdit.setType("guest");

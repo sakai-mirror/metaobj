@@ -27,6 +27,11 @@ import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 
 public interface AgentManager {
+
+   public String TYPE_DISPLAY_NAME = "displayName"; 
+   public String TYPE_EMAIL = "email";
+   public String TYPE_EID = "eid";
+   
    /**
     * @param id
     * @return
