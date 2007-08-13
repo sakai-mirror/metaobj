@@ -32,6 +32,7 @@ import org.sakaiproject.metaobj.shared.model.*;
 import org.sakaiproject.tool.api.Placement;
 import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.user.api.User;
+import org.sakaiproject.util.ResourceLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +46,7 @@ public class AgentWrapper extends IdentifiableObject implements Agent {
    private Id eid = null;
    private StructuredArtifact profile = null;
    private SecurityBase securityBase;
+   private ResourceLoader rb = new ResourceLoader("org/sakaiproject/metaobj/messages");
 
    public AgentWrapper() {
    	logger.info("An AgentWrapper was created without any parameters");
@@ -78,7 +80,13 @@ public class AgentWrapper extends IdentifiableObject implements Agent {
    }
 
    public String getDisplayName() {
-      return sakaiUser.getDisplayName();
+      if (sakaiUser != null)
+         return sakaiUser.getDisplayName();
+      else if (eid != null)
+         return eid.getValue();
+      else if (id != null)
+         return id.getValue();
+      return rb.getString("user_not_found");
    }
 
    public boolean isInRole(String role) {
