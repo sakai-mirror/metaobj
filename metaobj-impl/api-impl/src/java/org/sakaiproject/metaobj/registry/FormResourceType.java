@@ -268,4 +268,20 @@ public class FormResourceType implements SiteSpecificResourceType {
 	    return false;
     }
 
+	public String getSizeLabel(ContentEntity entity) 
+	{
+		// Return null; Resources tool will display the byte count for the resource.  
+		// If a different measure of the "size" of a form item is needed, return a 
+		// short string (no more than 25 characters) describing the "size" of the entity.
+		return null;
+	}
+
+	public String getLongSizeLabel(ContentEntity entity) 
+	{
+		// Return null; Resources tool will display the byte count for the resource.  
+		// If a different measure of the "size" of a form item is needed, return a 
+		// short string (no more than 80 characters) describing the "size" of the entity.
+		return null;
+	}
+
 }
