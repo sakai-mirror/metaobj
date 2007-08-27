@@ -272,7 +272,7 @@ public class FormResourceType implements SiteSpecificResourceType {
 	{
 		// Return null; Resources tool will display the byte count for the resource.  
 		// If a different measure of the "size" of a form item is needed, return a 
-		// short string (no more than 25 characters) describing the "size" of the entity.
+		// short string (no more than 18 characters) describing the "size" of the entity.
 		return null;
 	}
 
