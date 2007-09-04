@@ -61,8 +61,10 @@ import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.cover.UserDirectoryService;
 import org.sakaiproject.util.ResourceLoader;
 import org.sakaiproject.event.cover.NotificationService;
+import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.entity.api.ResourcePropertiesEdit;
 import org.sakaiproject.entity.api.ResourceProperties;
+import org.sakaiproject.entity.cover.EntityManager;
 import org.sakaiproject.thread_local.cover.ThreadLocalManager;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
@@ -1631,12 +1633,12 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
          String formConsumptionType = messages.getString("content_resource_type");
          for (Iterator<StructuredArtifact> i = arts.iterator(); i.hasNext();) {
             StructuredArtifact art = (StructuredArtifact) i.next();
-            FormConsumptionDetail fcd = new FormConsumptionDetail();
-            fcd.setFormDefId(art.getHome().getType().getId().getValue());
-            fcd.setDetail1(art.getDisplayName());
             
-            fcd.setDetail2(formConsumptionType);
-            //TODO need to also list what site's resources this lives in?
+            Reference ref = EntityManager.newReference(art.getBaseResource().getReference());
+            String context = ref.getContext();
+            
+            FormConsumptionDetail fcd = new FormConsumptionDetail(art.getHome().getType().getId().getValue(), context, art.getDisplayName(), formConsumptionType);
+            
             results.add(fcd);
          }
          return results;
