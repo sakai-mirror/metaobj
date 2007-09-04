@@ -121,6 +121,9 @@ abstract public class AbstractStructuredArtifactDefinitionController extends Abs
       types = getListScrollIndexer().indexList(request, model, typesList);
 
       model.put("types", types);
+      
+      Boolean showUsage = Boolean.parseBoolean((String)tool.getConfig().getProperty("display.usage"));
+      model.put("toolShowUsage", showUsage);
 
       return new ModelAndView("success", model);
    }

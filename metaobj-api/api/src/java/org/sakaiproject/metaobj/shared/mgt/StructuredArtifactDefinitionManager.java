@@ -25,6 +25,7 @@ import org.jdom.Element;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.exception.*;
 import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactHomeInterface;
+import org.sakaiproject.metaobj.shared.model.FormConsumptionDetail;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.shared.model.Artifact;
@@ -152,4 +153,11 @@ public interface StructuredArtifactDefinitionManager {
    public void addConsumer(FormConsumer consumer);
 
    List findHomes(Id currentWorksiteId, boolean includeHidden, boolean includeGlobal);
+   
+   /**
+    * Return form usage details
+    * @param sad
+    * @return a Collection of FormConsumptionDetail objects
+    */
+   public Collection<FormConsumptionDetail> findFormUsage(StructuredArtifactDefinitionBean sad);
 }

@@ -99,6 +99,9 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
    private List formConsumers;
    private SecurityService securityService;
    private boolean autoDdl = true;
+   
+   private static ResourceLoader messages = new ResourceLoader(
+         "org.sakaiproject.metaobj.messages");
 
    public StructuredArtifactDefinitionManagerImpl() {
    }
@@ -347,6 +350,18 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       }
 
       getHibernateTemplate().delete(sad);
+   }
+   
+   /**
+    * {@inheritDoc}
+    */
+   public Collection<FormConsumptionDetail> findFormUsage(StructuredArtifactDefinitionBean sad) {
+      Collection<FormConsumptionDetail> results = new ArrayList<FormConsumptionDetail>();
+      for (Iterator<FormConsumer> i=getFormConsumers().iterator(); i.hasNext();) {
+         FormConsumer cons = (FormConsumer) i.next();
+         results.addAll(cons.getFormConsumptionDetails(sad.getId()));
+      }
+      return results;
    }
 
    /**
@@ -1595,6 +1610,36 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
          Collection arts = getStructuredArtifactFinder().findByType(type);
 
          return arts != null && arts.size() > 0;
+      }
+      finally {
+         getSecurityService().popAdvisor();
+      }
+   }
+   
+   public Collection<FormConsumptionDetail> getFormConsumptionDetails(Id formId) {
+      Collection<FormConsumptionDetail> results = new ArrayList<FormConsumptionDetail>();
+      String type = formId.getValue();
+
+      getSecurityService().pushAdvisor(new SecurityAdvisor() {
+         public SecurityAdvice isAllowed(String userId, String function, String reference) {
+            return SecurityAdvice.ALLOWED;
+         }
+      });
+
+      try {
+         Collection<StructuredArtifact> arts = getStructuredArtifactFinder().findByType(type);
+         String formConsumptionType = messages.getString("content_resource_type");
+         for (Iterator<StructuredArtifact> i = arts.iterator(); i.hasNext();) {
+            StructuredArtifact art = (StructuredArtifact) i.next();
+            FormConsumptionDetail fcd = new FormConsumptionDetail();
+            fcd.setFormDefId(art.getHome().getType().getId().getValue());
+            fcd.setDetail1(art.getDisplayName());
+            
+            fcd.setDetail2(formConsumptionType);
+            //TODO need to also list what site's resources this lives in?
+            results.add(fcd);
+         }
+         return results;
       }
       finally {
          getSecurityService().popAdvisor();

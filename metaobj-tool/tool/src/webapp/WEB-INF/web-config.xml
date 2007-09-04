@@ -97,6 +97,7 @@
             <prop key="/formCreateHelper.osp">formCreateHelperController</prop>
             <prop key="/formEditHelper.osp">formEditHelperController</prop>
             <prop key="/formResourceCreateHelper.osp">chooseFormTypeHelperController</prop>
+            <prop key="/formUsage.osp">formUsageController</prop>
          </props>
       </property>
    </bean>

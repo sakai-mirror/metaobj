@@ -17,7 +17,9 @@
       <configuration name="theospi.resetUrl"
          value="listStructuredArtifactDefinitions.osp"/>
          
-      <configuration name="functions.require" value="metaobj.create" /> 
+      <configuration name="functions.require" value="metaobj.create" />
+      
+      <configuration name="display.usage" value="false" /> 
 
    </tool>
 

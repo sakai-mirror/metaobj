@@ -570,6 +570,31 @@
          <value>confirmSADDelete</value>
       </property>
    </bean>
+   
+   <bean id="formUsageController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
+      <property name="controller">
+         <bean class="org.sakaiproject.metaobj.shared.control.FormUsageController">
+            <property name="structuredArtifactDefinitionManager">
+               <ref bean="structuredArtifactDefinitionManager"/>
+            </property>
+            <property name="listScrollIndexer">
+               <ref bean="org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer"/>
+            </property>
+         </bean>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">formUsage</prop>
+         </props>
+      </property>
+      <property name="customTypedEditors">
+         <list>
+            <ref bean="idCustomEditor"/>
+         </list>
+      </property>
+      <property name="commandName"><value>bean</value></property>
+      <property name="commandClass"><value>org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean</value></property>    
+   </bean>
 
    <bean id="org.springframework.web.servlet.HandlerInterceptor.SakaiStyleSheetInterceptor"
       class="org.sakaiproject.metaobj.shared.control.SakaiStyleSheetInterceptor">

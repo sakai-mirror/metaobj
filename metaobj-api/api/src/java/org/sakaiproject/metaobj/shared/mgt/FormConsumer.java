@@ -1,5 +1,8 @@
 package org.sakaiproject.metaobj.shared.mgt;
 
+import java.util.Collection;
+
+import org.sakaiproject.metaobj.shared.model.FormConsumptionDetail;
 import org.sakaiproject.metaobj.shared.model.Id;
 
 /**
@@ -12,5 +15,12 @@ import org.sakaiproject.metaobj.shared.model.Id;
 public interface FormConsumer {
 
    public boolean checkFormConsumption(Id formId);
+   
+   /**
+    * Return a Collection of FormConsumptionDetail objects for all of the found usages of the passed form type
+    * @param formId
+    * @return
+    */
+   public Collection<FormConsumptionDetail> getFormConsumptionDetails(Id formId);
 
 }
