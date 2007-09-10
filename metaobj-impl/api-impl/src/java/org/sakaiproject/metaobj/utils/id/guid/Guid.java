@@ -168,7 +168,7 @@ public class Guid implements java.io.Serializable {
    // convert byte array to hex string representation
    private String internalToString() {
 
-      StringBuffer buf = new StringBuffer();
+      StringBuilder buf = new StringBuilder();
       String hexStr;
       int val;
       for (int i = 0; i < GUID_LEN; i++) {

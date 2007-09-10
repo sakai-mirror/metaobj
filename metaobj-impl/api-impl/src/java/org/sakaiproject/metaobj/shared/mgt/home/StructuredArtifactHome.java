@@ -242,7 +242,7 @@ public class StructuredArtifactHome extends XmlElementHome
 
    /**
     * protected InputStream getFileStream(StructuredArtifact xmlObject) {
-    * StringBuffer sb = new StringBuffer();
+    * StringBuilder sb = new StringBuilder();
     * <p/>
     * format.format(new Object[]{getHostBaseUrl(), xmlObject.getId().getValue(),
     * getType().getId().getValue(),

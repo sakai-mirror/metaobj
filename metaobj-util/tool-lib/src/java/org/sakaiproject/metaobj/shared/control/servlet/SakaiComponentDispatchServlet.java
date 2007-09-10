@@ -166,7 +166,7 @@ public class SakaiComponentDispatchServlet extends DispatcherServlet {
                String redirectPath = (String) toolState.getAttribute(TOOL_STATE_VIEW_KEY);
 
                if (redirectPath != null) {
-                  StringBuffer redirectUrl = new StringBuffer(redirectPath + "?pid=" + req.getParameter("pid"));
+                  StringBuilder redirectUrl = new StringBuilder(redirectPath + "?pid=" + req.getParameter("pid"));
                   Map requestParams = (Map) toolState.getAttribute(TOOL_STATE_VIEW_REQUEST_PARAMS_KEY);
                   for (Iterator i = requestParams.keySet().iterator(); i.hasNext();) {
                      String name = (String) i.next();

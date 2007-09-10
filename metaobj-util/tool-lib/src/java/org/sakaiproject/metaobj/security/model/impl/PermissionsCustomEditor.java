@@ -65,7 +65,7 @@ public class PermissionsCustomEditor extends PropertyEditorSupport implements Ty
          return null;
       }
 
-      StringBuffer buffer = new StringBuffer();
+      StringBuilder buffer = new StringBuilder();
       for (Iterator i = ((Collection) getValue()).iterator(); i.hasNext();) {
          buffer.append(i.next().toString());
          if (i.hasNext()) {

@@ -483,7 +483,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
 //      Errors artifactErrors = new BindExceptionBase(artifact, "bean");
 //      validator.validate(artifact, artifactErrors);
 //      if (artifactErrors.getErrorCount() > 0) {
-//         StringBuffer buf = new StringBuffer();
+//         StringBuilder buf = new StringBuilder();
 //         for (Iterator i=artifactErrors.getAllErrors().iterator();i.hasNext();){
 //            ObjectError error = (ObjectError) i.next();
 //            buf.append(error.toString() + " ");
