@@ -44,7 +44,8 @@
 								<xsl:with-param name="index" select="position() - 1" />
 								<xsl:with-param name="fieldName" select="$name" />
 								<xsl:with-param name="dataNode" select="." />
-							</xsl:call-template>
+                        <xsl:with-param name="currentSchemaNode" select="$currentSchemaNode"/>
+                     </xsl:call-template>
 						</xsl:for-each>
 					</tbody>
 				</table>
@@ -1125,13 +1126,19 @@
 		<xsl:param name="index" />
 		<xsl:param name="fieldName" />
 		<xsl:param name="dataNode" />
+		<xsl:param name="currentSchemaNode" />
 		<tr>
 			<td>
-				<!--todo:for now render just the first child element value and hope that it is representative
-					do this as a text for the value in the schema of a <xs:documentation source="ospi.key">nodename</xs:documentation>
-					if it exists, retrieve that from the data, otherwise  just the first one
-				-->
-				<xsl:value-of select="$dataNode/*[1]" />
+            <xsl:choose>
+				<xsl:when test="($currentSchemaNode/xs:annotation/xs:documentation[@source='ospi.key']/text())">
+               <xsl:variable name="keyField" 
+                             select="$currentSchemaNode/xs:annotation/xs:documentation[@source='ospi.key']/text()"/>
+               <xsl:value-of select="$dataNode/node()[$keyField=name()]"/>
+            </xsl:when>               
+            <xsl:otherwise>
+   				<xsl:value-of select="$dataNode/*[1]" />
+            </xsl:otherwise>
+            </xsl:choose>
 			</td>
 			<td class="itemAction">
 				<a>
