@@ -1637,7 +1637,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
             Reference ref = EntityManager.newReference(art.getBaseResource().getReference());
             String context = ref.getContext();
             
-            FormConsumptionDetail fcd = new FormConsumptionDetail(art.getHome().getType().getId().getValue(), context, art.getDisplayName(), formConsumptionType);
+            FormConsumptionDetail fcd = new FormConsumptionDetail(art.getHome().getType().getId().getValue(), context, formConsumptionType, art.getDisplayName(), art.getOwner().getDisplayName());
             
             results.add(fcd);
          }
