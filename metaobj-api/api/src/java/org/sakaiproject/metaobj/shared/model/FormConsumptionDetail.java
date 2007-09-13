@@ -34,10 +34,9 @@ import org.sakaiproject.site.cover.SiteService;
 public class FormConsumptionDetail {
 
    private String formDefId;
+   private String type;
    private String detail1;
    private String detail2;
-   private String detail3;
-   private String detail4;
    private String siteId;
    private String siteName;
    
@@ -51,51 +50,41 @@ public class FormConsumptionDetail {
       this(formDefId.getValue(), siteId);
    }
    public FormConsumptionDetail(String formDefId, String siteId) {
-      this(formDefId, siteId, null, null, null, null);
+      this(formDefId, siteId, null, null,  null);
    }
-   public FormConsumptionDetail(Id formDefId, Id siteId, String detail1) {
-      this(formDefId.getValue(), siteId.getValue(), detail1);
+   public FormConsumptionDetail(Id formDefId, Id siteId, String type) {
+      this(formDefId.getValue(), siteId.getValue(), type);
    }
-   public FormConsumptionDetail(Id formDefId, String siteId, String detail1) {
-      this(formDefId.getValue(), siteId, detail1);
+   public FormConsumptionDetail(Id formDefId, String siteId, String type) {
+      this(formDefId.getValue(), siteId, type);
    }
-   public FormConsumptionDetail(String formDefId, String siteId, String detail1) {
-      this(formDefId, siteId, detail1, null, null, null);
+   public FormConsumptionDetail(String formDefId, String siteId, String type) {
+      this(formDefId, siteId, type, null,  null);
    }
-   public FormConsumptionDetail(Id formDefId, Id siteId, String detail1, String detail2) {
-      this(formDefId.getValue(), siteId.getValue(), detail1, detail2);
+   public FormConsumptionDetail(Id formDefId, Id siteId, String type, String detail1) {
+      this(formDefId.getValue(), siteId.getValue(), type, detail1);
    }
-   public FormConsumptionDetail(Id formDefId, String siteId, String detail1, String detail2) {
-      this(formDefId.getValue(), siteId, detail1, detail2);
+   public FormConsumptionDetail(Id formDefId, String siteId, String type, String detail1) {
+      this(formDefId.getValue(), siteId, type, detail1);
    }
-   public FormConsumptionDetail(String formDefId, String siteId, String detail1, String detail2) {
-      this(formDefId, siteId, detail1, detail2, null, null);
+   public FormConsumptionDetail(String formDefId, String siteId, String type, String detail1) {
+      this(formDefId, siteId, type, detail1, null);
    }
-   public FormConsumptionDetail(Id formDefId, Id siteId, String detail1, String detail2, String detail3) {
-      this(formDefId.getValue(), siteId.getValue(), detail1, detail2, detail3);
+   public FormConsumptionDetail(Id formDefId, Id siteId, String type, String detail1, String detail2) {
+      this(formDefId.getValue(), siteId.getValue(), type, detail1, detail2);
    }
-   public FormConsumptionDetail(Id formDefId, String siteId, String detail1, String detail2, String detail3) {
-      this(formDefId.getValue(), siteId, detail1, detail2, detail3);
+   public FormConsumptionDetail(Id formDefId, String siteId, String type, String detail1, String detail2) {
+      this(formDefId.getValue(), siteId, type, detail1, detail2);
    }
-   public FormConsumptionDetail(String formDefId, String siteId, String detail1, String detail2, String detail3) {
-      this(formDefId, siteId, detail1, detail2, detail3, null);
-   }
-   public FormConsumptionDetail(Id formDefId, Id siteId, String detail1, String detail2, String detail3, String detail4) {
-      this(formDefId.getValue(), siteId.getValue(), detail1, detail2, detail3, detail4);
-   }
-   public FormConsumptionDetail(Id formDefId, String siteId, String detail1, String detail2, String detail3, String detail4) {
-      this(formDefId.getValue(), siteId, detail1, detail2, detail3, detail4);
-   }
-   public FormConsumptionDetail(String formDefId, Id siteId, String detail1, String detail2, String detail3, String detail4) {
-      this(formDefId, siteId.getValue(), detail1, detail2, detail3, detail4);
+   public FormConsumptionDetail(String formDefId, Id siteId, String type, String detail1, String detail2) {
+      this(formDefId, siteId.getValue(), type, detail1, detail2);
    }
    
-   public FormConsumptionDetail(String formDefId, String siteId, String detail1, String detail2, String detail3, String detail4) {
+   public FormConsumptionDetail(String formDefId, String siteId, String type, String detail1, String detail2) {
       this.formDefId = formDefId;
+      this.type = type;
       this.detail1 = detail1;
       this.detail2 = detail2;
-      this.detail3 = detail3;
-      this.detail4 = detail4;
       this.siteId = siteId;
       try {
          this.siteName = SiteService.getSite(siteId).getTitle();
@@ -148,6 +137,20 @@ public class FormConsumptionDetail {
    }
 
    /**
+    * @return the type
+    */
+   public String getType() {
+      return type;
+   }
+
+   /**
+    * @param type the type to set
+    */
+   public void setType(String type) {
+      this.type = type;
+   }
+
+   /**
     * @return the detail1
     */
    public String getDetail1() {
@@ -173,34 +176,6 @@ public class FormConsumptionDetail {
     */
    public void setDetail2(String detail2) {
       this.detail2 = detail2;
-   }
-
-   /**
-    * @return the detail3
-    */
-   public String getDetail3() {
-      return detail3;
-   }
-
-   /**
-    * @param detail3 the detail3 to set
-    */
-   public void setDetail3(String detail3) {
-      this.detail3 = detail3;
-   }
-
-   /**
-    * @return the detail4
-    */
-   public String getDetail4() {
-      return detail4;
-   }
-
-   /**
-    * @param detail4 the detail4 to set
-    */
-   public void setDetail4(String detail4) {
-      this.detail4 = detail4;
    }
    
    

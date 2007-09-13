@@ -1631,13 +1631,20 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       try {
          Collection<StructuredArtifact> arts = getStructuredArtifactFinder().findByType(type);
          String formConsumptionType = messages.getString("content_resource_type");
+         String formNameText = messages.getString("form_name");
+         String formOwnerText = messages.getString("form_owner");
          for (Iterator<StructuredArtifact> i = arts.iterator(); i.hasNext();) {
             StructuredArtifact art = (StructuredArtifact) i.next();
             
             Reference ref = EntityManager.newReference(art.getBaseResource().getReference());
             String context = ref.getContext();
             
-            FormConsumptionDetail fcd = new FormConsumptionDetail(art.getHome().getType().getId().getValue(), context, formConsumptionType, art.getDisplayName(), art.getOwner().getDisplayName());
+            FormConsumptionDetail fcd = new FormConsumptionDetail(
+                  art.getHome().getType().getId().getValue(), 
+                  context, 
+                  formConsumptionType, 
+                  formNameText + art.getDisplayName(), 
+                  formOwnerText + art.getOwner().getDisplayName());
             
             results.add(fcd);
          }

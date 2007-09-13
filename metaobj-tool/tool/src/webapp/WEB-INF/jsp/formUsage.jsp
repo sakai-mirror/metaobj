@@ -20,10 +20,9 @@
  <table class="listHier lines nolines" cellspacing="0" cellpadding="0" summary="<fmt:message key="table_header_summary"/>">
    <thead>
       <tr>
+         <th scope="col"><fmt:message key="table_header_type"/></th>
          <th scope="col"><fmt:message key="table_header_detail1"/></th>
          <th scope="col"><fmt:message key="table_header_detail2"/></th>
-         <th scope="col"><fmt:message key="table_header_detail3"/></th>
-         <th scope="col"><fmt:message key="table_header_detail4"/></th>
          <th scope="col"><fmt:message key="table_header_sitename"/></th>
       </tr>
    </thead>
@@ -31,16 +30,13 @@
   <c:forEach var="use" items="${usage}">
     <TR>
       <TD>
+         <c:out value="${use.type}" />
+      </TD>
+      <TD>
          <c:out value="${use.detail1}" />
       </TD>
       <TD>
          <c:out value="${use.detail2}" />
-      </TD>
-      <TD>
-         <c:out value="${use.detail3}" />
-      </TD>
-      <TD>
-         <c:out value="${use.detail4}" />
       </TD>
       <TD>
          <c:out value="${use.siteName}" />
