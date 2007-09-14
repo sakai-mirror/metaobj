@@ -66,7 +66,7 @@ public class StructuredArtifactFinder extends WrappedStructuredArtifactFinder {
 
    public Collection findByType(String type) {
       List artifacts = getContentHostingService().findResources(type,
-            null, null);
+            null, null, false);
 
       Collection returned = new ArrayList();
 
