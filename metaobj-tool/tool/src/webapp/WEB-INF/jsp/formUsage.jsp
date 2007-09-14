@@ -4,7 +4,10 @@
 <fmt:setLocale value="${locale}"/>
 <fmt:setBundle basename = "messages"/>
 
-<!-- GUID=<c:out value="${newFormId}" /> -->
+<div class="navIntraTool">
+	<a href="<osp:url value="/listStructuredArtifactDefinitions.osp"/>"
+         title="<fmt:message key="back_to_list"/>" ><fmt:message key="back_to_list"/></a>
+</div>
 
 <osp:url var="listUrl" value="formUsage.osp">
 	<osp:param name="id" value="${formId}"/>

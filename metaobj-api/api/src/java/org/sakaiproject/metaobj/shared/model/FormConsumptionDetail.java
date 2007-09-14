@@ -25,7 +25,11 @@
 package org.sakaiproject.metaobj.shared.model;
 
 import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.user.api.User;
+import org.sakaiproject.user.api.UserNotDefinedException;
+import org.sakaiproject.user.cover.UserDirectoryService;
 
 /**
  * @author chrismaurer
@@ -87,7 +91,24 @@ public class FormConsumptionDetail {
       this.detail2 = detail2;
       this.siteId = siteId;
       try {
-         this.siteName = SiteService.getSite(siteId).getTitle();
+         Site site = SiteService.getSite(siteId);
+         String localSiteName = site.getTitle();
+         
+         if (SiteService.isUserSite(siteId)) {
+            //I think this means that the siteId is ~<uesrId>
+            try {
+               String userId = siteId.substring(1);
+               User user = UserDirectoryService.getUser(userId);
+               localSiteName = site.getTitle() + ": " + user.getDisplayName();
+            } catch (UserNotDefinedException e) {
+               // guess this wasn't really a user's my workspace?
+               // Maybe they were deleted or something?
+               //TODO add logging?
+            }            
+         }
+         
+         this.siteName = localSiteName;
+         
       } catch (IdUnusedException e) {
          this.siteName = siteId;
       }
