@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+   <bean id="formOverview" class="org.sakaiproject.component.app.help.model.ResourceBean">
+      <property name="docId"><value>sakai_metaobj</value></property>
+      <property name="name"><value>Forms Overview</value></property>
+      <property name="location"><value>/sakai_metaobj/forms.html</value></property>
+      <property name="defaultForTool"><value>sakai.metaobj</value></property>
+   </bean>
+
+    <bean id="org.sakaiproject.api.app.help.TableOfContents"
+          class="org.sakaiproject.component.app.help.model.TableOfContentsBean">
+      <property name="name"><value>root</value></property>
+      <property name="categories">
+         <list>
+            <bean id="ospMatrixCategory" class="org.sakaiproject.component.app.help.model.CategoryBean">
+               <property name="name"><value>Forms</value></property>
+               <property name="resources">
+                  <list>
+                     <ref bean="formOverview"/>
+                  </list>
+               </property>
+            </bean>
+           </list>
+         </property>
+       </bean>
+</beans>
