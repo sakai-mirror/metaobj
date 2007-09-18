@@ -272,6 +272,7 @@
       <property name="acceptedExtensions">
          <list>
             <value>xsl</value>
+            <value>xslt</value>
          </list>
       </property>
    </bean>
