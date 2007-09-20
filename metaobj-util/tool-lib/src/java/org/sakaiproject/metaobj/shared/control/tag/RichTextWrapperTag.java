@@ -30,6 +30,8 @@ import org.apache.taglibs.standard.tag.el.core.ExpressionUtil;
 import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.content.cover.ContentHostingService;
 import org.sakaiproject.tool.cover.ToolManager;
+import org.sakaiproject.util.EditorConfiguration;
+import org.sakaiproject.util.Web;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
@@ -73,8 +75,20 @@ public class RichTextWrapperTag extends BodyTagSupport {
    
             String collectionId = ContentHostingService.getSiteCollection(ToolManager.getCurrentPlacement().getContext());
             String tagFocus = ServerConfigurationService.getString("tags.focus");
+            boolean resourceSearch = EditorConfiguration.enableResourceSearch();
+            
             writer.write("<script type=\"text/javascript\" src=\"/library/editor/FCKeditor/sakai_fckconfig.js\"></script>\n");
             writer.write("<script type=\"text/javascript\" defer=\"1\">\n");
+            if(resourceSearch)
+            {
+            	// need to set document.__pid to placementId
+            	String placementId = ToolManager.getCurrentPlacement().getId();
+            	writer.write("\t\tdocument.__pid=\"" + placementId + "\";\n");
+            	
+            	// need to set document.__baseUrl to baseUrl
+            	String baseUrl = ServerConfigurationService.getToolUrl() + "/" + Web.escapeUrl(placementId);
+            	writer.write("\t\tdocument.__baseUrl=\"" + baseUrl + "\";\n");
+            }
             writer.write("\t\tvar inputArea = document.getElementById('"+textAreaId+"');\n");
             writer.write("\t\tvar cols = document.getElementById('"+textAreaId+"').cols;\n");
             writer.write("\t\tvar rows = document.getElementById('"+textAreaId+"').rows;\n");
@@ -83,7 +97,7 @@ public class RichTextWrapperTag extends BodyTagSupport {
             
             
             writer.write("\t\tchef_setupfcktextarea('"+
-                  textAreaId+"', width, height, '" + collectionId + "', '" + tagFocus + "');\n");
+                  textAreaId+"', width, height, '" + collectionId + "', '" + tagFocus + "', '" + Boolean.toString(resourceSearch) + "');\n");
             writer.write("\t\tvar f = document.getElementById('"+textAreaId+"').form;\n" +
                "\t\tif (typeof f.onsubmit != \"function\") f.onsubmit = function() {};\n");
             writer.write("</script>");
