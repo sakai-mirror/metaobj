@@ -202,10 +202,12 @@ public class XmlControllerBase {
       }
       else if (session.get(ResourceToolAction.ACTION_PIPE) != null) {
          ResourceToolActionPipe pipe = (ResourceToolActionPipe)session.get(ResourceToolAction.ACTION_PIPE);
-         String schemaName = getSchemaName(session);
+         ContentEntity entity = pipe.getContentEntity();
+         String schemaName = (String) entity.getProperties().get(ResourceProperties.PROP_STRUCTOBJ_TYPE);
+         
          if (schemaName == null) {
-            ContentEntity entity = pipe.getContentEntity();
-            schemaName = (String) entity.getProperties().get(ResourceProperties.PROP_STRUCTOBJ_TYPE);
+            // must be a create
+            schemaName = getSchemaName(session);
          }
 
          StructuredArtifactHomeInterface home =
