@@ -23,6 +23,7 @@ package org.sakaiproject.metaobj.utils.mvc.impl;
 
 import java.beans.PropertyEditor;
 import java.util.Map;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -79,14 +80,18 @@ public class MapWrapper extends BeanWrapperBase {
    protected BeanWrapperImpl createNestedWrapper(String parentPath, String nestedProperty) {
       Map map = (Map) getWrappedInstance();
 
-      if (map instanceof TypedMap &&
-            java.util.Map.class.isAssignableFrom(((TypedMap) map).getType(nestedProperty))) {
-         return new MapWrapper((Map) map.get(nestedProperty),
+      if (map instanceof TypedMap) {
+         if (java.util.Map.class.isAssignableFrom(((TypedMap) map).getType(nestedProperty))) {
+            return new MapWrapper((Map) map.get(nestedProperty),
                parentPath + NESTED_PROPERTY_SEPARATOR + nestedProperty, getWrappedInstance());
+         }
+         else if (java.util.List.class.isAssignableFrom(((TypedMap)map).getType(nestedProperty))) {
+            return new ListWrapper((List) map.get(nestedProperty),
+               parentPath + NESTED_PROPERTY_SEPARATOR + nestedProperty, getWrappedInstance());
+         }
       }
-      else {
-         return super.createNestedWrapper(parentPath, nestedProperty);
-      }
+
+      return super.createNestedWrapper(parentPath, nestedProperty);
    }
 
    protected BeanWrapperBase constructWrapper(Object propertyValue, String nestedProperty) {
