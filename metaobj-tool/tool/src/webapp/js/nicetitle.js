@@ -526,17 +526,37 @@ addEvent(window, "load", NiceTitles.autoCreation);
 //this function needs jquery 1.1.2 or later - it resizes the parent iframe without bringing the scroll to the top
 function resizeFrame(updown) {
   var frame = parent.document.getElementById( window.name );
-    
+ 
   if( frame ) {
+  
+  
+  
+  var myWidth = 0, myHeight = 0;
+	  if( typeof( window.innerWidth ) == 'number' ) {
+	    //Non-IE
+	    myWidth = window.innerWidth;
+	    myHeight = window.innerHeight;
+	  } else if( document.documentElement && ( document.documentElement.clientWidth || document.documentElement.clientHeight ) ) {
+	    //IE 6+ in 'standards compliant mode'
+	    myWidth = document.documentElement.clientWidth;
+	    myHeight = document.documentElement.clientHeight;
+	  } else if( document.body && ( document.body.clientWidth || document.body.clientHeight ) ) {
+	    //IE 4 compatible
+	    myWidth = document.body.clientWidth;
+	    myHeight = document.body.clientHeight;
+	  }
+    
 	if(updown=='shrink')
 	{
-    var clientH = document.body.clientHeight - 30;
+	
+    var clientH = myHeight  - 30;
   }
   else
   {
-  var clientH = document.body.clientHeight + 30;
+  
+  	var clientH = myHeight + 100;
   }
-    $( frame ).height( clientH );
+    $( frame ).height( clientH)
   } else {
     throw( "resizeFrame did not get the frame (using name=" + window.name + ")" );
   }
