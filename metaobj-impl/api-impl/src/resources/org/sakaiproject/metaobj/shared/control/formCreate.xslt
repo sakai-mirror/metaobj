@@ -29,7 +29,7 @@
 					</link>
 				</xsl:for-each>
 				<link type="text/css" rel="stylesheet" media="all" href="/sakai-metaobj-tool/css/metaobj.css" />
-				<script type="text/javascript" language="JavaScript" src="/library/js/jquery-1.1.3.js"> // empty
+				<script type="text/javascript" language="JavaScript" src="/library/js/jquery-1.1.2.js"> // empty
 					block </script>
 				<script type="text/javascript" language="JavaScript" src="/library/js/headscripts.js"> // empty
 					block </script>
