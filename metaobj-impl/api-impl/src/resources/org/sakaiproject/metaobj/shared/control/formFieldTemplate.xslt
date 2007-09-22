@@ -20,6 +20,12 @@
 					<thead>
 						<tr>
 							<th scope="col">
+                        <xsl:if test="($currentSchemaNode/children/element/xs:annotation/xs:documentation[@source='ospi.key']/text())">
+                           <xsl:attribute name="colspan">
+                              <xsl:value-of 
+                                 select="count($currentSchemaNode/children/element/xs:annotation/xs:documentation[@source='ospi.key']/text())"/>
+                           </xsl:attribute>
+                        </xsl:if>
 								<xsl:call-template name="produce-label">
 									<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
 								</xsl:call-template>
@@ -37,6 +43,19 @@
 								</div>
 							</th>
 						</tr>
+                  <xsl:if test="($currentSchemaNode/children/element/xs:annotation/xs:documentation[@source='ospi.key']/text())">
+                     <tr>
+                     <xsl:for-each select="$currentSchemaNode/children/element[xs:annotation/xs:documentation[@source='ospi.key']/text()]">
+                        <xsl:sort select="xs:annotation/xs:documentation[@source='ospi.key']/text()" data-type="number"/>
+                        <th>
+                           <xsl:call-template name="produce-label">
+                              <xsl:with-param name="currentSchemaNode" select="." />
+                           </xsl:call-template>
+                        </th>
+                     </xsl:for-each>
+                        <th></th>
+                     </tr>
+                  </xsl:if>
 					</thead>
 					<tbody>
 						<xsl:for-each select="$currentParent/node()[$name=name()]">
@@ -1128,18 +1147,31 @@
 		<xsl:param name="dataNode" />
 		<xsl:param name="currentSchemaNode" />
 		<tr>
-			<td>
-            <xsl:choose>
-				<xsl:when test="($currentSchemaNode/xs:annotation/xs:documentation[@source='ospi.key']/text())">
-               <xsl:variable name="keyField" 
-                             select="$currentSchemaNode/xs:annotation/xs:documentation[@source='ospi.key']/text()"/>
-               <xsl:value-of select="$dataNode/node()[$keyField=name()]"/>
-            </xsl:when>               
-            <xsl:otherwise>
-   				<xsl:value-of select="$dataNode/*[1]" />
-            </xsl:otherwise>
-            </xsl:choose>
-			</td>
+         <xsl:choose>
+         <xsl:when test="($currentSchemaNode/children/element/xs:annotation/xs:documentation[@source='ospi.key']/text())">
+            <xsl:for-each select="$currentSchemaNode/children/element[xs:annotation/xs:documentation[@source='ospi.key']/text()]">
+               <xsl:sort select="xs:annotation/xs:documentation[@source='ospi.key']/text()" data-type="number"/>
+               <xsl:variable name="keyField" select="@name"/>
+               <td>
+                  <xsl:value-of select="$dataNode/node()[$keyField=name()]"/>
+               </td>
+            </xsl:for-each>
+         </xsl:when>               
+         <xsl:otherwise>
+            <td>
+               <xsl:choose>
+               <xsl:when test="($currentSchemaNode/xs:annotation/xs:documentation[@source='ospi.key']/text())">
+                  <xsl:variable name="keyField" 
+                                select="$currentSchemaNode/xs:annotation/xs:documentation[@source='ospi.key']/text()"/>
+                  <xsl:value-of select="$dataNode/node()[$keyField=name()]"/>
+               </xsl:when>               
+               <xsl:otherwise>
+                  <xsl:value-of select="$dataNode/*[1]" />
+               </xsl:otherwise>
+               </xsl:choose>
+            </td>
+         </xsl:otherwise>
+         </xsl:choose>
 			<td class="itemAction">
 				<a>
 					<xsl:attribute name="href">javascript:document.forms[0].childPath.value='<xsl:value-of select="$fieldName" />';document.forms[0].editButton.value='Edit';document.forms[0].removeButton.value='';document.forms[0].childIndex.value='<xsl:value-of select="$index" />';document.forms[0].onsubmit();document.forms[0].submit();</xsl:attribute> edit </a> | <a>
