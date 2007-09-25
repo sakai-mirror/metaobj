@@ -24,13 +24,11 @@ package org.sakaiproject.metaobj.shared.mgt.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 
-import org.sakaiproject.content.api.ContentHostingService;
+import org.sakaiproject.authz.cover.SecurityService;
 import org.sakaiproject.content.api.ContentResource;
+import org.sakaiproject.content.api.ResourceType;
 import org.sakaiproject.entity.api.ResourceProperties;
-import org.sakaiproject.metaobj.shared.mgt.AgentManager;
-import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
 import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactHomeInterface;
 import org.sakaiproject.metaobj.shared.model.*;
@@ -65,17 +63,65 @@ public class StructuredArtifactFinder extends WrappedStructuredArtifactFinder {
    }
 
    public Collection findByType(String type) {
-      List artifacts = getContentHostingService().findResources(type,
-            null, null, false);
+      Collection<ContentResource> filteredArtifacts = new ArrayList<ContentResource>();
+      int page = 0;
+      Collection<ContentResource> rawResources = getContentHostingService().getResourcesOfType(
+            ResourceType.TYPE_METAOBJ, getFinderPageSize(), page);
+      while (rawResources != null && rawResources.size() > 0) {
+         
+         filteredArtifacts.addAll(filterArtifacts(rawResources, type, true));
+         page++;
+         rawResources = getContentHostingService().getResourcesOfType(
+               ResourceType.TYPE_METAOBJ, getFinderPageSize(), page);
+      }
+      
+      //List artifacts = getContentHostingService().findResources(type,
+      //      null, null, false);
 
-      Collection returned = new ArrayList();
+      Collection<Artifact> returned = new ArrayList<Artifact>();
 
-      for (Iterator i = artifacts.iterator(); i.hasNext();) {
+      for (Iterator<ContentResource> i = filteredArtifacts.iterator(); i.hasNext();) {
          ContentResource resource = (ContentResource) i.next();
          returned.add(createArtifact(resource));
       }
 
       return returned;
+   }
+   
+   protected Collection filterArtifacts(Collection artifacts, String type, boolean checkPerms)
+   {
+      for (Iterator i = artifacts.iterator(); i.hasNext();)
+      {
+         ContentResource resource = (ContentResource) i.next();
+         //check for read permissions...
+         if (!checkPerms || SecurityService.unlock("content.read", resource.getId())) 
+         {
+            String currentType = resource.getProperties().getProperty(ResourceProperties.PROP_STRUCTOBJ_TYPE);
+            //String mimeType = resource.getProperties().getProperty(ResourceProperties.PROP_CONTENT_TYPE);
+   
+            if (type != null && !type.equals(ResourceProperties.FILE_TYPE))
+            {
+               // process StructuredObject type
+               if (currentType == null)
+               {
+                  i.remove();
+               }
+               else if (!currentType.equals(type))
+               {
+                  i.remove();
+               }
+            }
+            else 
+            {
+               // this one is a structured object, get rid of it
+               i.remove();
+            }
+         }
+         else {
+            i.remove();
+         }
+      }
+      return artifacts;
    }
 
 }

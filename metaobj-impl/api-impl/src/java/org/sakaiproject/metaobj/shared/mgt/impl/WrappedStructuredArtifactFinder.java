@@ -48,6 +48,7 @@ public class WrappedStructuredArtifactFinder  extends FileArtifactFinder {
    private ContentHostingService contentHostingService;
    private AgentManager agentManager;
    private IdManager idManager;
+   private int finderPageSize = 1000;
 
    public Collection findByOwnerAndType(Id owner, String type) {
       List artifacts = getContentHostingService().findResources(type,
@@ -115,5 +116,19 @@ public class WrappedStructuredArtifactFinder  extends FileArtifactFinder {
 
    public void setIdManager(IdManager idManager) {
       this.idManager = idManager;
+   }
+
+   /**
+    * @return the finderPageSize
+    */
+   public int getFinderPageSize() {
+      return finderPageSize;
+   }
+
+   /**
+    * @param finderPageSize the finderPageSize to set
+    */
+   public void setFinderPageSize(int finderPageSize) {
+      this.finderPageSize = finderPageSize;
    }
 }
