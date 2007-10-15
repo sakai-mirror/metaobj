@@ -148,3 +148,15 @@ body.formDisplay
 .sidebyside option{
 	color:#000
 }
+
+/*in Sakai all input[type=text] and select item labels are floated
+- unfloat here because there is no control on label length in metaobj
+- below will cause all form text inputs and select groups to display in 2 lines*/
+    
+.shorttext label{
+	margin-right: 1em;
+	display:block;
+	float:none;
+	width:auto;
+	padding:0 0 .3em 0
+}
