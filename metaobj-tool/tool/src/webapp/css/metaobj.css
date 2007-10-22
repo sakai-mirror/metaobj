@@ -29,7 +29,7 @@ a.nt{
 }
 a.nt:hover{
 	text-decoration: none !important;
-	color:orange;
+	color:#d70;
 }
 
 .addEl{
@@ -89,7 +89,8 @@ fieldset.validFail .checkbox label{
 body.formDisplay
 {
 	font-family: 'Trebuchet MS',Verdana,Geneva,Arial,Helvetica,sans-serif;
-	font-size: 85%;
+	font-size: 90%;
+	padding:1em;
 }
 .formDisplay table
 {
@@ -103,7 +104,7 @@ body.formDisplay
 	width:16em;text-align: left;padding:.3em;border-collapse:collapse;vertical-align:top
 }
 
-.formDisplay h4{color:#d70;font-size:1.2em;font-weight:bold;color:orange;margin:0}	
+.formDisplay h4{color:#d70;font-size:1.2em;font-weight:bold;color:#d70;margin:0}	
 .formDisplay th h4, .formDisplay td h4{ margin:0;padding:0;font-size:1em}
 .formDisplay .subformlabel h4{margin:0;padding-left:.3em;font-size:.9em}
 .formDisplay .subformlabel .textPanelFooter{padding-left:2em;font-size: 90%;}					
@@ -128,7 +129,7 @@ body.formDisplay
 	list-style:none;
 	}
 .formDisplay	.textPanelFooter{
-		color: #16a;}
+		color: gray;}
 .formDisplay	.h .textPanelFooter, .v .textPanelFooter{
 	font-size: 90%;
 	margin: 0 0 0 1em;
