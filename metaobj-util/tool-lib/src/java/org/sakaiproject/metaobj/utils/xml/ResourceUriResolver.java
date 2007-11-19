@@ -27,6 +27,7 @@ import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.exception.ServerOverloadException;
+import org.sakaiproject.component.cover.ServerConfigurationService;
 
 import javax.xml.transform.URIResolver;
 import javax.xml.transform.Source;
@@ -46,10 +47,18 @@ public class ResourceUriResolver implements URIResolver {
 
    public Source resolve(String string, String string1) throws TransformerException {
       try {
-         ContentResource resource = getContentHostingService().getResource(string);
-         return new StreamSource(resource.streamContent(),
-            "jar:file:sakai-metaobj-api-dev.jar!" +
-               "/org/sakaiproject/metaobj/shared/control/");
+         if (string.startsWith("/access")) {
+            string = ServerConfigurationService.getServerUrl() + string;            
+         }
+         else if (string.startsWith("/")) {
+            ContentResource resource = getContentHostingService().getResource(string);
+            return new StreamSource(resource.streamContent(),
+               "jar:file:sakai-metaobj-api-dev.jar!" +
+                  "/org/sakaiproject/metaobj/shared/control/");
+         }
+
+
+         return new StreamSource(string);  
       } catch (PermissionException e) {
          throw new TransformerException(e);
       } catch (IdUnusedException e) {
