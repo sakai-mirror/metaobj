@@ -3,22 +3,14 @@
 
 <beans>
 
-   <bean id="temporary-placeholder" class="java.lang.Long">
-      <constructor-arg index="0" type="java.lang.String">
-         <value>20000000</value>
-      </constructor-arg>
-   </bean>
+<!--
+1=springapp-servlet.xml
+2=web-config.xml
+3=shared-web-config.xml
+-->
 
-   <!--
-      <bean id="org.sakaiproject.service.legacy.resource.DuplicatableToolService.presentationTemplateManager"
-            class="org.sakaiproject.metaobj.worksite.mgt.impl.ResourceServiceTranslator"
-            init-method="init"
-            destroy-method="destroy"
-            singleton="true">
-          <property name="resourceServiceName"><value>presentationManager</value></property>
-         <property name="toolPermissionManagerName">
-            <value>org.sakaiproject.metaobj.security.mgt.ToolPermissionManager.presentationTemplate</value>
-         </property>
-      </bean>
-   -->
+  <import resource="springapp-servlet.xml"/>	
+  <import resource="web-config.xml"/>	
+  <import resource="shared-web-config.xml"/>	
+
 </beans>

@@ -7,9 +7,7 @@
 
    <context-param>
       <param-name>contextConfigLocation</param-name>
-      <param-value>
-         /web-context.properties
-      </param-value>
+      <param-value>/WEB-INF/components.xml</param-value>
    </context-param>
 
    <display-name>sakai-metaobj</display-name>
@@ -182,7 +180,7 @@
 
 
    <listener>
-      <listener-class>org.sakaiproject.metaobj.utils.ioc.web.WebContextLoaderListener</listener-class>
+      <listener-class>org.sakaiproject.util.ContextLoaderListener</listener-class>
    </listener>
    <!--
       <listener>
