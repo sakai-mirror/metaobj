@@ -268,4 +268,26 @@ public class FormResourceType implements SiteSpecificResourceType {
 	    return false;
     }
 
+	/** 
+	 * The implementation of this method ensures that this version of this class is compatible
+	 * with the post-2.4 version of content (as well as 2.4.x and earlier).
+	 * This method is is in ResourceType interface in post-2.4 and 2.5.  It will be ignored 
+	 * in 2.4.x and earlier.  See SAK-12239.
+	 */
+	public String getLongSizeLabel(ContentEntity entity) {
+		// return null, so resources tool will use default size string
+		return null;
+	}
+
+	/** 
+	 * The implementation of this method ensures that this version of this class is compatible
+	 * with the post-2.4 version of content (as well as 2.4.x and earlier).
+	 * This method is is in ResourceType interface in post-2.4 and 2.5.  It will be ignored 
+	 * in 2.4.x and earlier.  See SAK-12239.
+	 */
+	public String getSizeLabel(ContentEntity entity) {
+		// return null, so resources tool will use default size string
+		return null;
+	}
+
 }
