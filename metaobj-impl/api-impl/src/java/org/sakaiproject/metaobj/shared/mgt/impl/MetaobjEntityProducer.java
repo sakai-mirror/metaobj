@@ -80,6 +80,9 @@ public class MetaobjEntityProducer extends EntityProducerBase implements EntityT
       this.structuredArtifactDefinitionManager = structuredArtifactDefinitionManager;
    }
    
-   
+   public void transferCopyEntities(String fromContext, String toContext, List ids, boolean cleanup)
+	{	
+		//TODO
+	}
 
 }
