@@ -209,9 +209,18 @@ public class BaseElementType implements ElementType {
       }
 
       if (maxLength != -1 && valueLength > maxLength) {
+    	  /*
+    	   * SAK-12670 - error description is too long bc
+    	   * the field value is too long.  This clips off the
+    	   * value of the field to only 100 chars
+    	   */    	  
+    	  String val = startingValue;
+    	  if(startingValue.length() > 100){
+    		  val = val.substring(0, 100) + "...";
+    	  }
          throw new NormalizationException("Invalid string length",
                NormalizationException.INVALID_LENGTH_TOO_LONG_ERROR_CODE,
-               new Object[]{startingValue, new Integer(maxLength)});
+               new Object[]{val, new Integer(maxLength)});
       }
 
       if (minLength != -1 && valueLength < minLength && minLength == 1) {
