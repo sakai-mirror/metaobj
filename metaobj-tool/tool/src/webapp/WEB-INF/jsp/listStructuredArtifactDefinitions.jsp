@@ -144,5 +144,8 @@
 </c:if>
 
 <c:if test="${empty types}">
-<fmt:message key="text_noFormsAvailable"/>
+	<fmt:message key="text_noFormsAvailable"/>
+	<c:if test="${can.create}">
+		<fmt:message key="text_clickAdd"/>
+	</c:if>
 </c:if>
