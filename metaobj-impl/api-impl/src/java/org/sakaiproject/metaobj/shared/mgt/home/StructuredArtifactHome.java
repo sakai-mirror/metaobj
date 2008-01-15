@@ -216,6 +216,8 @@ public class StructuredArtifactHome extends XmlElementHome
             org.sakaiproject.metaobj.shared.mgt.MetaobjEntityManager.METAOBJ_ENTITY_PREFIX);
 
          resource.setContent(getInfoBytes(artifact));
+         resource.setContentType("application/x-osp");
+			
          ContentHostingService.commitResource(resource);
          artifact.setId(getIdManager().getId(ContentHostingService.getUuid(newFileId)));
          return object;

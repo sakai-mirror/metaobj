@@ -132,7 +132,8 @@ public class FormResourceType implements SiteSpecificResourceType {
     * @return form icod
     */
    public String getIconLocation(ContentEntity entity) {
-      return "sakai/form.gif";
+      // note this is also defined in content_type_images.properties
+      return "silk/application_form.gif";
    }
 
    /**

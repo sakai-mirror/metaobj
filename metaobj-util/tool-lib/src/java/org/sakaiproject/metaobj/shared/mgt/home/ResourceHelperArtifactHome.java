@@ -36,6 +36,7 @@ public class ResourceHelperArtifactHome implements StructuredArtifactHomeInterfa
 
    public Artifact store(Artifact object) throws PersistenceException {
       pipe.setRevisedContent(getParentHome().getBytes((StructuredArtifact) object));
+      pipe.setRevisedMimeType("application/x-osp");
       pipe.setRevisedResourceProperty(ResourceProperties.PROP_STRUCTOBJ_TYPE,
          getParentHome().getTypeId());
       pipe.setRevisedResourceProperty(ContentHostingService.PROP_ALTERNATE_REFERENCE,
