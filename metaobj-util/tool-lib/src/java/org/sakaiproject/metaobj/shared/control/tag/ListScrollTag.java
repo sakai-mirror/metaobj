@@ -23,7 +23,6 @@ package org.sakaiproject.metaobj.shared.control.tag;
 
 import java.io.IOException;
 import java.text.MessageFormat;
-import java.util.ResourceBundle;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
@@ -33,9 +32,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.taglibs.standard.tag.el.core.ExpressionUtil;
 import org.sakaiproject.metaobj.utils.mvc.intf.ListScroll;
+import org.sakaiproject.util.ResourceLoader;
 
 public class ListScrollTag extends BodyTagSupport {
    protected final transient Log logger = LogFactory.getLog(getClass());
+
+   private ResourceLoader myResources = new ResourceLoader("org.sakaiproject.metaobj.bundle.Messages");
 
    private String listUrl;
    private ListScroll listScroll;
@@ -66,9 +68,6 @@ public class ListScrollTag extends BodyTagSupport {
 
    public int doEndTag() throws JspException {
       JspWriter writer = pageContext.getOut();
-
-      ResourceBundle myResources = 
-         ResourceBundle.getBundle("org.sakaiproject.metaobj.bundle.Messages");
 
       String first = myResources.getString("listScroll_first");
       String previous = myResources.getString("listScroll_previous");
