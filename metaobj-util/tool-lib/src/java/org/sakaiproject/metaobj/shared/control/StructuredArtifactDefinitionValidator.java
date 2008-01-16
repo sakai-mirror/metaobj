@@ -22,6 +22,7 @@
 package org.sakaiproject.metaobj.shared.control;
 
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
+import org.sakaiproject.util.ResourceLoader;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
@@ -38,6 +39,8 @@ public class StructuredArtifactDefinitionValidator implements Validator {
    public static final String PICK_TRANSFORM_ACTION = "pickTransform";
    public static final String PICK_ALTCREATEXSLT_ACTION = "pickAltCreate";
    public static final String PICK_ALTVIEWXSLT_ACTION = "pickAltView";
+   
+   private static ResourceLoader myResources = new ResourceLoader("org.sakaiproject.metaobj.bundle.Messages");
 
    public boolean supports(Class clazz) {
       return (StructuredArtifactDefinitionBean.class.isAssignableFrom(clazz));
@@ -58,16 +61,16 @@ public class StructuredArtifactDefinitionValidator implements Validator {
                artifactHome.getSchemaFile().getValue() == null ||
                artifactHome.getSchemaFile().getValue().length() == 0)
                && artifactHome.getSchema() == null) {
-            errors.rejectValue("schemaFile", "errors.required", "required");
+            errors.rejectValue("schemaFile", "errors.required", myResources.getFormattedMessage("errors.required", new Object[]{myResources.getString("schemaFile")}));
          }
          if (artifactHome.getDocumentRoot() == null ||
                artifactHome.getDocumentRoot().length() == 0) {
-            errors.rejectValue("documentRoot", "errors.required", "required");
+            errors.rejectValue("documentRoot", "errors.required", myResources.getFormattedMessage("errors.required", new Object[]{myResources.getString("docRootNode")}));
          }
          if (artifactHome.getType() == null ||
                artifactHome.getType().getDescription() == null ||
                artifactHome.getType().getDescription().length() == 0) {
-            errors.rejectValue("description", "errors.required", "required");
+            errors.rejectValue("description", "errors.required", myResources.getFormattedMessage("errors.required", new Object[]{myResources.getString("name")}));
          }
       }
    }
