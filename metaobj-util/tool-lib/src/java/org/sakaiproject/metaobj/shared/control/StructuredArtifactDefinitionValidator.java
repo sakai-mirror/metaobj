@@ -67,9 +67,8 @@ public class StructuredArtifactDefinitionValidator implements Validator {
                artifactHome.getDocumentRoot().length() == 0) {
             errors.rejectValue("documentRoot", "errors.required", myResources.getFormattedMessage("errors.required", new Object[]{myResources.getString("docRootNode")}));
          }
-         if (artifactHome.getType() == null ||
-               artifactHome.getType().getDescription() == null ||
-               artifactHome.getType().getDescription().length() == 0) {
+         if (artifactHome.getDescription() == null ||
+               artifactHome.getDescription().length() == 0) {
             errors.rejectValue("description", "errors.required", myResources.getFormattedMessage("errors.required", new Object[]{myResources.getString("name")}));
          }
       }
