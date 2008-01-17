@@ -557,9 +557,6 @@
             <ref bean="idCustomEditor"/>
          </list>
       </property>
-      <property name="validator">
-         <ref bean="structuredArtifactDefinitionValidator"/>
-      </property>
       <property name="commandName">
          <value>bean</value>
       </property>

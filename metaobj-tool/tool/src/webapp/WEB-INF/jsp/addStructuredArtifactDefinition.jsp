@@ -69,18 +69,18 @@
 <spring:bind path="bean.schemaFile">
 <input type="hidden" name="<c:out value="${status.expression}"/>" id="<c:out value="${status.expression}"/>"
       value="<c:out value="${status.value}"/>" />
-      
-<c:if test="${status.errorMessage != ''}">
-<span class="alertMessage">
-	<c:out value="${status.errorMessage}"/>
-</span>
-</c:if>
 <a href="#"
    onclick="document.forms[0]['filePickerAction'].value='pickSchema';
       document.forms[0]['filePickerFrom'].value='<spring:message
          code="filePickerMessage.pickSchema" />';
       document.forms[0].submit();return false;">
 <fmt:message key="text_selectXSD"/></a>
+
+<c:if test="${status.errorMessage != ''}">
+<span class="alertMessage">
+	<c:out value="${status.errorMessage}"/>
+</span>
+</c:if>
 </spring:bind>
 </p>
 
@@ -130,17 +130,19 @@
 <spring:bind path="bean.alternateCreateXslt">
 <input type="hidden" name="<c:out value="${status.expression}"/>" id="<c:out value="${status.expression}"/>"
       value="<c:out value="${status.value}"/>" />
-<c:if test="${status.errorMessage != ''}">
-<span class="alertMessage">
-	<c:out value="${status.errorMessage}"/>
-</span>
-</c:if>
+
 <a href="#"
    onclick="document.forms[0]['filePickerAction'].value='pickAltCreate';
       document.forms[0]['filePickerFrom'].value='<spring:message
          code="filePickerMessage.pickAltCreateXsl" />';
       document.forms[0].submit();return false;">
 <fmt:message key="text_selectAltCreateXsl"/></a>
+<c:if test="${status.errorMessage != ''}">
+<span class="alertMessage">
+	<c:out value="${status.errorMessage}"/>
+</span>
+</c:if>
+
 </spring:bind>
 </p>
 
@@ -153,17 +155,17 @@
 <spring:bind path="bean.alternateViewXslt">
 <input type="hidden" name="<c:out value="${status.expression}"/>" id="<c:out value="${status.expression}"/>"
       value="<c:out value="${status.value}"/>" />
-<c:if test="${status.errorMessage != ''}">
-<span class="alertMessage">
-	<c:out value="${status.errorMessage}"/>
-</span>
-</c:if>
 <a href="#"
    onclick="document.forms[0]['filePickerAction'].value='pickAltView';
       document.forms[0]['filePickerFrom'].value='<spring:message
          code="filePickerMessage.pickAltViewXsl" />';
       document.forms[0].submit();return false;">
 <fmt:message key="text_selectAltViewXsl"/></a>
+<c:if test="${status.errorMessage != ''}">
+<span class="alertMessage">
+	<c:out value="${status.errorMessage}"/>
+</span>
+</c:if>
 </spring:bind>
 </p>
 
