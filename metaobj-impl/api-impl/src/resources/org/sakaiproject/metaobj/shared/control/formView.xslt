@@ -52,7 +52,7 @@
 					</xsl:choose>
 				</xsl:when>
 				<xsl:when test="xs:simpleType/xs:restriction/@base='xs:date'">date</xsl:when>
-				<xsl:when test="xs:simpleType/xs:restriction/@base='xs:anyURI'">file</xsl:when>
+				<xsl:when test="xs:simpleType/xs:restriction/@base='xs:anyURI' or @type='xs:anyURI'">file</xsl:when>
 				<xsl:when test="xs:simpleType/xs:restriction[@base='xs:string']/xs:enumeration">select</xsl:when>
 				<!-- fallback element type -->
 				<xsl:otherwise>shorttext</xsl:otherwise>
