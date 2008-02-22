@@ -54,8 +54,6 @@ import org.springframework.web.servlet.ModelAndView;
 public class AddStructuredArtifactDefinitionController extends AbstractStructuredArtifactDefinitionController
       implements CustomCommandController, FormController, LoadObjectController {
 
-   //protected static final String SAD_SESSION_TAG =
-   //      "org.sakaiproject.metaobj.shared.control.AddStructuredArtifactDefinitionController.sad";
    private SessionManager sessionManager;
    private ContentHostingService contentHosting;
 
@@ -215,12 +213,10 @@ public class AddStructuredArtifactDefinitionController extends AbstractStructure
             sad.setSchemaFileName(nodeName);
          }
          else if (StructuredArtifactDefinitionValidator.PICK_ALTCREATEXSLT_ACTION.equals(sad.getFilePickerAction())) {
-            //Id id = getIdManager().getId(getContentHosting().getUuid(ref.getId()));
             sad.setAlternateCreateXslt(nodeUuid);
             sad.setAlternateCreateXsltName(nodeName);
          }
          else if (StructuredArtifactDefinitionValidator.PICK_ALTVIEWXSLT_ACTION.equals(sad.getFilePickerAction())) {
-            //Id id = getIdManager().getId(getContentHosting().getUuid(ref.getId()));
             sad.setAlternateViewXslt(nodeUuid);
             sad.setAlternateViewXsltName(nodeName);
          }
@@ -246,24 +242,36 @@ public class AddStructuredArtifactDefinitionController extends AbstractStructure
       }
       if (sad.getAlternateCreateXslt() != null){
          ContentResource resource = getContentResource(sad.getAlternateCreateXslt());
-         String name = resource.getProperties().getProperty(
+         if ( resource != null ) {
+            String name = resource.getProperties().getProperty(
                resource.getProperties().getNamePropDisplayName());
-         sad.setAlternateCreateXsltName(name);
+            sad.setAlternateCreateXsltName(name);
+         }
+         else {
+            logger.warn( this+".referenceData: invalid alternateCreateXslt "+sad.getAlternateCreateXslt() );
+            sad.setAlternateCreateXslt(null); 
+         }
       }
       if (sad.getAlternateViewXslt() != null){
          ContentResource resource = getContentResource(sad.getAlternateViewXslt());
-         String name = resource.getProperties().getProperty(
+         if ( resource != null ) {
+            String name = resource.getProperties().getProperty(
                resource.getProperties().getNamePropDisplayName());
-         sad.setAlternateViewXsltName(name);
+            sad.setAlternateViewXsltName(name);
+         }
+         else {
+            logger.warn( this+".referenceData: invalid alternateViewXslt "+sad.getAlternateViewXslt() );
+            sad.setAlternateViewXslt(null); 
+         }
       }      
       return base;
    }
    
    protected ContentResource getContentResource(Id fileId) {
       String id = getContentHosting().resolveUuid(fileId.getValue());
-      //String ref = getContentHosting().getReference(id);
-      //getSecurityService().pushAdvisor(
-      //      new AllowMapSecurityAdvisor(ContentHostingService.EVENT_RESOURCE_READ, ref));
+      if ( id == null )
+         return null;
+		
       ContentResource resource = null;
       try {
          resource = getContentHosting().getResource(id);

@@ -222,9 +222,6 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
 
    public List findBySchema(ContentResource resource) {
       try {
-         //String id = getContentHosting().resolveUuid(fileId.getValue());
-         //ContentResource resource = getContentHosting().getResource(id);
-         
          Object[] params = new Object[]{resource.getContent()};
          return getHibernateTemplate().findByNamedQuery("findBySchema", params);
       } catch (ServerOverloadException e) {
@@ -335,7 +332,6 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
          bean.setExternalType(sad.getExternalType());
          bean.setSchemaHash(calculateSchemaHash(bean));
          getHibernateTemplate().saveOrUpdate(bean);
-         //         getHibernateTemplate().saveOrUpdateCopy(bean);
       }
       else {
          throw new PersistenceException("Form name {0} exists", new Object[]{bean.getDescription()}, "description");
@@ -538,7 +534,6 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
 
       boolean finished = false;
       String type = sad.getType().getId().getValue();
-      //ArtifactFinder artifactFinder = getArtifactFinderManager().getArtifactFinderByType(type);
       Collection artifacts = getArtifactFinder().findByType(type);
       Collection<StructuredArtifact> modifiedArtifacts = new ArrayList<StructuredArtifact>();
 
@@ -646,8 +641,6 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
             if (findBean(bean) == null) {
                getHibernateTemplate().save(bean);
             }
-
-            //            getHibernateTemplate().saveOrUpdateCopy(bean);
          }
       }
    }
@@ -705,8 +698,6 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
          StructuredArtifactDefinitionBean bean = (StructuredArtifactDefinitionBean) i.next();
          bean.setSchemaHash(calculateSchemaHash(bean));
          getHibernateTemplate().saveOrUpdate(bean);
-
-         //         getHibernateTemplate().saveOrUpdateCopy(bean);
       }
    }
 
@@ -1271,13 +1262,17 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
             sadb = (StructuredArtifactDefinitionBean)toolSession.getAttribute(SAD_SESSION_TAG);
          }
          if (sadb != null && sadb.getAlternateCreateXslt() != null) {
-            viewLocation = getContentHosting().resolveUuid(sadb.getAlternateCreateXslt().getValue());
+            String id = getContentHosting().resolveUuid(sadb.getAlternateCreateXslt().getValue());
+            if ( id != null )
+               viewLocation = id;
          }
          
          if (readOnly) {
             viewLocation = "/group/PortfolioAdmin/system/formView.xslt";
             if (sadb != null && sadb.getAlternateViewXslt() != null) {
-               viewLocation = getContentHosting().resolveUuid(sadb.getAlternateViewXslt().getValue());
+               String id = getContentHosting().resolveUuid(sadb.getAlternateViewXslt().getValue());
+               if ( id != null )
+                  viewLocation = id;
             }
          }
          List refs = new ArrayList();
