@@ -101,6 +101,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
    private List formConsumers;
    private SecurityService securityService;
    private boolean autoDdl = true;
+   private boolean enableLocksConversion = true;
    
    private static ResourceLoader messages = new ResourceLoader(
          "org.sakaiproject.metaobj.messages");
@@ -218,6 +219,15 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
 
       return getHibernateTemplate().find(query, params);
    }
+   
+   /**
+    * Find all homes
+    * @return
+    */
+   private List<StructuredArtifactDefinitionBean> findAllHomes() {
+	   String query = "from StructuredArtifactDefinitionBean";
+	   return getHibernateTemplate().find(query);
+   }
 
 
    public List findBySchema(ContentResource resource) {
@@ -332,21 +342,47 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
          bean.setExternalType(sad.getExternalType());
          bean.setSchemaHash(calculateSchemaHash(bean));
          getHibernateTemplate().saveOrUpdate(bean);
+         lockSADFiles(bean);
+         //         getHibernateTemplate().saveOrUpdateCopy(bean);
       }
       else {
          throw new PersistenceException("Form name {0} exists", new Object[]{bean.getDescription()}, "description");
       }
       return bean;
    }
+   
+   /**
+    * remove all the locks associated with this template
+    */
+   protected void clearLocks(Id id) {
+      getContentHosting().removeAllLocks(id.getValue());
+   }
+   
+   /**
+    * locks all the files associated with this template.
+    * @param template
+    */
+   protected void lockSADFiles(StructuredArtifactDefinitionBean bean){
+      clearLocks(bean.getId());
+      
+      if (bean.getAlternateCreateXslt() != null) {
+    	  getContentHosting().lockObject(bean.getAlternateCreateXslt().getValue(),
+    		  bean.getId().getValue(), "saving a form definition", true);
+      }
+
+      if (bean.getAlternateViewXslt() != null) {
+    	  getContentHosting().lockObject(bean.getAlternateViewXslt().getValue(),
+              bean.getId().getValue(), "saving a form definition", true);
+      }
+   }
 
    public void delete(StructuredArtifactDefinitionBean sad) {
-
       for (Iterator<FormConsumer> i=getFormConsumers().iterator();i.hasNext();) {
          if (i.next().checkFormConsumption(sad.getId())) {
             throw new PersistenceException("unable_to_delete_published", new Object[]{}, "siteState");
          }
       }
-
+      clearLocks(sad.getId());
       getHibernateTemplate().delete(sad);
    }
    
@@ -687,6 +723,13 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
             sakaiSession.setUserEid(userId);
             sakaiSession.setUserId(userId);
          }
+      }
+      
+      if (isEnableLocksConversion()) {
+    	  List<StructuredArtifactDefinitionBean> homes = findAllHomes();
+    	  for (StructuredArtifactDefinitionBean bean : homes) {
+    		  lockSADFiles(bean);
+    	  }
       }
 
    }
@@ -1672,5 +1715,13 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
 
    public void setAutoDdl(boolean autoDdl) {
       this.autoDdl = autoDdl;
+   }
+
+   public boolean isEnableLocksConversion() {
+	   return enableLocksConversion;
+   }
+
+   public void setEnableLocksConversion(boolean enableLocksConversion) {
+	   this.enableLocksConversion = enableLocksConversion;
    }
 }
