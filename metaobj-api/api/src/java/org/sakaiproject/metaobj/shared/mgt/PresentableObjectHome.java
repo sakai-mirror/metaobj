@@ -34,5 +34,16 @@ import org.sakaiproject.metaobj.shared.model.Artifact;
 public interface PresentableObjectHome {
 
    public Element getArtifactAsXml(Artifact art);
+   
+   /**
+    * Add some additional information to the artifact to construct a reference like so:
+    * /<container>/<site>/<context>/...
+    * @param art
+    * @param site
+    * @param context
+    * @param container
+    * @return
+    */
+   public Element getArtifactAsXml(Artifact art, String container, String site, String context);
 
 }
