@@ -78,6 +78,14 @@ public class SchemaNodeImpl implements SchemaNode {
       this.schemaElement = schemaElement;
       elementName = schemaElement.getAttributeValue("name");
 
+      // try and create an element to test the name
+      try {
+         new Element(elementName);
+      }
+      catch (Exception e) {
+         throw new SchemaInvalidException("illegal element name", e);
+      }
+      
       setupNamespaces(schemaElement);
 
       initSchemaElement();
