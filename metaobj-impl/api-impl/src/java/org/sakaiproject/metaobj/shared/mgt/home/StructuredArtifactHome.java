@@ -44,7 +44,7 @@ import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.metaobj.registry.FormResourceType;
 import org.sakaiproject.entity.api.ResourcePropertiesEdit;
 import org.sakaiproject.entity.api.ResourceProperties;
-import org.sakaiproject.content.cover.ContentHostingService;
+import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentResourceEdit;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.exception.*;
@@ -91,13 +91,13 @@ public class StructuredArtifactHome extends XmlElementHome
 
    protected Artifact updateArtifact(Artifact object) throws PersistenceException {
       StructuredArtifact artifact = (StructuredArtifact) object;
-      String resourceId = ContentHostingService.resolveUuid(artifact.getId().getValue());
+      String resourceId = getContentHostingService().resolveUuid(artifact.getId().getValue());
       try {
-         ContentResourceEdit resourceEdit = ContentHostingService.editResource(resourceId);
+         ContentResourceEdit resourceEdit = getContentHostingService().editResource(resourceId);
          resourceEdit.setContent(getInfoBytes(object));
          resourceEdit.getProperties().addProperty(
             ResourceProperties.PROP_DISPLAY_NAME, object.getDisplayName());
-         ContentHostingService.commitResource(resourceEdit);
+         getContentHostingService().commitResource(resourceEdit);
       } catch (PermissionException e) {
          throw new PersistenceException(e, "Unknown file error",
             null, null);
@@ -125,7 +125,7 @@ public class StructuredArtifactHome extends XmlElementHome
       try {
          Agent resourceOwner = getAgentManager().getAgent(
             resource.getProperties().getProperty(ResourceProperties.PROP_CREATOR));
-         Id resourceId = getIdManager().getId(ContentHostingService.getUuid(resource.getId()));
+         Id resourceId = getIdManager().getId(getContentHostingService().getUuid(resource.getId()));
 
          SAXBuilder builder = new SAXBuilder();
          Document doc = builder.build(resource.streamContent());
@@ -204,7 +204,7 @@ public class StructuredArtifactHome extends XmlElementHome
       String newFileId = artifact.getParentFolder() + getIdManager().createId().getValue();
 
       try {
-         ContentResourceEdit resource = ContentHostingService.addResource(newFileId);
+         ContentResourceEdit resource = getContentHostingService().addResource(newFileId);
          resource.setResourceType(FormResourceType.FORM_TYPE_ID);
          ResourcePropertiesEdit resourceProperties = resource.getPropertiesEdit();
          resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, object.getDisplayName());
@@ -218,8 +218,8 @@ public class StructuredArtifactHome extends XmlElementHome
          resource.setContent(getInfoBytes(artifact));
          resource.setContentType("application/x-osp");
 			
-         ContentHostingService.commitResource(resource);
-         artifact.setId(getIdManager().getId(ContentHostingService.getUuid(newFileId)));
+         getContentHostingService().commitResource(resource);
+         artifact.setId(getIdManager().getId(getContentHostingService().getUuid(newFileId)));
          return object;
       } catch (PermissionException e) {
          throw new PersistenceException("No permission to write file",
@@ -562,4 +562,9 @@ public class StructuredArtifactHome extends XmlElementHome
       this.artifactFinder = artifactFinder;
    }
 
+   protected ContentHostingService getContentHostingService() {
+      return (ContentHostingService)ComponentManager.get(
+         "org.sakaiproject.content.api.ContentHostingService");
+   }
+   
 }

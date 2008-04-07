@@ -183,6 +183,7 @@
             <property name="idManager">
                <ref bean="idManager"/>
             </property>
+            <property name="contentHostingService" ref="org.sakaiproject.content.api.ContentHostingService" />
          </bean>
       </property>
       <property name="screenMappings">
@@ -235,6 +236,7 @@
             <property name="structuredArtifactDefinitionManager">
                <ref bean="structuredArtifactDefinitionManager"/>
             </property>
+            <property name="contentHostingService" ref="org.sakaiproject.content.api.ContentHostingService" />
          </bean>
       </property>
       <property name="screenMappings">
@@ -266,6 +268,7 @@
             <property name="structuredArtifactDefinitionManager">
                <ref bean="structuredArtifactDefinitionManager"/>
             </property>
+            <property name="contentHostingService" ref="org.sakaiproject.content.api.ContentHostingService" />
          </bean>
       </property>
       <property name="screenMappings">

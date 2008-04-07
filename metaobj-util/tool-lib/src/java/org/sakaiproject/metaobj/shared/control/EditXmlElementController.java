@@ -37,7 +37,7 @@ import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome;
 import org.sakaiproject.metaobj.shared.ArtifactFinder;
 import org.sakaiproject.metaobj.shared.FormHelper;
-import org.sakaiproject.content.cover.ContentHostingService;
+import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ResourceEditingHelper;
 import org.sakaiproject.content.api.FilePickerHelper;
 import org.sakaiproject.content.api.ResourceToolAction;
@@ -99,7 +99,7 @@ public class EditXmlElementController extends XmlControllerBase
 
          if (session.get(ResourceToolAction.ACTION_PIPE) == null) {
             Id id;
-            String idString = ContentHostingService.getUuid(
+            String idString = getContentHostingService().getUuid(
                (String) session.get(ResourceEditingHelper.ATTACHMENT_ID));
 
             id = getIdManager().getId(idString);

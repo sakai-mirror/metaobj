@@ -26,8 +26,9 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.sakaiproject.component.cover.ServerConfigurationService;
-import org.sakaiproject.content.cover.ContentHostingService;
-import org.sakaiproject.content.cover.ContentTypeImageService;
+import org.sakaiproject.component.cover.ComponentManager;
+import org.sakaiproject.content.api.ContentHostingService;
+import org.sakaiproject.content.api.ContentTypeImageService;
 import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.util.Xml;
 import org.sakaiproject.util.ResourceLoader;
@@ -66,7 +67,7 @@ public class XsltFunctions {
       String twinpeaks = ServerConfigurationService.getString("wysiwyg.twinpeaks");
       String collectionId = "/";
       if (ToolManager.getCurrentPlacement() != null) {
-         collectionId = ContentHostingService.getSiteCollection(ToolManager.getCurrentPlacement().getContext());
+         collectionId = getContentHostingService().getSiteCollection(ToolManager.getCurrentPlacement().getContext());
       }
 
       if (editor.equalsIgnoreCase("FCKeditor")) {
@@ -261,7 +262,7 @@ public class XsltFunctions {
    }
 
    public static String getReferenceName(String idString) {
-      String refString = ContentHostingService.getReference(idString);
+      String refString = getContentHostingService().getReference(idString);
       Reference ref = EntityManager.newReference(refString);
 
       if (ref == null || ref.getEntity() == null) {
@@ -273,7 +274,7 @@ public class XsltFunctions {
    }
 
    public static String getReferenceUrl(String idString) {
-      String refString = ContentHostingService.getReference(idString);
+      String refString = getContentHostingService().getReference(idString);
       Reference ref = EntityManager.newReference(refString);
 
       if (ref == null || ref.getEntity() == null) {
@@ -284,14 +285,24 @@ public class XsltFunctions {
    }
 
    public static String getImageUrl(String idString) {
-      String refString = ContentHostingService.getReference(idString);
+      String refString = getContentHostingService().getReference(idString);
       Reference ref = EntityManager.newReference(refString);
 
       if (ref == null) {
          return "/library/image/sakai/unknown.gif";
       }
 
-      return "/library/image" + ContentTypeImageService.getContentTypeImage(ref.getType());
+      return "/library/image" + getContentTypeImageService().getContentTypeImage(ref.getType());
    }
 
+   protected static ContentHostingService getContentHostingService() {
+      return (ContentHostingService) ComponentManager.get(
+         "org.sakaiproject.content.api.ContentHostingService");
+   }
+   
+   protected static ContentTypeImageService getContentTypeImageService() {
+      return (ContentTypeImageService)ComponentManager.get(
+         "org.sakaiproject.content.api.ContentTypeImageService");   
+   }
+   
 }

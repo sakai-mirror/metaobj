@@ -31,7 +31,6 @@ import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactHomeInterface;
 import org.sakaiproject.metaobj.shared.mgt.home.ResourceHelperArtifactHome;
 import org.sakaiproject.metaobj.shared.FormHelper;
 import org.sakaiproject.content.api.*;
-import org.sakaiproject.content.cover.ContentHostingService;
 import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.entity.api.Reference;
@@ -49,6 +48,7 @@ public class XmlControllerBase {
    private static final String FILE_ATTACHMENTS_FIELD =
       "org.sakaiproject.metaobj.shared.control.XmlControllerBase.field";
    private ResourceLoader rl = new ResourceLoader("messages");
+   private ContentHostingService contentHostingService;
 
    protected ModelAndView handleNonSubmit(ElementBean bean, Map request,
                                           Map session, Map application, Errors errors) {
@@ -358,7 +358,7 @@ public class XmlControllerBase {
       for (Iterator i=refs.iterator();i.hasNext();) {
          Reference ref = (Reference) i.next();
 
-         idList.add(ContentHostingService.getUuid(ref.getId()));
+         idList.add(getContentHostingService().getUuid(ref.getId()));
       }
 
       return idList;
@@ -369,7 +369,7 @@ public class XmlControllerBase {
     * @return ref
     */
    protected Reference convertToRef(String id) {
-      return EntityManager.newReference(ContentHostingService.getReference(id));
+      return EntityManager.newReference(getContentHostingService().getReference(id));
    }
 
    /**
@@ -394,4 +394,12 @@ public class XmlControllerBase {
       this.structuredArtifactDefinitionManager = structuredArtifactDefinitionManager;
    }
 
+
+   public ContentHostingService getContentHostingService() {
+      return contentHostingService;
+   }
+
+   public void setContentHostingService(ContentHostingService contentHostingService) {
+      this.contentHostingService = contentHostingService;
+   }
 }

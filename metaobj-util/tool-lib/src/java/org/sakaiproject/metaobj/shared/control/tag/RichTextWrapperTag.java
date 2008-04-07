@@ -28,7 +28,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.taglibs.standard.tag.el.core.ExpressionUtil;
 import org.sakaiproject.component.cover.ServerConfigurationService;
-import org.sakaiproject.content.cover.ContentHostingService;
+import org.sakaiproject.component.cover.ComponentManager;
+import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.util.EditorConfiguration;
 import org.sakaiproject.util.Web;
@@ -73,7 +74,7 @@ public class RichTextWrapperTag extends BodyTagSupport {
             
          } else {
    
-            String collectionId = ContentHostingService.getSiteCollection(ToolManager.getCurrentPlacement().getContext());
+            String collectionId = getContentHostingService().getSiteCollection(ToolManager.getCurrentPlacement().getContext());
             String tagFocus = ServerConfigurationService.getString("tags.focus");
             boolean resourceSearch = EditorConfiguration.enableResourceSearch();
             
@@ -220,4 +221,8 @@ public class RichTextWrapperTag extends BodyTagSupport {
       this.textAreaId = textAreaId;
    }
 
+   protected ContentHostingService getContentHostingService() {
+      return (ContentHostingService) ComponentManager.get("org.sakaiproject.content.api.ContentHostingService");
+   }
+   
 }

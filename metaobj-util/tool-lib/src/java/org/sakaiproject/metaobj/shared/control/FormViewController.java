@@ -26,7 +26,7 @@ import java.util.Map;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.sakaiproject.content.api.ResourceEditingHelper;
-import org.sakaiproject.content.cover.ContentHostingService;
+import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifact;
@@ -48,10 +48,11 @@ public class FormViewController implements Controller {
 
    private ArtifactFinder artifactFinder;
    private IdManager idManager;
+   private ContentHostingService contentHostingService;
 
    public ModelAndView handleRequest(Object requestModel, Map request, Map session,
                                      Map application, Errors errors) {
-      String idString = ContentHostingService.getUuid(
+      String idString = getContentHostingService().getUuid(
          (String) session.get(ResourceEditingHelper.ATTACHMENT_ID));
 
       StructuredArtifact bean =
@@ -76,4 +77,11 @@ public class FormViewController implements Controller {
       this.idManager = idManager;
    }
 
+   public ContentHostingService getContentHostingService() {
+      return contentHostingService;
+   }
+
+   public void setContentHostingService(ContentHostingService contentHostingService) {
+      this.contentHostingService = contentHostingService;
+   }
 }

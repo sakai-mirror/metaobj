@@ -5,7 +5,7 @@ import org.sakaiproject.metaobj.shared.model.*;
 import org.sakaiproject.metaobj.utils.xml.SchemaNode;
 import org.sakaiproject.content.api.ResourceToolActionPipe;
 import org.sakaiproject.content.api.ContentResource;
-import org.sakaiproject.content.cover.ContentHostingService;
+import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.entity.api.ResourceProperties;
 import org.jdom.Element;
 

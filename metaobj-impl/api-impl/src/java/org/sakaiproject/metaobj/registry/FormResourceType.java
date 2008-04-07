@@ -1,7 +1,7 @@
 package org.sakaiproject.metaobj.registry;
 
 import org.sakaiproject.content.api.*;
-import org.sakaiproject.content.cover.ContentHostingService;
+import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.util.BaseInteractionAction;
 import org.sakaiproject.content.util.BaseServiceLevelAction;
 import org.sakaiproject.entity.api.Reference;
