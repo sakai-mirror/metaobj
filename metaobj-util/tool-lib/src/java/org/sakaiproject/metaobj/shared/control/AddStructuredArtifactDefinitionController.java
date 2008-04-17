@@ -24,6 +24,7 @@ package org.sakaiproject.metaobj.shared.control;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Hashtable;
 
 import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.content.api.ContentHostingService;
@@ -175,8 +176,10 @@ public class AddStructuredArtifactDefinitionController extends AbstractStructure
       if (errors.getErrorCount() > 0) {
          return new ModelAndView("failure");
       }
-
-      return prepareListView(request, sad.getId().getValue());
+      Map model = new Hashtable();
+      model.put("newFormId", sad.getId().getValue());
+      
+      return new ModelAndView("success", model); //prepareListView(request, sad.getId().getValue());
    }
 
    protected void save(StructuredArtifactDefinitionBean sad, Errors errors) {
