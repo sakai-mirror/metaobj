@@ -261,7 +261,8 @@ public class SpringTool extends HttpServlet {
       if (helperSessionId != null && helperSessionId.length() > 0) {
          // todo -- need to pop back to the last tool session after helper is done
          toolSession = SessionManager.getCurrentSession().getToolSession(helperSessionId);
-         if (SessionManager.getCurrentToolSession().getAttribute(LAST_VIEW_VISITED) != null) {
+         if (SessionManager.getCurrentToolSession().getAttribute(LAST_VIEW_VISITED) != null &&
+            toolSession.getAttribute(LAST_VIEW_VISITED) == null) {
             toolSession.setAttribute(LAST_VIEW_VISITED, 
                SessionManager.getCurrentToolSession().getAttribute(LAST_VIEW_VISITED));
          }
