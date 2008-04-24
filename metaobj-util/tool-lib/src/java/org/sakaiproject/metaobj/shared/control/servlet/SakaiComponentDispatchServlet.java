@@ -134,7 +134,7 @@ public class SakaiComponentDispatchServlet extends DispatcherServlet {
 
             Session s = SessionManager.getCurrentSession();
             if (s == null) {
-               logger.error("can't determine user");
+               throw new RuntimeException("can't determine user");
             }
 
 

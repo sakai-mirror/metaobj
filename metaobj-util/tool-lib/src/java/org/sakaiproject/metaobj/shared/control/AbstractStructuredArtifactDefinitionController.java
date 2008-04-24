@@ -122,7 +122,10 @@ abstract public class AbstractStructuredArtifactDefinitionController extends Abs
 
       model.put("types", types);
       
-      Boolean showUsage = Boolean.parseBoolean((String)tool.getConfig().getProperty("display.usage"));
+      Boolean showUsage = false;
+      if (tool != null) {
+         showUsage = Boolean.parseBoolean((String)tool.getConfig().getProperty("display.usage"));
+      }
       model.put("toolShowUsage", showUsage);
 
       return new ModelAndView("success", model);

@@ -90,7 +90,7 @@ public class AuthzShim implements AuthorizationFacade {
          siteRealm = getRealmService().getAuthzGroup(getCurrentRealm());
       }
       catch (GroupNotDefinedException e) {
-         logger.warn("unkown realm", e);
+         throw new RuntimeException("unkown realm", e);
       }
       String maintain = siteRealm.getMaintainRole();
 
