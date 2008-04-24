@@ -75,9 +75,6 @@ public class IdImpl implements Id {
       if (other == null || !(other instanceof IdImpl)) {
          return false;
       }
-      if (!(other instanceof Id)) {
-         return false;
-      }
       return getValue().equals(((IdImpl) other).getValue());
 
    }
