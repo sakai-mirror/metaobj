@@ -53,17 +53,13 @@ public abstract class HomeFactoryBase implements HomeFactory {
       }
    }
 
-   public ReadableObjectHome findHomeByExternalId(String externalId, Id worksiteId) {
+   public synchronized ReadableObjectHome findHomeByExternalId(String externalId, Id worksiteId) {
       if (homesByExternalId == null) {
-         synchronized (homesByExternalIdLock) {
-            if (homesByExternalId == null) {
-               homesByExternalId = new Hashtable();
-               for (Iterator j = getHomes().entrySet().iterator(); j.hasNext();) {
-                  Map.Entry entry = (Map.Entry) j.next();
-                  ReadableObjectHome home = (ReadableObjectHome) entry.getValue();
-                  homesByExternalId.put(home.getExternalType(), home);
-               }
-            }
+         homesByExternalId = new Hashtable();
+         for (Iterator j = getHomes().entrySet().iterator(); j.hasNext();) {
+            Map.Entry entry = (Map.Entry) j.next();
+            ReadableObjectHome home = (ReadableObjectHome) entry.getValue();
+            homesByExternalId.put(home.getExternalType(), home);
          }
       }
       return (ReadableObjectHome) homesByExternalId.get(externalId);

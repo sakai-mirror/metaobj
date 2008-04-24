@@ -70,7 +70,7 @@ public class AddableResourceBundleViewResolver extends ResourceBundleViewResolve
     *
     * @param defaultParentView the default parent view
     */
-   public void setDefaultParentView(String defaultParentView) {
+   public synchronized void setDefaultParentView(String defaultParentView) {
       this.defaultParentView = defaultParentView;
    }
 
