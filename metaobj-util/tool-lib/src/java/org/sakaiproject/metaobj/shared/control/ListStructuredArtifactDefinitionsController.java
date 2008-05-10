@@ -31,7 +31,7 @@ public class ListStructuredArtifactDefinitionsController extends AbstractStructu
       implements Controller {
 
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
-      return prepareListView(request, null);
+      return prepareListView(request, (String) request.get("newFormId"));
    }
 }
 
