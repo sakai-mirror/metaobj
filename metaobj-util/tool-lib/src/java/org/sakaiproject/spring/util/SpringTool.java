@@ -30,6 +30,7 @@ import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.cover.ActiveToolManager;
 import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.util.Web;
+import org.sakaiproject.metaobj.shared.Helper;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
@@ -99,6 +100,7 @@ public class SpringTool extends HttpServlet {
 
       // if we are doing lastVisit and there's a last-visited view, for this tool placement / user, use that
       if (lastVisited) {
+         // get it from the calling tool session
          ToolSession session = SessionManager.getCurrentToolSession();
          String last = (String) session.getAttribute(LAST_VIEW_VISITED);
          if (last != null) {
@@ -253,7 +255,21 @@ public class SpringTool extends HttpServlet {
          return false;
       }
 
-      ToolSession toolSession = SessionManager.getCurrentToolSession();
+      ToolSession toolSession;
+
+      String helperSessionId = req.getParameter(Helper.HELPER_SESSION_ID);
+      if (helperSessionId != null && helperSessionId.length() > 0) {
+         // todo -- need to pop back to the last tool session after helper is done
+         toolSession = SessionManager.getCurrentSession().getToolSession(helperSessionId);
+         if (SessionManager.getCurrentToolSession().getAttribute(LAST_VIEW_VISITED) != null &&
+            toolSession.getAttribute(LAST_VIEW_VISITED) == null) {
+            toolSession.setAttribute(LAST_VIEW_VISITED, 
+               SessionManager.getCurrentToolSession().getAttribute(LAST_VIEW_VISITED));
+         }
+      }
+      else {
+         toolSession = SessionManager.getCurrentToolSession();
+      }
 
       Enumeration params = req.getParameterNames();
       while (params.hasMoreElements()) {
@@ -270,13 +286,19 @@ public class SpringTool extends HttpServlet {
       String helperId = target.substring(1, posEnd + 1);
       ActiveTool helperTool = ActiveToolManager.getActiveTool(helperId);
 
-      if (toolSession.getAttribute(helperTool.getId() + Tool.HELPER_DONE_URL) == null) {
-         toolSession.setAttribute(helperTool.getId() + Tool.HELPER_DONE_URL,
-               req.getContextPath() + req.getServletPath() + computeDefaultTarget(true));
+      String helperDoneUrl = (String) SessionManager.getCurrentToolSession().getAttribute(helperTool.getId() + Tool.HELPER_DONE_URL);
+
+      if (helperDoneUrl == null) {
+         helperDoneUrl  = req.getContextPath() + req.getServletPath() + computeDefaultTarget(true);
       }
 
+      toolSession.setAttribute(helperTool.getId() + Tool.HELPER_DONE_URL, helperDoneUrl);
+      
       String context = req.getContextPath() + req.getServletPath() + Web.makePath(parts, 1, 2);
       String toolPath = Web.makePath(parts, 2, parts.length);
+
+      SessionManager.setCurrentToolSession(toolSession);
+      
       helperTool.help(req, res, context, toolPath);
 
       return true; // was handled as helper call

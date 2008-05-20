@@ -5,6 +5,7 @@
             <xsl:copy-of select="*"></xsl:copy-of>
       </formView>
    </xsl:template-->
+	<xsl:param name="sakai_helperSessionId" />
 	<xsl:param name="panelId" />
 	<xsl:param name="subForm" />
 	<xsl:param name="preview" />
@@ -112,6 +113,7 @@
 							<xsl:with-param name="currentParent" select="formData/artifact/structuredData" />
 							<xsl:with-param name="rootNode" select="'true'" />
 						</xsl:apply-templates>
+                  <input type="hidden" name="sakai_helperSessionId" value="{$sakai_helperSessionId}" />
                   <input type="hidden" name="childPath" value="" />
                   <input type="hidden" name="childFieldLabel" value="" />
 						<input type="hidden" name="childIndex" value="" />
