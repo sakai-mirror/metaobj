@@ -37,6 +37,7 @@ public class ContentResourceArtifact implements Artifact {
    private Id id;
    private Agent owner;
    private String displayName;
+   private String description;
    private String type;
    private ReadableObjectHome home;
 
@@ -45,6 +46,7 @@ public class ContentResourceArtifact implements Artifact {
       this.id = id;
       this.owner = owner;
       setDisplayName(base.getProperties().getProperty(ResourceProperties.PROP_DISPLAY_NAME));
+      setDescription(base.getProperties().getProperty(ResourceProperties.PROP_DESCRIPTION));
    }
 
    public Agent getOwner() {
@@ -67,10 +69,18 @@ public class ContentResourceArtifact implements Artifact {
       return displayName;
    }
 
+   public String getDescription() {
+	      return displayName;
+	   }
+   
    public void setDisplayName(String displayName) {
       this.displayName = displayName;
    }
 
+   public void setDescription(String description) {
+	      this.description = description;
+	 }
+   
    public ContentResource getBase() {
       return base;
    }
