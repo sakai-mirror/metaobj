@@ -70,7 +70,7 @@ public class ContentResourceArtifact implements Artifact {
    }
 
    public String getDescription() {
-	      return displayName;
+	      return description;
 	   }
    
    public void setDisplayName(String displayName) {
