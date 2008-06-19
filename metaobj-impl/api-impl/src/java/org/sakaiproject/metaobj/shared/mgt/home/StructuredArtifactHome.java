@@ -138,6 +138,9 @@ public class StructuredArtifactHome extends XmlElementHome
          xmlObject.setDisplayName(
             (String) resource.getProperties().get(
                resource.getProperties().getNamePropDisplayName()));
+         xmlObject.setDescription(
+                 (String) resource.getProperties().get(
+                    resource.getProperties().getNamePropDescription()));
          xmlObject.setHome(this);
          xmlObject.setOwner(resourceOwner);
 
