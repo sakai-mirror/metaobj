@@ -31,6 +31,7 @@ public class ArtifactImpl implements Artifact {
    private Id id;
    private ReadableObjectHome home;
    private String displayName;
+   private String description;
 
    public Agent getOwner() {
       return owner;
@@ -60,7 +61,16 @@ public class ArtifactImpl implements Artifact {
       return displayName;
    }
 
+   public String getDescription() {
+	      return description;
+   }
+   
    public void setDisplayName(String displayName) {
       this.displayName = displayName;
    }
+   
+   public void setDescription(String description) {
+	      this.description = description;
+	   }
+
 }

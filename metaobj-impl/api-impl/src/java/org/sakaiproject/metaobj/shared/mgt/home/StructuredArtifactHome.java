@@ -360,6 +360,7 @@ public class StructuredArtifactHome extends XmlElementHome
          root.addContent(createNode("id", art.getId().getValue()));
       }
       root.addContent(createNode("displayName", art.getDisplayName()));
+      root.addContent(createNode("description", art.getDescription()));
 
       Element type = new Element("type");
       root.addContent(type);

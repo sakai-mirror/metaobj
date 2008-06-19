@@ -44,4 +44,6 @@ public interface Artifact {
    public void setHome(ReadableObjectHome home);
 
    public String getDisplayName();
+   
+   public String getDescription();
 }

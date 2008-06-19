@@ -225,12 +225,13 @@ public class ContentResourceHome implements ReadableObjectHome, PresentableObjec
       Element root = new Element("metaData");
       root.addContent(ContentHostingUtil.createNode("id", art.getId().getValue()));
       root.addContent(ContentHostingUtil.createNode("displayName", art.getDisplayName()));
+      root.addContent(ContentHostingUtil.createNode("description", art.getDescription() ));
 
       Element type = new Element("type");
       root.addContent(type);
 
       type.addContent(ContentHostingUtil.createNode("id", "file"));
-      type.addContent(ContentHostingUtil.createNode("description", art.getDescription() ));
+      type.addContent(ContentHostingUtil.createNode("description", "file"));
 
       ContentResource contentResource = art.getBase();
       Element repositoryNode =
