@@ -44,7 +44,7 @@ public class DateFormatterElementType extends FormatterElementType {
 
    private static final String DATE_FORMAT = "yyyy-MM-dd";
    private static final String TIME_FORMAT = "hh:mm:ss";
-   private static final String DATE_TIME_FORMAT = DATE_FORMAT + "T" +
+   private static final String DATE_TIME_FORMAT = DATE_FORMAT + "'T'" +
          TIME_FORMAT;
 
    private static final String DATE_TYPE = "xs:date";
