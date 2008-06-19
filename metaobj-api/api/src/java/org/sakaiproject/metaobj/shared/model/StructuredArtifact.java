@@ -47,6 +47,7 @@ public class StructuredArtifact extends ElementBean implements Artifact {
    private static String ARTIFACT_ID_PARAMETER_NAME = "artifactId";
    private static String DISPLAY_NAME_PARAMETER_NAME = "displayName";
    private String displayName;
+   private String description;
    private ContentResource baseResource;
 
    public StructuredArtifact(String elementName, SchemaNode currentSchema) {
@@ -142,6 +143,14 @@ public class StructuredArtifact extends ElementBean implements Artifact {
       this.displayName = displayName;
    }
 
+   public String getDescription() {
+	      return description;
+	   }
+
+   public void setDescription(String description) {
+	      this.description = description;
+   }
+   
    public Class getType(String key) {
       if (key.equals(ID_PARAMETER_NAME) || key.equals(ARTIFACT_ID_PARAMETER_NAME)) {
          return Id.class;
