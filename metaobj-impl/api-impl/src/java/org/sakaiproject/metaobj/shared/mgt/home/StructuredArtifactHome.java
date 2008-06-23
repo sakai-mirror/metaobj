@@ -365,13 +365,19 @@ public class StructuredArtifactHome extends XmlElementHome
       root.addContent(createNode("displayName", art.getDisplayName()));
       root.addContent(createNode("description", art.getDescription()));
 
+      ContentResource contentResource = ((StructuredArtifact)art).getBaseResource();
+
+      // Add some dublin core metadata
+      if (contentResource != null) {
+          root.addContent(createNode("dc:creator", contentResource.getProperties().getProperty("http://purl.org/dc/elements/1.1/creator")));    	  
+      }
+      
       Element type = new Element("type");
       root.addContent(type);
 
       type.addContent(createNode("id", "file"));
       type.addContent(createNode("description", "file"));
 
-      ContentResource contentResource = ((StructuredArtifact)art).getBaseResource();
       if (contentResource != null) {
          Element repositoryNode =
             ContentHostingUtil.createRepoNode(contentResource);
