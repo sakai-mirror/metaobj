@@ -369,7 +369,7 @@ public class StructuredArtifactHome extends XmlElementHome
 
       // Add some dublin core metadata
       if (contentResource != null) {
-          root.addContent(createNode("dc:creator", contentResource.getProperties().getProperty("http://purl.org/dc/elements/1.1/creator")));    	  
+          root.addContent(createNode("dc_creator", contentResource.getProperties().getProperty("http://purl.org/dc/elements/1.1/creator")));    	  
       }
       
       Element type = new Element("type");
