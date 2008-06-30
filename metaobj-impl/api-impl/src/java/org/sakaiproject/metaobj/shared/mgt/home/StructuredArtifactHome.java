@@ -45,6 +45,7 @@ import org.sakaiproject.metaobj.registry.FormResourceType;
 import org.sakaiproject.entity.api.ResourcePropertiesEdit;
 import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.content.cover.ContentHostingService;
+import org.sakaiproject.content.api.ContentCollection;
 import org.sakaiproject.content.api.ContentResourceEdit;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.exception.*;
@@ -372,6 +373,26 @@ public class StructuredArtifactHome extends XmlElementHome
           root.addContent(createNode("dc_creator", contentResource.getProperties().getProperty("http://purl.org/dc/elements/1.1/creator")));    	  
       }
       
+      // Add breadcrumbs
+		if (contentResource != null && countSlashes(contentResource.getId()) > 3) {
+			
+			Element breadcrumbs = new Element("breadcrumbs");
+			root.addContent(breadcrumbs);
+			
+			ContentCollection parent = contentResource.getContainingCollection();
+			
+			while (parent != null && countSlashes(parent.getId()) > 2) {
+				String parenturl = parent.getUrl();
+				String parenttitle = parent.getProperties().getProperty(ResourceProperties.PROP_DISPLAY_NAME);
+				
+				breadcrumbs.addContent(createNode("title", parenttitle));
+				breadcrumbs.addContent(createNode("url", parenturl));
+				
+				parent = parent.getContainingCollection();
+			}
+						
+		}
+
       Element type = new Element("type");
       root.addContent(type);
 
@@ -570,4 +591,20 @@ public class StructuredArtifactHome extends XmlElementHome
       this.artifactFinder = artifactFinder;
    }
 
+	public static int countSlashes(String s)
+	{
+		int count = 0;
+		int loc = s.indexOf('/');
+
+		while (loc >= 0)
+		{
+			count++;
+			loc++;
+			loc = s.indexOf('/', loc);
+		}
+
+		return count;
+	}
+
+   
 }
