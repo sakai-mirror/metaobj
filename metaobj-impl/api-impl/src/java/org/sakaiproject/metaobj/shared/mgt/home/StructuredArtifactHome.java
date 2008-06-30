@@ -382,11 +382,14 @@ public class StructuredArtifactHome extends XmlElementHome
 			ContentCollection parent = contentResource.getContainingCollection();
 			
 			while (parent != null && countSlashes(parent.getId()) > 2) {
+				Element location = new Element("location");
+				breadcrumbs.addContent(location);
+				
 				String parenturl = parent.getUrl();
 				String parenttitle = parent.getProperties().getProperty(ResourceProperties.PROP_DISPLAY_NAME);
 				
-				breadcrumbs.addContent(createNode("title", parenttitle));
-				breadcrumbs.addContent(createNode("url", parenturl));
+				location.addContent(createNode("title", parenttitle));
+				location.addContent(createNode("url", parenturl));
 				
 				parent = parent.getContainingCollection();
 			}
