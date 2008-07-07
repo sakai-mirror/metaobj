@@ -269,7 +269,7 @@ public class XsltArtifactView extends AbstractXsltView {
          }
 
          // Specify default output properties.
-         trans.setOutputProperty(OutputKeys.ENCODING, encoding);
+         //trans.setOutputProperty(OutputKeys.ENCODING, encoding);
          trans.setOutputProperty(OutputKeys.INDENT, "yes");
 
          // Xalan-specific, but won't do any harm in other XSLT engines.

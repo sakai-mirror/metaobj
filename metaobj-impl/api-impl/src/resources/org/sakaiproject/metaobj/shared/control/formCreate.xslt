@@ -11,7 +11,7 @@
 	<xsl:param name="preview" />
 	<xsl:param name="fromResources" />
 	<xsl:param name="edit" />
-	<xsl:output method="html" version="4.0" cdata-section-elements="" encoding="iso-8859-1" indent="yes" />
+	<xsl:output method="html" version="4.0" cdata-section-elements="" encoding="UTF-8" indent="yes" />
 	<xsl:include href="/group/PortfolioAdmin/system/formFieldTemplate.xslt" />
 	<xsl:template match="formView">
 		<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
