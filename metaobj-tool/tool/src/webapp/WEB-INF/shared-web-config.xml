@@ -92,6 +92,9 @@
 		      <property name="entityManager">
                <ref bean="org.sakaiproject.entity.api.EntityManager"/>
             </property>
+            <property name="uriResolver">
+               <ref bean="resourceResolver"/>
+            </property>
          </bean>
       </property>
       <property name="sessionForm">
@@ -324,6 +327,9 @@
 		      </property>
 		      <property name="entityManager">
                <ref bean="org.sakaiproject.entity.api.EntityManager"/>
+            </property>
+            <property name="uriResolver">
+               <ref bean="resourceResolver"/>
             </property>
          </bean>
       </property>
