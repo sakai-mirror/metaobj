@@ -30,7 +30,6 @@ import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.ContentResourceArtifact;
 import org.sakaiproject.metaobj.shared.model.MimeType;
 import org.sakaiproject.entity.api.ResourceProperties;
-import org.sakaiproject.thread_local.cover.ThreadLocalManager;
 
 import java.util.Collection;
 import java.util.List;
@@ -50,17 +49,11 @@ public class WrappedStructuredArtifactFinder  extends FileArtifactFinder {
    private AgentManager agentManager;
    private IdManager idManager;
    private int finderPageSize = 1000;
-   private final static String CACHE_KEY = "WRAPPED_STRUCTURED_ARTIFACT_FINDER_CACHE";
 
    public Collection findByOwnerAndType(Id owner, String type) {
-      // store first call in threadlocal and do the filtering ourselves, see SAK-13791
-      List artifactCache = (List) ThreadLocalManager.get(CACHE_KEY);
-      if (artifactCache == null) {
-         artifactCache = getContentHostingService().findResources(null,
-               null, null);
-         ThreadLocalManager.set(CACHE_KEY, artifactCache);
-      }
-      List artifacts = filterArtifacts(new ArrayList(artifactCache), type);
+      List artifacts = getContentHostingService().findResources(type,
+            null, null);
+
       Collection returned = new ArrayList();
 
       for (Iterator i = artifacts.iterator(); i.hasNext();) {
@@ -73,28 +66,6 @@ public class WrappedStructuredArtifactFinder  extends FileArtifactFinder {
       return returned;
    }
 
-   protected List filterArtifacts(List artifacts, String type) {
-      for (Iterator i = artifacts.iterator(); i.hasNext();) {
-         ContentResource resource = (ContentResource) i.next();
-         String currentType = resource.getProperties().getProperty(ResourceProperties.PROP_STRUCTOBJ_TYPE);
-         String mimeType = resource.getProperties().getProperty(ResourceProperties.PROP_CONTENT_TYPE);
-
-         if (type != null && !type.equals(ResourceProperties.FILE_TYPE)) {
-            // process StructuredObject type
-            if (currentType == null) {
-               i.remove();
-            } else if (!currentType.equals(type)) {
-               i.remove();
-            }
-         } else if (currentType != null && type.equals(ResourceProperties.FILE_TYPE)) {
-            // this one is a structured object, get rid of it
-            i.remove();
-         }
-      }
-
-      return artifacts;
-   }
-      
    public Collection findByOwnerAndType(Id owner, String type, MimeType mimeType) {
       return null;
    }
