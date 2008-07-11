@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Hashtable;
+import java.io.InputStream;
 
 import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.content.api.ContentHostingService;
@@ -49,6 +50,10 @@ import org.sakaiproject.tool.api.ToolSession;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.URIResolver;
+import javax.xml.transform.stream.StreamSource;
+
 /**
  * @author chmaurer
  */
@@ -57,6 +62,8 @@ public class AddStructuredArtifactDefinitionController extends AbstractStructure
 
    private SessionManager sessionManager;
    private ContentHostingService contentHosting;
+   private TransformerFactory transformerFactory;
+   private URIResolver uriResolver;
 
    public Object formBackingObject(Map request, Map session, Map application) {
 
@@ -140,11 +147,29 @@ public class AddStructuredArtifactDefinitionController extends AbstractStructure
             logger.warn("", e);
             String errorMessage = "error reading schema file: " + e.getMessage();
             sad.setSchemaFile(null);
-            errors.rejectValue("schemaFile", errorMessage, errorMessage);
-            return new ModelAndView("failure");
+            errors.rejectValue("schemaFile", "schema_file_error", 
+               new Object[]{e.getMessage()}, errorMessage);
          }
       }
 
+      if (sad.getAlternateCreateXslt() != null) {
+         if (!validateXslt(sad.getAlternateCreateXslt(), "alternateCreateXslt", errors)) {
+            sad.setAlternateCreateXslt(null);
+            sad.setAlternateCreateXsltName(null);
+         }
+      }
+      
+      if (sad.getAlternateViewXslt() != null) {
+         if (!validateXslt(sad.getAlternateViewXslt(), "alternateViewXslt", errors)) {
+            sad.setAlternateViewXslt(null);
+            sad.setAlternateViewXsltName(null);
+         }
+      }
+      
+      if (errors.hasErrors()) {
+         return new ModelAndView("failure");
+      }
+      
       if ("preview".equals(request.get("previewAction"))) {
          session.put(StructuredArtifactDefinitionManager.SAD_SESSION_TAG, sad);
          session.put(FormHelper.PREVIEW_HOME_TAG, sad);
@@ -180,6 +205,22 @@ public class AddStructuredArtifactDefinitionController extends AbstractStructure
       model.put("newFormId", sad.getId().getValue());
       
       return new ModelAndView("success", model); //prepareListView(request, sad.getId().getValue());
+   }
+
+   protected boolean validateXslt(Id xsltResource, String field, Errors errors) {
+      try {
+         ContentResource resource = getContentResource(xsltResource);
+         InputStream is = resource.streamContent();
+         getTransformerFactory().newTransformer(new StreamSource(is));
+         return true;
+      }
+      catch (Exception e) {
+         logger.warn("", e);
+         String errorMessage = "error validating xslt file: " + e.getMessage();
+         errors.rejectValue(field, "render_file_error", 
+            new Object[]{e.getMessage()}, errorMessage);
+      }
+      return false;
    }
 
    protected void save(StructuredArtifactDefinitionBean sad, Errors errors) {
@@ -307,6 +348,24 @@ public class AddStructuredArtifactDefinitionController extends AbstractStructure
       this.contentHosting = contentHosting;
    }
 
+   public TransformerFactory getTransformerFactory() {
+      if (transformerFactory == null) {
+         transformerFactory = TransformerFactory.newInstance();         
+      }
+      return transformerFactory;
+   }
 
+   public void setTransformerFactory(TransformerFactory transformerFactory) {
+      this.transformerFactory = transformerFactory;
+   }
+   
+   public URIResolver getUriResolver() {
+      return uriResolver;
+   }
 
+   public void setUriResolver(URIResolver uriResolver) {
+      this.uriResolver = uriResolver;
+      getTransformerFactory().setURIResolver(uriResolver);
+   }
+   
 }
