@@ -367,18 +367,31 @@
 				<xsl:if test="$elementtype='select'">
 					<ul class="selectList">
 						<xsl:for-each select="$currentSchemaNode/xs:simpleType/xs:restriction/xs:enumeration">
-							<li>
-								<xsl:choose>
-									<xsl:when test="@value=$currentParent/node()[$name=name()]">
-										<img src="/library/image/sakai/checkon.gif" alt="checked" />
-										<xsl:value-of select="@value" />
-									</xsl:when>
-									<xsl:otherwise>
-										<img src="/library/image/sakai/checkoff.gif" alt="unchecked" />
-										<xsl:value-of select="@value" />
-									</xsl:otherwise>
-								</xsl:choose>. </li>
-						</xsl:for-each>
+                     <li>
+                        <xsl:choose>
+                           <xsl:when test="@value=$currentParent/node()[$name=name()]">
+                              <img src="/library/image/sakai/checkon.gif" alt="checked" />
+                           </xsl:when>
+                           <xsl:otherwise>
+                              <img src="/library/image/sakai/checkoff.gif" alt="unchecked" />
+                           </xsl:otherwise>
+                        </xsl:choose>
+                        <xsl:choose>
+                           <xsl:when test="./xs:annotation/xs:documentation[@source='sakai.label']">
+                              <xsl:value-of
+                                 select="./xs:annotation/xs:documentation[@source='sakai.label']" />
+                           </xsl:when>
+                           <xsl:when test="./xs:annotation/xs:documentation[@source='ospi.label']">
+                              <xsl:value-of select="./xs:annotation/xs:documentation[@source='ospi.label']" />
+                           </xsl:when>
+                           <xsl:when test="./xs:annotation/xs:documentation">
+                              <xsl:value-of select="./xs:annotation/xs:documentation" />
+                           </xsl:when>
+                           <xsl:otherwise>
+                              <xsl:value-of select="@value" />
+                           </xsl:otherwise>
+                        </xsl:choose>. </li>
+                  </xsl:for-each>
 					</ul>
 				</xsl:if>
 			</xsl:when>
