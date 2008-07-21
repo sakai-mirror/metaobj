@@ -306,7 +306,20 @@
 									</xsl:if>
 								</input>
 								<label for="{$name}-{position()}">
-									<xsl:value-of select="@value" />
+									<xsl:choose>
+                              <xsl:when test="./xs:annotation/xs:documentation[@source='sakai.label']">
+                                 <xsl:value-of select="./xs:annotation/xs:documentation[@source='sakai.label']" />
+                              </xsl:when>
+                              <xsl:when test="./xs:annotation/xs:documentation[@source='ospi.label']">
+                                 <xsl:value-of select="./xs:annotation/xs:documentation[@source='ospi.label']" />
+                              </xsl:when>
+                              <xsl:when test="./xs:annotation/xs:documentation">
+                                 <xsl:value-of select="./xs:annotation/xs:documentation" />
+                              </xsl:when>
+                              <xsl:otherwise>
+                                 <xsl:value-of select="@value" />
+                              </xsl:otherwise>
+                           </xsl:choose>
 								</label>
 							</div>
 						</xsl:for-each>
@@ -332,7 +345,20 @@
 								<xsl:if test="$currentNode = @value">
 									<xsl:attribute name="selected">selected</xsl:attribute>
 								</xsl:if>
-								<xsl:value-of select="@value" />
+								<xsl:choose>
+                              <xsl:when test="./xs:annotation/xs:documentation[@source='sakai.label']">
+                                 <xsl:value-of select="./xs:annotation/xs:documentation[@source='sakai.label']" />
+                              </xsl:when>
+                              <xsl:when test="./xs:annotation/xs:documentation[@source='ospi.label']">
+                                 <xsl:value-of select="./xs:annotation/xs:documentation[@source='ospi.label']" />
+                              </xsl:when>
+                              <xsl:when test="./xs:annotation/xs:documentation">
+                                 <xsl:value-of select="./xs:annotation/xs:documentation" />
+                              </xsl:when>
+                              <xsl:otherwise>
+                                 <xsl:value-of select="@value" />
+                              </xsl:otherwise>
+                           </xsl:choose>
 							</option>
 						</xsl:for-each>
 					</select>
@@ -412,7 +438,20 @@
 								<xsl:if test="$currentNode = @value">
 									<xsl:attribute name="selected">selected</xsl:attribute>
 								</xsl:if>
-								<xsl:value-of select="@value" />
+								<xsl:choose>
+                              <xsl:when test="./xs:annotation/xs:documentation[@source='sakai.label']">
+                                 <xsl:value-of select="./xs:annotation/xs:documentation[@source='sakai.label']" />
+                              </xsl:when>
+                              <xsl:when test="./xs:annotation/xs:documentation[@source='ospi.label']">
+                                 <xsl:value-of select="./xs:annotation/xs:documentation[@source='ospi.label']" />
+                              </xsl:when>
+                              <xsl:when test="./xs:annotation/xs:documentation">
+                                 <xsl:value-of select="./xs:annotation/xs:documentation" />
+                              </xsl:when>
+                              <xsl:otherwise>
+                                 <xsl:value-of select="@value" />
+                              </xsl:otherwise>
+                           </xsl:choose>
 							</option>
 						</xsl:for-each>
 					</select>
