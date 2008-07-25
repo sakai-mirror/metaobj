@@ -43,6 +43,8 @@ public class NormalizationException extends RuntimeException {
    public static final String DATE_INVALID_ERROR_CODE = "DATE_INVALID_ERROR_CODE";
 
    public static final String REQIRED_FIELD_ERROR_CODE = "REQIRED_FIELD_ERROR_CODE";
+   
+   public static final String RICH_TEXT_FORMAT_PASSTHROUGH = "RICH_TEXT_FORMAT_PASSTHROUGH";
 
    public static final String TOO_LARGE_INCLUSIVE_ERROR_CODE = "TOO_LARGE_INCLUSIVE_ERROR_CODE";
    public static final String TOO_SMALL_INCLUSIVE_ERROR_CODE = "TOO_SMALL_INCLUSIVE_ERROR_CODE";

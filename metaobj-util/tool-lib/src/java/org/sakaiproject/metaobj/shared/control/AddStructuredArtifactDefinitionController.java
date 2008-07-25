@@ -47,6 +47,7 @@ import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.util.FormattedText;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -163,6 +164,19 @@ public class AddStructuredArtifactDefinitionController extends AbstractStructure
          if (!validateXslt(sad.getAlternateViewXslt(), "alternateViewXslt", errors)) {
             sad.setAlternateViewXslt(null);
             sad.setAlternateViewXsltName(null);
+         }
+      }
+      
+      if (sad.getInstruction() != null) {
+         StringBuilder htmlErrors = new StringBuilder();
+         String newText = FormattedText.processFormattedText(sad.getInstruction(), htmlErrors);
+      
+         if (htmlErrors.length() > 0) {
+            errors.rejectValue("instruction", "instruction_error", 
+               new Object[]{htmlErrors.toString()}, htmlErrors.toString());
+         }
+         else {
+            sad.setInstruction(newText);
          }
       }
       
