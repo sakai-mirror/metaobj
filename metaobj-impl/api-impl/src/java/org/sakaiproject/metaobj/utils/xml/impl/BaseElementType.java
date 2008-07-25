@@ -35,6 +35,7 @@ import org.sakaiproject.metaobj.utils.xml.SchemaNode;
 import org.sakaiproject.metaobj.utils.xml.ValidatedNode;
 import org.sakaiproject.metaobj.utils.xml.ValidationError;
 import org.sakaiproject.metaobj.utils.xml.ValueRange;
+import org.sakaiproject.util.FormattedText;
 
 /**
  * Created by IntelliJ IDEA.
@@ -63,6 +64,7 @@ public class BaseElementType implements ElementType {
    protected SchemaNode parentNode = null;
    private List enumeration = null;
    private String baseType;
+   private boolean richText = false;
 
    public BaseElementType(String typeName, Element schemaElement, SchemaNode parentNode,
                           Namespace xsdNamespace) {
@@ -109,6 +111,11 @@ public class BaseElementType implements ElementType {
       if (schemaElement.getAttribute("fixed") != null) {
          fixedValue = schemaElement.getAttributeValue("fixed");
          defaultValue = fixedValue;
+      }
+      
+      if (parentNode.getDocumentAnnotation("ospi.isRichText") != null || 
+         parentNode.getDocumentAnnotation("sakai.isRichText") != null) {
+         richText = true;
       }
    }
 
@@ -202,6 +209,19 @@ public class BaseElementType implements ElementType {
       String startingValue = handleWhiteSpace(value.toString());
 
       int valueLength = startingValue.length();
+
+      if (richText) {
+         StringBuilder errors = new StringBuilder();
+         String newValue = FormattedText.processFormattedText(startingValue, errors);
+         if (errors.length() > 0) {
+            throw new NormalizationException(errors.toString(),
+               NormalizationException.RICH_TEXT_FORMAT_PASSTHROUGH,
+               new Object[]{errors.toString()});
+         }
+         else {
+            startingValue = newValue;
+         }
+      }
 
       if (length != -1 && valueLength != length) {
          throw new NormalizationException("Invalid string length",
