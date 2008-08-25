@@ -147,7 +147,7 @@ public class StructuredArtifactHome extends XmlElementHome
    }
    
    public StructuredArtifact load(ContentResource resource) {
-	   Id artifactId = getIdManager().getId(ContentHostingService.getUuid(resource.getId()));
+	   Id artifactId = getIdManager().getId(getContentHostingService().getUuid(resource.getId()));
 	   return load(resource, artifactId);
    }
 
