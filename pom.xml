@@ -20,7 +20,7 @@
     <module>metaobj-api/api</module>
     <module>metaobj-impl/api-impl</module>
     <module>metaobj-impl/component</module>
-    <!-- this pom does nothing DH
+<!-- this pom does nothing DH
     <module>metaobj-impl</module>-->
     <module>metaobj-tool</module>
     <module>metaobj-tool/tool</module>
@@ -28,13 +28,13 @@
     <module>metaobj-shared-deploy</module>
     <module>help</module>
   </modules>
- <dependencyManagement>
-   <dependencies>
-<dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-metaobj-impl</artifactId>
-      <version>2.6.0RC1-SNAPSHOT</version>
-    </dependency>
-   </dependencies>
- </dependencyManagement> 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.sakaiproject</groupId>
+        <artifactId>sakai-metaobj-impl</artifactId>
+        <version>2.6.0RC1-SNAPSHOT</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 </project>
