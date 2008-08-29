@@ -3,18 +3,18 @@
  * $Id$
  ***********************************************************************************
  *
- * Copyright 2004, 2005, 2006, 2008 Sakai Foundation
+ * Copyright (c) 2004, 2005, 2006, 2008 Sakai Foundation
  *
  * Licensed under the Educational Community License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License. 
- * You may obtain a copy of the License at
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
  *       http://www.osedu.org/licenses/ECL-2.0
  *
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  *
  **********************************************************************************/
@@ -86,13 +86,17 @@ public class FileArtifactFinder implements ArtifactFinder {
 
       return returned;
    }
+   
+   protected Artifact createArtifact(ContentResource resource, Id artifactId) {
+	   Agent resourceOwner = getAgentManager().getAgent(resource.getProperties().getProperty(ResourceProperties.PROP_CREATOR));
+	   ContentResourceArtifact resourceArtifact = new ContentResourceArtifact(resource, artifactId, resourceOwner);
+	   resourceArtifact.setHome(getContentResourceHome());
+	   return resourceArtifact;
+   }
 
    protected Artifact createArtifact(ContentResource resource) {
-      Agent resourceOwner = getAgentManager().getAgent(resource.getProperties().getProperty(ResourceProperties.PROP_CREATOR));
-      Id resourceId = getIdManager().getId(getContentHostingService().getUuid(resource.getId()));
-      ContentResourceArtifact resourceArtifact = new ContentResourceArtifact(resource, resourceId, resourceOwner);
-      resourceArtifact.setHome(getContentResourceHome());
-      return resourceArtifact;
+	   Id artifactId = getIdManager().getId(getContentHostingService().getUuid(resource.getId()));	   
+	   return createArtifact(resource, artifactId);
    }
 
    public Collection findByOwner(Id owner) {
@@ -116,7 +120,7 @@ public class FileArtifactFinder implements ArtifactFinder {
 
       try {
          ContentResource resource = getContentHostingService().getResource(resourceId);
-         Artifact returned = createArtifact(resource);
+         Artifact returned = createArtifact(resource, artifactId);
          return returned;
       }
       catch (PermissionException e) {

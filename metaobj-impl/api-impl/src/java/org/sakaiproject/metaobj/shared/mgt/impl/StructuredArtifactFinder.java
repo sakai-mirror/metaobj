@@ -3,18 +3,18 @@
  * $Id$
  ***********************************************************************************
  *
- * Copyright 2004, 2005, 2006, 2007, 2008 Sakai Foundation
+ * Copyright (c) 2004, 2005, 2006, 2007, 2008 Sakai Foundation
  *
  * Licensed under the Educational Community License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License. 
- * You may obtain a copy of the License at
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
  *       http://www.osedu.org/licenses/ECL-2.0
  *
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  *
  **********************************************************************************/
@@ -28,6 +28,7 @@ import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
 import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactHomeInterface;
 import org.sakaiproject.metaobj.shared.model.Artifact;
+import org.sakaiproject.metaobj.shared.model.Id;
 
 /**
  * Created by IntelliJ IDEA.
@@ -40,6 +41,10 @@ public class StructuredArtifactFinder extends WrappedStructuredArtifactFinder {
 
    private HomeFactory homeFactory;
 
+   protected Artifact createArtifact(ContentResource resource, Id artifactId) {
+	   return createArtifact(resource);
+   }
+   
    protected Artifact createArtifact(ContentResource resource) {
       String formType = (String) resource.getProperties().get(
          resource.getProperties().getNamePropStructObjType());

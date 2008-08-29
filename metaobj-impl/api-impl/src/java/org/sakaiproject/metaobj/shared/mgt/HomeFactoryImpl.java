@@ -3,18 +3,18 @@
  * $Id$
  ***********************************************************************************
  *
- * Copyright 2004, 2005, 2006, 2007 Sakai Foundation
+ * Copyright (c) 2004, 2005, 2006, 2007 Sakai Foundation
  *
  * Licensed under the Educational Community License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License. 
- * You may obtain a copy of the License at
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
  *       http://www.osedu.org/licenses/ECL-2.0
  *
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  *
  **********************************************************************************/
@@ -30,6 +30,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.utils.xml.SchemaFactory;
+import org.sakaiproject.thread_local.cover.ThreadLocalManager;
 
 /**
  * Created by IntelliJ IDEA.
@@ -54,11 +55,16 @@ public class HomeFactoryImpl implements HomeFactory {
    }
 
    public ReadableObjectHome getHome(String objectType) {
+	   ReadableObjectHome cachedHome = (ReadableObjectHome) ThreadLocalManager.get("HomeFactory.getHome@" + objectType);
+	   if (cachedHome != null)
+		   return cachedHome;
 
       for (Iterator i = homeFactories.iterator(); i.hasNext();) {
          HomeFactory testFactory = (HomeFactory) i.next();
          if (testFactory.handlesType(objectType)) {
-            return testFactory.getHome(objectType);
+            ReadableObjectHome home = testFactory.getHome(objectType);
+            ThreadLocalManager.set("HomeFactory.getHome@" + objectType, home);
+            return home;
          }
       }
 
