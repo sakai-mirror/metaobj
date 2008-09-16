@@ -379,4 +379,8 @@ public class XmlElementHome implements StructuredArtifactHomeInterface, Initiali
    public Element getArtifactAsXml(Artifact art) {
       return null;
    }
+   
+   public Element getArtifactAsXml(Artifact artifact, String container, String site, String context) {
+	   return null;
+   }
 }

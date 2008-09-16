@@ -117,30 +117,41 @@ public class ContentResourceHome implements ReadableObjectHome, PresentableObjec
    }
 
    public Element getArtifactAsXml(Artifact art) {
-      ContentResourceArtifact artifact = (ContentResourceArtifact) art;
-      Element root = new Element("artifact");
+      return getArtifactAsXml(art, null, null, null);
+   }
+   
+   public Element getArtifactAsXml(Artifact art, String container, String site, String context) {
+	   ContentResourceArtifact artifact = (ContentResourceArtifact) art;
+	   ContentResource resource = null;
+	   if (container != null) {
+		   resource = new ContentEntityWrapper(artifact.getBase(), ContentEntityUtil.getInstance().buildRef(container, site, context, artifact.getBase().getReference()));
+	   }
+	   else {
+		   resource = artifact.getBase();
+	   }
+	      Element root = new Element("artifact");
 
-      root.addContent(getMetadata(artifact));
+	      root.addContent(getMetadata(artifact));
 
-      String type = artifact.getBase().getProperties().getProperty(ResourceProperties.PROP_STRUCTOBJ_TYPE);
+	      String type = artifact.getBase().getProperties().getProperty(ResourceProperties.PROP_STRUCTOBJ_TYPE);
 
-      if (type == null) {
-         addFileContent(artifact, root);
-      }
-      else {
-         addStructuredObjectContent(type, artifact, root);
-      }
+	      if (type == null) {
+	         addFileContent(resource, root);
+	      }
+	      else {
+	         addStructuredObjectContent(type, resource, root);
+	      }
 
-      return root;
+	      return root;
    }
 
-   protected void addStructuredObjectContent(String type, ContentResourceArtifact artifact, Element root) {
+   protected void addStructuredObjectContent(String type, ContentResource resource, Element root) {
       Element data = new Element("structuredData");
       Element baseElement = null;
 
       byte[] bytes = null;
       try {
-         bytes = artifact.getBase().getContent();
+         bytes = resource.getContent();
       }
       catch (ServerOverloadException e) {
          throw new RuntimeException(e);
@@ -212,10 +223,10 @@ public class ContentResourceHome implements ReadableObjectHome, PresentableObjec
       return schemaElement;
    }
 
-   protected void addFileContent(ContentResourceArtifact artifact, Element root) {
+   protected void addFileContent(ContentResource resource, Element root) {
       Element fileData = new Element("fileArtifact");
       Element uri = new Element("uri");
-      uri.addContent(artifact.getBase().getUrl());
+      uri.addContent(resource.getUrl());
       fileData.addContent(uri);
 
       root.addContent(fileData);
