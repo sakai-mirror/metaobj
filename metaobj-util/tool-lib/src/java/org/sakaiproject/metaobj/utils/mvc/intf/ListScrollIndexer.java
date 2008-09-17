@@ -26,6 +26,7 @@ import java.util.Map;
 
 public interface ListScrollIndexer {
 
-   public List indexList(Map request, Map model, List srouceList);
+   public List indexList(Map request, Map model, List sourceList);
+   public List indexList(Map request, Map model, List sourceList, boolean hideOnePageScroll);
 
 }
