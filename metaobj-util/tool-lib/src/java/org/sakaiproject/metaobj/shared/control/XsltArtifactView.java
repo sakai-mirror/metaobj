@@ -223,6 +223,14 @@ public class XsltArtifactView extends AbstractXsltView {
          params = new Hashtable();
       }
 
+      Map reqParamMap = request.getParameterMap();
+      
+      Iterator keyIter = reqParamMap.keySet().iterator();
+      while (keyIter.hasNext()) {    
+      	String key = (String) keyIter.next();
+      	params.put(key, ((String[]) reqParamMap.get(key))[0]);
+      }      
+           
       if (ToolManager.getCurrentPlacement() != null) {
          params.put("panelId", Web.escapeJavascript("Main" + ToolManager.getCurrentPlacement().getId()));
       }
