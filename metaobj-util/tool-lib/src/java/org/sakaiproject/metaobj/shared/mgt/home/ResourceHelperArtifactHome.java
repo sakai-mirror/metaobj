@@ -157,7 +157,11 @@ public class ResourceHelperArtifactHome implements StructuredArtifactHomeInterfa
    public Element getArtifactAsXml(Artifact art) {
       return getParentHome().getArtifactAsXml(art);
    }
-
+   
+   public Element getArtifactAsXml(Artifact artifact, String container, String site, String context) {
+	   return getParentHome().getArtifactAsXml(artifact, container, site, context);
+   }
+   
    public StructuredArtifactHomeInterface getParentHome() {
       return parentHome;
    }

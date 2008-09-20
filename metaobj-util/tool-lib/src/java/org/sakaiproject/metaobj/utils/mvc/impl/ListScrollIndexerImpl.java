@@ -34,6 +34,18 @@ public class ListScrollIndexerImpl implements ListScrollIndexer {
    private int perPage;
 
    public List indexList(Map request, Map model, List sourceList) {
+      return indexList( request, model, sourceList, false );
+   }
+   
+   /** 
+    ** Create sublist from given list of items to allow paging (i.e. scrolling) through a list
+    **
+    ** @param request (input) request parameters
+    ** @param model (output) presentation parameters
+    ** @param sourceList list of items
+    ** @param hideOnePageScroll if true, do not display scroll buttons if not needed
+    **/
+   public List indexList(Map request, Map model, List sourceList, boolean hideOnePageScroll) {
       int startingIndex = 0;
       int total = sourceList.size();
 
@@ -67,7 +79,7 @@ public class ListScrollIndexerImpl implements ListScrollIndexer {
          endingIndex = sourceList.size();
       }
 
-      model.put("listScroll", new ListScroll(perPage, sourceList.size(), startingIndex));
+      model.put("listScroll", new ListScroll(perPage, sourceList.size(), startingIndex, hideOnePageScroll));
 
       return sourceList.subList(startingIndex, endingIndex);
    }

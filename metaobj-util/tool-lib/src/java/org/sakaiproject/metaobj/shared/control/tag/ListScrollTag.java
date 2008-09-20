@@ -67,6 +67,18 @@ public class ListScrollTag extends BodyTagSupport {
     */
 
    public int doEndTag() throws JspException {
+   
+      // Don't display paging if only one page needed to display
+      if ( listScroll.getHideOnePageScroll() &&
+           listScroll.getFirstItem() <= 1  &&
+           listScroll.getLastItem() == listScroll.getTotal() )
+      {
+         listScroll = null;
+         listScrollExpression = DEFAULT_LIST_SCROLL;
+         listUrl = null;
+         return EVAL_PAGE;
+      }
+      
       JspWriter writer = pageContext.getOut();
 
       String first = myResources.getString("listScroll_first");

@@ -33,11 +33,19 @@ public class ListScroll {
    private int total;
    private int perPage;
    private int startingIndex;
+   private boolean hideOnePageScroll = false;
 
    public ListScroll(int perPage, int total, int startingIndex) {
       this.perPage = perPage;
       this.total = total;
       this.startingIndex = startingIndex;
+   }
+
+   public ListScroll(int perPage, int total, int startingIndex, boolean hideOnePageScroll) {
+      this.perPage = perPage;
+      this.total = total;
+      this.startingIndex = startingIndex;
+      this.hideOnePageScroll = hideOnePageScroll;
    }
 
    public int getNextIndex() {
@@ -99,4 +107,13 @@ public class ListScroll {
       }
       return lastItem;
    }
+   
+   public boolean getHideOnePageScroll() {
+      return hideOnePageScroll;
+   }
+
+   public void setHideOnePageScroll(boolean hideOnePageScroll) {
+      this.hideOnePageScroll = hideOnePageScroll;
+   }
+
 }
