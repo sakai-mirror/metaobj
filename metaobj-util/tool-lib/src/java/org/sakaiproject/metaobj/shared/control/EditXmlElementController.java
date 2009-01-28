@@ -105,10 +105,14 @@ public class EditXmlElementController extends XmlControllerBase
             id = getIdManager().getId(idString);
 
             bean = (StructuredArtifact) getArtifactFinder().load(id);
+            if ( bean == null )            // no graceful way to handle this, but log error
+               logger.error(this+".fillBackingObject null bean for "+idString);
          }
          else {
             ReadableObjectHome home = getSchema(session);
             bean = (StructuredArtifact) home.load(null);
+            if ( bean == null )            // no graceful way to handle this, but log error
+               logger.error(this+".fillBackingObject null bean");
          }
 
          session.put(ResourceEditingHelper.CREATE_SUB_TYPE,

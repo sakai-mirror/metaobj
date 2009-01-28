@@ -351,6 +351,11 @@ public class ElementBean extends HashMap implements TypedMap {
 
 
    public Class getType(String key) {
+      if  (currentSchema == null ) {
+         logger.warn(this+".getType null schema found, key="+key);
+         return null;
+      }
+      
       SchemaNode schema = currentSchema.getChild(key);
 
       if (schema != null) {

@@ -31,6 +31,9 @@ import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactDefinition;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * Created by IntelliJ IDEA.
  * User: John Ellis
@@ -40,6 +43,8 @@ import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
  */
 public class DbXmlHomeFactoryImpl extends HomeFactoryBase implements HomeFactory {
 
+   protected final Log logger = LogFactory.getLog(getClass());
+   
    private StructuredArtifactDefinitionManager structuredArtifactDefinitionManager;
 
    public boolean handlesType(String objectType) {
@@ -55,7 +60,16 @@ public class DbXmlHomeFactoryImpl extends HomeFactoryBase implements HomeFactory
    }
 
    public ReadableObjectHome getHome(String objectType) {
-      return createHome(getStructuredArtifactDefinitionManager().loadHome(objectType));
+      StructuredArtifactDefinitionBean sad = getStructuredArtifactDefinitionManager().loadHome(objectType);
+      if ( sad == null ) {
+         logger.warn(this+" loadHome: " + objectType + " = NULL" );
+         return null;
+      }
+      else {
+         if (logger.isDebugEnabled()) 
+            logger.debug(this+" loadHome: " + objectType + " = " + sad.getId().getValue() );
+         return createHome( sad );
+      }
    }
 
    public Map getWorksiteHomes(Id worksiteId) {
