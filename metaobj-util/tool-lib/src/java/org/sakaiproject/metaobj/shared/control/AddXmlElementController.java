@@ -60,6 +60,11 @@ public class AddXmlElementController extends XmlControllerBase
       ElementBean returnedBean;
       if (session.get(EditedArtifactStorage.STORED_ARTIFACT_FLAG) == null) {
          StructuredArtifactHomeInterface home = getSchema(session);
+         if ( home == null ) {
+            logger.error(this+".fillBackingObject schema not found (perhaps multiple submits): " + getSchemaName(session));
+            return new ElementBean();
+         }
+         
          StructuredArtifact bean = (StructuredArtifact)home.createInstance();
 
          if (session.get(FormHelper.NEW_FORM_DISPLAY_NAME_TAG) != null) {
@@ -99,10 +104,18 @@ public class AddXmlElementController extends XmlControllerBase
       if (request.get("submitButton") == null) {
          return handleNonSubmit(bean, request, session, application, errors);
       }
+      
+      // ignore -- perhaps multiple submits -- error logged in formBackingObject()
+      if ( bean.getCurrentSchema() == null ) {
+         return new ModelAndView("success"); 
+      }
+      
       getValidator().validate(bean, errors, true);
       if (errors.hasErrors()) {
-         return null;
+         logger.warn(this+"validate failed for: " + getSchemaName(session));
+         return new ModelAndView("success"); 
       }
+      
       StructuredArtifact artifact = (StructuredArtifact)bean;
       Artifact newArtifact;
 

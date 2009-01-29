@@ -95,7 +95,7 @@ public class EditXmlElementController extends XmlControllerBase
    }
    public Object fillBackingObject(Object incomingModel, Map request, Map session, Map application) throws Exception {
       if (session.get(EditedArtifactStorage.STORED_ARTIFACT_FLAG) == null) {
-         StructuredArtifact bean;
+         StructuredArtifact bean = null;
 
          if (session.get(ResourceToolAction.ACTION_PIPE) == null) {
             Id id;
@@ -105,16 +105,18 @@ public class EditXmlElementController extends XmlControllerBase
             id = getIdManager().getId(idString);
 
             bean = (StructuredArtifact) getArtifactFinder().load(id);
-            if ( bean == null )            // no graceful way to handle this, but log error
-               logger.error(this+".fillBackingObject null bean for "+idString);
          }
          else {
             ReadableObjectHome home = getSchema(session);
-            bean = (StructuredArtifact) home.load(null);
-            if ( bean == null )            // no graceful way to handle this, but log error
-               logger.error(this+".fillBackingObject null bean");
+            if ( home != null )
+               bean = (StructuredArtifact) home.load(null);
          }
 
+         if ( bean == null ) {
+            logger.warn(this+".fillBackingObject schema not found (perhaps multiple submits): " + getSchemaName(session));
+            return new StructuredArtifact();
+         }
+         
          session.put(ResourceEditingHelper.CREATE_SUB_TYPE,
             ((StructuredArtifactHomeInterface)bean.getHome()).getTypeId());
 
@@ -141,10 +143,18 @@ public class EditXmlElementController extends XmlControllerBase
       else if (request.get("submitButton") == null) {
          return handleNonSubmit(bean, request, session, application, errors);
       }
+      
+      // ignore -- perhaps multiple submits -- error logged in formBackingObject()
+      if ( bean.getCurrentSchema() == null ) {
+         return new ModelAndView("success"); 
+      }
+      
       getValidator().validate(bean, errors, true);
       if (errors.hasErrors()) {
-         return null;
+         logger.warn(this+"validate failed for: " + getSchemaName(session));
+         return new ModelAndView("success");
       }
+      
       WritableObjectHome home = getSchema(session);
       try {
          home.store((StructuredArtifact)bean);

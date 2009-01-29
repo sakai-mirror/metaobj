@@ -62,12 +62,10 @@ public class DbXmlHomeFactoryImpl extends HomeFactoryBase implements HomeFactory
    public ReadableObjectHome getHome(String objectType) {
       StructuredArtifactDefinitionBean sad = getStructuredArtifactDefinitionManager().loadHome(objectType);
       if ( sad == null ) {
-         logger.warn(this+" loadHome: " + objectType + " = NULL" );
+         logger.warn(this+" Null StructuredArtifactDefinitionBean (perhaps multiple submits) for: " + objectType);
          return null;
       }
       else {
-         if (logger.isDebugEnabled()) 
-            logger.debug(this+" loadHome: " + objectType + " = " + sad.getId().getValue() );
          return createHome( sad );
       }
    }

@@ -109,8 +109,11 @@ public class ElementBean extends HashMap implements TypedMap {
    }
 
    public Object put(Object key, Object value) {
-      logger.debug("put called with " + key + " and " + value + " on " + baseElement.getName());
-
+      if ( currentSchema == null ) {
+         logger.debug("null schema -- ignore put for "+key);
+         return null;
+      }
+         
       SchemaNode elementSchema = currentSchema.getChild((String) key);
 
       if (getWrapperFactory().checkWrapper(elementSchema.getObjectType())) {
@@ -219,7 +222,10 @@ public class ElementBean extends HashMap implements TypedMap {
 
 
    public Object get(Object key) {
-      logger.debug("get called with " + key);
+      if ( currentSchema == null ) {
+         logger.debug("null schema -- ignore get for "+key);
+         return null;
+      }
 
       SchemaNode schema = currentSchema.getChild((String) key);
 
@@ -351,8 +357,8 @@ public class ElementBean extends HashMap implements TypedMap {
 
 
    public Class getType(String key) {
-      if  (currentSchema == null ) {
-         logger.warn(this+".getType null schema found, key="+key);
+      if ( currentSchema == null ) {
+         logger.debug("null schema -- ignore getType for "+key);
          return null;
       }
       
@@ -458,6 +464,12 @@ public class ElementBean extends HashMap implements TypedMap {
     */
    public Set entrySet() {
       Set entries = new HashSet();
+      
+      if ( currentSchema == null ) {
+         logger.debug("null schema -- ignore entrySet");
+         return entries;
+      }
+      
       List children = currentSchema.getChildren();
       for (Iterator iter = children.iterator(); iter.hasNext();) {
          SchemaNode child = (SchemaNode) iter.next();
@@ -475,7 +487,6 @@ public class ElementBean extends HashMap implements TypedMap {
     */
    public Set keySet() {
       Set keys = new HashSet();
-      //List children = currentSchema.getChildren();
       for (Iterator iter = entrySet().iterator(); iter.hasNext();) {
          EntrySet child = (EntrySet) iter.next();
          keys.add(child.getKey());
