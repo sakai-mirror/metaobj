@@ -64,8 +64,7 @@ public interface AgentManager {
     * @param agent
     * @return
     */
-   public Agent createAgent(Agent agent);
-   public Agent createAgent(String displayName, String role, Id id );
+   public Agent createAgent( String displayName, Id id );
 
    /**
     * @param agent

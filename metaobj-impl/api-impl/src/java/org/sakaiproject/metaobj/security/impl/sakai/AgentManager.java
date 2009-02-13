@@ -280,48 +280,28 @@ public class AgentManager extends SecurityBase implements org.sakaiproject.metao
       return null;
    }
 
-   public Agent createAgent(String displayName, String role, Id id)	{
-		AgentImpl tempAgent = new AgentImpl();
-		tempAgent.setDisplayName(displayName);
-		tempAgent.setRole(role);
-		tempAgent.setId(id);
-		return createAgent(tempAgent);
-	}
-	
-   /**
-    * @param agent
-    * @return
-    */
-    public Agent createAgent(Agent agent) {
-      if (!agent.isInRole(Agent.ROLE_GUEST)) {
-         // we don't support creating real agents
-         throw new UnsupportedOperationException();
-      }
-
+   public Agent createAgent(String displayName, Id id)	{
       try {
-         UserEdit uEdit = getDirectoryService().addUser(agent.getId().getValue(), agent.getId().getValue());
-
-         //set email address
-         uEdit.setEmail(agent.getId().getValue());
-
-         // set the guest user type
-         uEdit.setType("guest");
+         UserEdit uEdit = getDirectoryService().addUser(id.getValue(), id.getValue());
+         uEdit.setEmail(id.getValue());  // id is the user email
+         uEdit.setType("guest"); 
 
          String pw = passwordGenerator();
          uEdit.setPassword(pw);
          getDirectoryService().commitEdit(uEdit);
 
-			AgentImpl agentImpl = (AgentImpl)agent;
-         agentImpl.setPassword(pw);
-         agentImpl.setMd5Password(DigestUtils.md5Hex(pw));
+         AgentImpl agent = new AgentImpl();
+         agent.setDisplayName(displayName);
+         agent.setRole(Agent.ROLE_GUEST);
+         agent.setId(id);
+         agent.setPassword(pw);
+         agent.setMd5Password(DigestUtils.md5Hex(pw));
 
          return agent;
       }
-      catch (RuntimeException exp) {
-         throw exp;
-      }
-      catch (Exception exp) {
-         throw new OspException(exp);
+      catch (Exception e) {
+         logger.warn("Unable to create guest user: " + id, e);
+         return null;
       }
    }
 
