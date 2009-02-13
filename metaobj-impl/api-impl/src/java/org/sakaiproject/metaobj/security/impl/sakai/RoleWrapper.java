@@ -141,4 +141,8 @@ public class RoleWrapper implements OspRole {
    public String getRoleName() {
       return getSakaiRole().getId();
    }
+	
+   public String getPassword() {
+      return null; // not implemented
+   }
 }

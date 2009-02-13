@@ -64,4 +64,5 @@ public interface Agent extends Serializable, Principal {
 
    public boolean isRole();
 
+   public String getPassword();
 }

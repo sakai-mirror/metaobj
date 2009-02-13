@@ -103,7 +103,11 @@ public class SakaiComponentDispatchServlet extends DispatcherServlet {
       public String getName() {
          return null;  //To change body of implemented methods use File | Settings | File Templates.
       }
-   };
+		
+      public String getPassword() {
+         return null; // not implemented
+      }
+   }
 
 
    protected final transient Log logger = LogFactory.getLog(getClass());

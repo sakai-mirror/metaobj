@@ -16,6 +16,9 @@
       <property name="ospiIdManager">
          <ref bean="idManager"/>
       </property>
+      <property name="directoryService">
+         <ref bean="org.sakaiproject.user.api.UserDirectoryService"/>
+      </property>
    </bean>
 
    <bean id="structuredArtifactManagerHibernateMappings"

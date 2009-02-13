@@ -95,4 +95,8 @@ public class AnonymousAgent implements Agent {
    public String getName() {
       return getDisplayName();
    }
+	
+	public String getPassword() {
+		return null; // not implemented
+	}
 }
