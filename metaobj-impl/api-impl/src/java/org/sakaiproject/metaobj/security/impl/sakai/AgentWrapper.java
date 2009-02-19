@@ -156,4 +156,8 @@ public class AgentWrapper extends IdentifiableObject implements Agent {
    public String getName() {
       return getDisplayName();
    }
+	
+	public String getPassword() {
+		return null; // not implemented
+	}
 }

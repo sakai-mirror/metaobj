@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -36,8 +37,6 @@ import org.sakaiproject.authz.cover.AuthzGroupService;
 import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.metaobj.security.AnonymousAgent;
-import org.sakaiproject.metaobj.security.PasswordGenerator;
-import org.sakaiproject.metaobj.shared.mgt.AgentManagerListener;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.OspException;
@@ -48,12 +47,13 @@ import org.sakaiproject.user.api.UserDirectoryService;
 import org.sakaiproject.user.api.UserEdit;
 import org.sakaiproject.user.api.UserNotDefinedException;
 
+import org.apache.commons.codec.digest.DigestUtils;
+
 public class AgentManager extends SecurityBase implements org.sakaiproject.metaobj.shared.mgt.AgentManager {
    protected final transient Log logger = LogFactory.getLog(getClass());
+   private UserDirectoryService directoryService;
 
-   private org.sakaiproject.metaobj.shared.mgt.AgentManager baseAgentManager = null;
-   private List listeners;
-   private PasswordGenerator passwordGenerator;
+   private int PASSWORD_LENGTH = 8;
 
    /**
     * @param id
@@ -79,12 +79,6 @@ public class AgentManager extends SecurityBase implements org.sakaiproject.metao
 
       if (returned != null) {
          return returned;
-      }
-
-      if (baseAgentManager != null) {
-         Agent baseAgent = baseAgentManager.getAgent(id);
-
-         return baseAgent;
       }
 
       if (exception != null) {
@@ -113,12 +107,6 @@ public class AgentManager extends SecurityBase implements org.sakaiproject.metao
 
       if (returned != null) {
          return returned;
-      }
-
-      if (baseAgentManager != null) {
-         Agent baseAgent = baseAgentManager.getAgent(username);
-
-         return baseAgent;
       }
 
       if (exception != null) {
@@ -292,50 +280,52 @@ public class AgentManager extends SecurityBase implements org.sakaiproject.metao
       return null;
    }
 
-   /**
-    * @param agent
-    * @return
-    */
-   public Agent createAgent(Agent agent) {
-      if (!agent.isInRole(Agent.ROLE_GUEST)) {
-         // we don't support creating real agents
-         throw new UnsupportedOperationException();
-      }
-
+   public Agent createAgent(String displayName, Id id)	{
       try {
-         UserEdit uEdit = org.sakaiproject.user.cover.UserDirectoryService.addUser(agent.getId().getValue(), agent.getId().getValue());
+         UserEdit uEdit = getDirectoryService().addUser(id.getValue(), id.getValue());
+         uEdit.setEmail(id.getValue());  // id is the user email
+         uEdit.setType("guest"); 
 
-         //set email address
-         uEdit.setEmail(agent.getId().getValue());
-
-         // set id
-         uEdit.setId(agent.getId().getValue());
-
-         // set (external id) eid
-         uEdit.setEid(agent.getId().getValue());
-
-         // set the guest user type
-         uEdit.setType("guest");
-
-         String pw = getPasswordGenerator().generate();
+         String pw = passwordGenerator();
          uEdit.setPassword(pw);
-         org.sakaiproject.user.cover.UserDirectoryService.commitEdit(uEdit);
+         getDirectoryService().commitEdit(uEdit);
 
-         AgentImpl impl = (AgentImpl) agent;
-         impl.setPassword(pw);
+         AgentImpl agent = new AgentImpl();
+         agent.setDisplayName(displayName);
+         agent.setRole(Agent.ROLE_GUEST);
+         agent.setId(id);
+         agent.setPassword(pw);
+         agent.setMd5Password(DigestUtils.md5Hex(pw));
 
-         for (Iterator i = getListeners().iterator(); i.hasNext();) {
-            ((AgentManagerListener) i.next()).createAgent(agent);
-         }
+         return agent;
+      }
+      catch (Exception e) {
+         logger.warn("Unable to create guest user: " + id, e);
+         return null;
+      }
+   }
 
-         return getAgent(agent.getId());
+   private String passwordGenerator() {
+      Random rand = new Random();
+      char[] pass = new char[PASSWORD_LENGTH];
+      for (int i = 0; i < PASSWORD_LENGTH; i++) {
+         int val = rand.nextInt(52);
+         // need to add appropriate values to get to the ascii values
+         if (val < 26)
+            val += 65;
+         else
+            val += 71;
+         pass[i] = (char) val;
       }
-      catch (RuntimeException exp) {
-         throw exp;
-      }
-      catch (Exception exp) {
-         throw new OspException(exp);
-      }
+      return new String(pass);
+   }
+
+   public UserDirectoryService getDirectoryService() {
+      return directoryService;
+   }
+
+   public void setDirectoryService(UserDirectoryService directoryService) {
+      this.directoryService = directoryService;
    }
 
    /**
@@ -349,31 +339,4 @@ public class AgentManager extends SecurityBase implements org.sakaiproject.metao
       throw new UnsupportedOperationException();
    }
 
-   protected UserDirectoryService getDirectoryService() {
-      return (UserDirectoryService) ComponentManager.get(UserDirectoryService.class.getName());
-   }
-
-   public org.sakaiproject.metaobj.shared.mgt.AgentManager getBaseAgentManager() {
-      return baseAgentManager;
-   }
-
-   public void setBaseAgentManager(org.sakaiproject.metaobj.shared.mgt.AgentManager baseAgentManager) {
-      this.baseAgentManager = baseAgentManager;
-   }
-
-   public List getListeners() {
-      return listeners;
-   }
-
-   public void setListeners(List listeners) {
-      this.listeners = listeners;
-   }
-
-   public PasswordGenerator getPasswordGenerator() {
-      return passwordGenerator;
-   }
-
-   public void setPasswordGenerator(PasswordGenerator passwordGenerator) {
-      this.passwordGenerator = passwordGenerator;
-   }
 }
