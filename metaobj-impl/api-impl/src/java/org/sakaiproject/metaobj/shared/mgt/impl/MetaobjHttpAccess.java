@@ -56,6 +56,8 @@ import org.sakaiproject.tool.cover.ActiveToolManager;
 import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.util.Web;
 import org.sakaiproject.content.api.ResourceEditingHelper;
+import org.sakaiproject.entity.api.EntityPermissionException;
+import org.sakaiproject.content.cover.ContentHostingService;
 
 /**
  * Created by IntelliJ IDEA.
@@ -87,12 +89,13 @@ public class MetaobjHttpAccess extends HttpAccessBase {
 
       String context = req.getContextPath() + req.getServletPath();
       String toolPath = "/formView.osp";
-       try {
+      try {
           helperTool.help(req, res, context, toolPath);
-       }
-       catch (ToolException e) {
-          throw new RuntimeException(e);
-       }
+      }
+      catch (ToolException e) {
+         throw new EntityPermissionException(SessionManager.getCurrentSessionUserId(), 
+                                             ContentHostingService.AUTH_RESOURCE_READ, ref.getReference());
+      }
    }
 
    protected void checkSource(Reference ref, ReferenceParser parser)
