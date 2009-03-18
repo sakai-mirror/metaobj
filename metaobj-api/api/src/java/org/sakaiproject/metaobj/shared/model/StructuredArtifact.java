@@ -54,6 +54,7 @@ public class StructuredArtifact extends ElementBean implements Artifact {
    }
 
    public StructuredArtifact() {
+      super();
    }
 
    public StructuredArtifact(Element baseElement, SchemaNode currentSchema) {
