@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" xmlns="http://www.w3.org/1999/xhtml" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:sakaifn="org.sakaiproject.metaobj.utils.xml.XsltFunctions" exclude-result-prefixes="xs sakaifn">
-	<xsl:output method="xml" omit-xml-declaration="yes" doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN" />
+	<xsl:output method="xml" omit-xml-declaration="yes" encoding="UTF-8" doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN" />
 	<xsl:template match="formView">
 		<!--  note: equivalent to / -->
 		<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
