@@ -93,7 +93,8 @@ public class XmlControllerBase {
       else if (request.get("updateNestedButton") != null) {
          getValidator().validate(sessionBean.getCurrentElement(), errors, true);
          if (errors.hasErrors()) {
-            return null;
+            logger.warn(this+"validate failed for: " + getSchemaName(session));
+            return new ModelAndView("success"); 
          }
          sessionBean.popCurrentElement();
          sessionBean.popCurrentPath();

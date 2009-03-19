@@ -226,9 +226,11 @@ public class XsltArtifactView extends AbstractXsltView {
          params.put("panelId", Web.escapeJavascript("Main" + ToolManager.getCurrentPlacement().getId()));
       }
 
-      params.putAll((Map) request.getAttribute(STYLESHEET_PARAMS));
+      if ( request.getAttribute(STYLESHEET_PARAMS) != null )
+         params.putAll((Map) request.getAttribute(STYLESHEET_PARAMS));
 
-      params.put(STYLESHEET_LOCATION, request.getAttribute(STYLESHEET_LOCATION));
+      if ( request.getAttribute(STYLESHEET_LOCATION) != null )
+         params.put(STYLESHEET_LOCATION, request.getAttribute(STYLESHEET_LOCATION));
       return params;
    }
 
@@ -244,42 +246,37 @@ public class XsltArtifactView extends AbstractXsltView {
          throws Exception {
 
       InputStream stylesheetLocation = (InputStream) parameters.get(STYLESHEET_LOCATION);
+      Transformer trans = getTransformer(stylesheetLocation);
+
+      // Explicitly apply URIResolver to every created Transformer.
+      if (getUriResolver() != null) {
+         trans.setURIResolver(getUriResolver());
+      }
+
+      // Apply any subclass supplied parameters to the transformer.
+      if (parameters != null) {
+         for (Iterator it = parameters.entrySet().iterator(); it.hasNext();) {
+            Map.Entry entry = (Map.Entry) it.next();
+            trans.setParameter(entry.getKey().toString(), entry.getValue());
+         }
+         if (logger.isDebugEnabled()) {
+            logger.debug("Added parameters [" + parameters + "] to transformer object");
+         }
+      }
+
+      // Specify default output properties.
+      //trans.setOutputProperty(OutputKeys.ENCODING, encoding);
+      trans.setOutputProperty(OutputKeys.INDENT, "yes");
+      
+      // Xalan-specific, but won't do any harm in other XSLT engines.
+      trans.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+
+      // Perform the actual XSLT transformation.
       try {
-
-         Transformer trans = getTransformer(stylesheetLocation);
-
-         // Explicitly apply URIResolver to every created Transformer.
-         if (getUriResolver() != null) {
-            trans.setURIResolver(getUriResolver());
-         }
-
-         // Apply any subclass supplied parameters to the transformer.
-         if (parameters != null) {
-            for (Iterator it = parameters.entrySet().iterator(); it.hasNext();) {
-               Map.Entry entry = (Map.Entry) it.next();
-               trans.setParameter(entry.getKey().toString(), entry.getValue());
-            }
-            if (logger.isDebugEnabled()) {
-               logger.debug("Added parameters [" + parameters + "] to transformer object");
-            }
-         }
-
-         // Specify default output properties.
-         //trans.setOutputProperty(OutputKeys.ENCODING, encoding);
-         trans.setOutputProperty(OutputKeys.INDENT, "yes");
-
-         // Xalan-specific, but won't do any harm in other XSLT engines.
-         trans.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
-
-         // Perform the actual XSLT transformation.
          trans.transform(source, result);
          if (logger.isDebugEnabled()) {
             logger.debug("XSLT transformed with stylesheet [" + stylesheetLocation + "]");
          }
-      }
-      catch (TransformerConfigurationException ex) {
-         throw new NestedServletException("Couldn't create XSLT transformer for stylesheet [" +
-               stylesheetLocation + "] in XSLT view with name [" + getBeanName() + "]", ex);
       }
       catch (TransformerException ex) {
          throw new NestedServletException("Couldn't perform transform with stylesheet [" +
@@ -288,7 +285,19 @@ public class XsltArtifactView extends AbstractXsltView {
    }
 
    protected Transformer getTransformer(InputStream transformer) throws TransformerException {
-      return getTransformerFactory().newTransformer(new StreamSource(transformer));
+      try {
+         if ( transformer == null ) {
+            logger.warn(this+".getTransformer passed null InputStream");
+            return getTransformerFactory().newTransformer();
+         }
+         else {
+            return getTransformerFactory().newTransformer(new StreamSource(transformer));
+         }
+      }
+      catch (TransformerConfigurationException ex) {
+         logger.warn("Couldn't create XSLT transformer for stylesheet in XSLT view with name [" + getBeanName() + "]", ex);
+         return getTransformerFactory().newTransformer();
+      }
    }
 
    protected StructuredArtifactDefinitionManager getStructuredArtifactDefinitionManager() {
