@@ -162,6 +162,7 @@ public class EditXmlElementController extends XmlControllerBase
          errors.rejectValue(e.getField(), e.getErrorCode(), e.getErrorInfo(),
             e.getDefaultMessage());
       }
+      session.put(FormHelper.FORM_SAVE_SUCCESS, ((StructuredArtifact)bean).getId().getValue());
       session.put(FormHelper.RETURN_REFERENCE_TAG, ((StructuredArtifact)bean).getId().getValue());
       session.put(FormHelper.RETURN_ACTION_TAG, FormHelper.RETURN_ACTION_SAVE);
       session.remove(EditedArtifactStorage.STORED_ARTIFACT_FLAG);
