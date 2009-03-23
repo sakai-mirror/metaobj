@@ -719,7 +719,7 @@
                test="$currentSchemaNode/xs:annotation/xs:documentation[@source='ospi.label']"><xsl:value-of 
                select="$currentSchemaNode/xs:annotation/xs:documentation[@source='ospi.label']" 
                /></xsl:when><xsl:otherwise><xsl:value-of select="$name" /></xsl:otherwise></xsl:choose></xsl:variable>
-            <input id="{$name}" type="button" onclick="javascript:document.forms[0].childPath.value='{$name}';document.forms[0].childFieldLabel.value='{$fieldLabel}';document.forms[0].fileHelper.value='true';document.forms[0].onsubmit();document.forms[0].submit();">
+            <input id="{$name}" type="button" onclick="javascript:document.forms[0].childPath.value='{$name}';document.forms[0].childFieldLabel.value='{normalize-space($fieldLabel)}';document.forms[0].fileHelper.value='true';document.forms[0].onsubmit();document.forms[0].submit();">
 					<xsl:choose>
 						<xsl:when test="$currentParent/node()[$name=name()]">
 							<xsl:attribute name="value">
