@@ -710,6 +710,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
          sakaiSession.setUserEid("admin");
    
          try {
+            logger.info("Updating base Metaobj XSLT files (auto.ddl is on).");
             createResource("/org/sakaiproject/metaobj/shared/control/formCreate.xslt", "formCreate.xslt",
                "used for default rendering of form add and update", "text/xml", isReplaceViews(), true);
    
@@ -1473,9 +1474,14 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       }
 
       try {
-         resource = getContentHosting().addResource(name, folder, 100, type,
+         resource = getContentHosting().addResource(name, folder, 1, type,
                      bos.toByteArray(), resourceProperties, NotificationService.NOTI_NONE);
          getContentHosting().setPubView(resource.getId(), pubview);
+      }
+      catch (IdUniquenessException e) {
+         //Odd case -- tried to add new, but failed; return the existent ID attempted
+         logger.info("Failure trying to write Metaobj file: " + folder + name, e);
+         return folder + name;
       }
       catch (Exception e) {
          throw new RuntimeException(e);
