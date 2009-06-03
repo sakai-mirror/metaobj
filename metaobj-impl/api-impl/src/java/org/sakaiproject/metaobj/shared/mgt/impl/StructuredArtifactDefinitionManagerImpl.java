@@ -1438,39 +1438,33 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
          throw new RuntimeException(e);
       }
 
+      String resourceId = folder + name;
       try {
-         String id = folder + name;
          if (!replace) {
-            ContentResource testResource = getContentHosting().getResource(id);
+            ContentResource testResource = getContentHosting().getResource(resourceId);
             if (testResource != null) {
                return testResource.getId();
             }
          }
-         getContentHosting().removeResource(id);
+         getContentHosting().removeResource(resourceId);
       }
       catch (TypeException e) {
-         // ignore, must be new
-         if (logger.isDebugEnabled()) {
-             logger.debug(e);
-         }
+         // should not happen -- requested resource should not be a collection
+         logger.warn(e);
       }
       catch (IdUnusedException e) {
-         // ignore, must be new
+         // ignore, must be new resource
          if (logger.isDebugEnabled()) {
              logger.debug(e);
          }
       }
       catch (PermissionException e) {
-         // ignore, must be new
-         if (logger.isDebugEnabled()) {
-             logger.debug(e);
-         }
+         // should not happen - log unexpected error
+         logger.warn(e);
       }
       catch (InUseException e) {
-         // ignore, must be new
-         if (logger.isDebugEnabled()) {
-             logger.debug(e);
-         }
+         // should not happen - log unexpected error
+         logger.warn(e);
       }
 
       try {
@@ -1481,10 +1475,11 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       catch (IdUniquenessException e) {
          //Odd case -- tried to add new, but failed; return the existent ID attempted
          logger.info("Failure trying to write Metaobj file: " + folder + name, e);
-         return folder + name;
+         return resourceId;
       }
       catch (Exception e) {
-         throw new RuntimeException(e);
+         logger.error(e);
+         return null;
       }
       return resource.getId();
    }
