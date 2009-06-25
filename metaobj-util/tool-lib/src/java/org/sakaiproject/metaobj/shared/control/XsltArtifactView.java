@@ -86,6 +86,16 @@ public class XsltArtifactView extends AbstractXsltView {
 
       Element root;
       Map paramsMap = new Hashtable();
+
+      for (Enumeration e = httpServletRequest.getParameterNames(); e.hasMoreElements(); ) {
+         String k = e.nextElement().toString();
+         //These are reserved parameters
+         if (! ("preview".equals(k) || "fromResources".equals(k) || "edit".equals(k)
+                  || "panelId".equals(k) || "subForm".equals(k))) {
+            paramsMap.put(k, httpServletRequest.getParameter(k));
+         }
+      }
+
       httpServletRequest.setAttribute(STYLESHEET_PARAMS, paramsMap);
       if (toolSession.getAttribute(FormHelper.PREVIEW_HOME_TAG) != null) {
          paramsMap.put("preview", "true");
