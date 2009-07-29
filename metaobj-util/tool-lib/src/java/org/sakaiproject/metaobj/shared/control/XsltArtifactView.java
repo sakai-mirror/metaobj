@@ -80,11 +80,11 @@ public class XsltArtifactView extends AbstractXsltView {
 
       ToolSession toolSession = SessionManager.getCurrentToolSession();
 
-      String homeType;
+      String homeType = null;
 
       ElementBean bean = (ElementBean) map.get("bean");
 
-      Element root;
+      Element root = null;
       Map paramsMap = new Hashtable();
 
       for (Enumeration e = httpServletRequest.getParameterNames(); e.hasMoreElements(); ) {
@@ -117,13 +117,18 @@ public class XsltArtifactView extends AbstractXsltView {
          EditedArtifactStorage sessionBean = (EditedArtifactStorage)httpServletRequest.getSession().getAttribute(
             EditedArtifactStorage.EDITED_ARTIFACT_STORAGE_SESSION_KEY);
 
-         root = getStructuredArtifactDefinitionManager().createFormViewXml(
-            (Artifact) sessionBean.getRootArtifact(), null);
-
-         replaceNodes(root, bean, sessionBean);
-         paramsMap.put("subForm", "true");
-         homeType = getHomeType(sessionBean.getRootArtifact());
-         edit = sessionBean.getRootArtifact().getId() != null;
+         if ( sessionBean != null ) {
+            root = getStructuredArtifactDefinitionManager().createFormViewXml(
+                                         (Artifact) sessionBean.getRootArtifact(), null);
+            
+            replaceNodes(root, bean, sessionBean);
+            paramsMap.put("subForm", "true");
+            homeType = getHomeType(sessionBean.getRootArtifact());
+            edit = sessionBean.getRootArtifact().getId() != null;
+         }
+         else {
+            return new javax.xml.transform.dom.DOMSource();
+         }
       }
 
       if (edit) {

@@ -61,7 +61,11 @@ public class AddXmlElementController extends XmlControllerBase
       if (session.get(EditedArtifactStorage.STORED_ARTIFACT_FLAG) == null) {
          StructuredArtifactHomeInterface home = getSchema(session);
          if ( home == null ) {
-            logger.error(this+".fillBackingObject schema not found (perhaps multiple submits): " + getSchemaName(session));
+            logger.error(this+".formBackingObject schema not found (perhaps multiple submits): " + getSchemaName(session));
+            return new ElementBean();
+         }
+         else if ( home.getParentHome() == null ) {
+            logger.error(this+".formBackingObject schema not found (perhaps invalid): " + getSchemaName(session));
             return new ElementBean();
          }
          

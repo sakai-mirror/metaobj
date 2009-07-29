@@ -59,4 +59,5 @@ public interface StructuredArtifactHomeInterface extends WritableObjectHome, Clo
 
    public byte[] getBytes(StructuredArtifact artifact);
    
+   public StructuredArtifactHomeInterface getParentHome();
 }
