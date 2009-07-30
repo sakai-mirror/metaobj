@@ -385,6 +385,6 @@ public class XmlElementHome implements StructuredArtifactHomeInterface, Initiali
    }
    
    public StructuredArtifactHomeInterface getParentHome() {
-      return null; // not implemented/appropriate for this class
+      return this;
    }
 }
