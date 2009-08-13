@@ -52,7 +52,7 @@ public class ContentEntityWrapper implements ContentResource
 		this.reference = reference;
 	}
 
-	public int getContentLength()
+	public long getContentLength()
 	{
 		return base.getContentLength();
 	}
