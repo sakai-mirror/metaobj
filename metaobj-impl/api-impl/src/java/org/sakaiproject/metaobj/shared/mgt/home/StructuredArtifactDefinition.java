@@ -27,6 +27,7 @@ import org.sakaiproject.metaobj.shared.mgt.PresentableObjectHome;
 import org.sakaiproject.metaobj.shared.model.*;
 import org.sakaiproject.metaobj.utils.xml.SchemaFactory;
 import org.sakaiproject.metaobj.utils.xml.SchemaNode;
+import org.sakaiproject.metaobj.utils.xml.SchemaInvalidException;
 
 import java.io.ByteArrayInputStream;
 import java.io.Serializable;
@@ -113,7 +114,12 @@ public class StructuredArtifactDefinition extends StructuredArtifactHome impleme
          SchemaFactory schemaFactory = SchemaFactory.getInstance();
          ByteArrayInputStream in = new ByteArrayInputStream(bean.getSchema());
 
-         this.schema = schemaFactory.getSchema(in);
+         try {
+            this.schema = schemaFactory.getSchema(in);
+         }
+         catch ( Exception e ) {
+            throw new SchemaInvalidException(bean.getDescription(), e);
+         }
       }
       else {
          this.schema = null;

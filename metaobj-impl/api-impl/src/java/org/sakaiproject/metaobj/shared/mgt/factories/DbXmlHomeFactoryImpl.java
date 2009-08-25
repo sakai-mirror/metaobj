@@ -23,6 +23,7 @@ package org.sakaiproject.metaobj.shared.mgt.factories;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.HashMap;
 
 import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
 import org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome;
@@ -30,6 +31,7 @@ import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
 import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactDefinition;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
+import org.sakaiproject.metaobj.utils.xml.SchemaInvalidException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -83,15 +85,24 @@ public class DbXmlHomeFactoryImpl extends HomeFactoryBase implements HomeFactory
    }
 
    protected Map createHomes(Map homeBeans) {
+      Map homeBeansSet = new HashMap();
       for (Iterator i = homeBeans.entrySet().iterator(); i.hasNext();) {
          Map.Entry entry = (Map.Entry) i.next();
-         entry.setValue(createHome((StructuredArtifactDefinitionBean) entry.getValue()));
+         ReadableObjectHome roh = createHome((StructuredArtifactDefinitionBean) entry.getValue());
+         if ( roh != null )
+            homeBeansSet.put( entry.getKey(), roh );
       }
-      return homeBeans;
+      return homeBeansSet;
    }
 
    protected ReadableObjectHome createHome(StructuredArtifactDefinitionBean sadBean) {
-      return new StructuredArtifactDefinition(sadBean);
+      try{
+         return new StructuredArtifactDefinition(sadBean);
+      }
+      catch (SchemaInvalidException e) {
+         logger.warn(e);
+         return null; 
+      }
    }
 
    public StructuredArtifactDefinitionManager getStructuredArtifactDefinitionManager() {
