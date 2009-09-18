@@ -36,6 +36,32 @@ public class RedirectView extends org.springframework.web.servlet.view.RedirectV
    protected final transient Log logger = LogFactory.getLog(getClass());
 
    /**
+    ** Determine whether the given model element should be exposed as a 
+    ** query property. The default implementation considers Strings and 
+    ** primitives as eligible, and also arrays and Collections/Iterables 
+    ** with corresponding elements..
+    **
+    ** This is changed behavior from Spring 2.0, so we always return true
+    ** for backward compatibility.
+    **/
+   protected boolean isEligibleProperty( String key, Object value ) {
+      return true;
+   }
+   
+   /**
+    ** Determine whether the given model element should be exposed as a 
+    ** query property. The default implementation considers Strings and 
+    ** primitives as eligible, and also arrays and Collections/Iterables 
+    ** with corresponding elements..
+    **
+    ** This is changed behavior from Spring 2.0, so we always return true
+    ** for backward compatibility.
+    **/
+   protected boolean isEligibleValue( Object value ) {
+      return true;
+   }
+   
+   /**
     * Prepares the view given the specified model, merging it with static
     * attributes and a RequestContext attribute, if necessary.
     * Delegates to renderMergedOutputModel for the actual rendering.
