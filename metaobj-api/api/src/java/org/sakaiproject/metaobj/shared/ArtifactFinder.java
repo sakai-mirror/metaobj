@@ -22,6 +22,7 @@
 package org.sakaiproject.metaobj.shared;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.sakaiproject.metaobj.shared.model.Artifact;
 import org.sakaiproject.metaobj.shared.model.Id;
@@ -45,9 +46,13 @@ public interface ArtifactFinder {
     * @return
     */
    public Collection findByOwnerAndType(Id owner, String type);
+   
+   public Collection findBySharedOwnerAndType(List ownerList, String type);
 
    public Collection findByOwnerAndType(Id owner, String type, MimeType mimeType);
-
+   
+   public Collection findBySharedOwnerAndType(List ownerList, String type, MimeType mimeType);
+   
    public Collection findByOwner(Id owner);
 
    public Collection findByWorksiteAndType(Id worksiteId, String type);

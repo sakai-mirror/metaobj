@@ -26,6 +26,9 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.entity.api.ResourceProperties;
@@ -55,11 +58,19 @@ public class FileArtifactFinder implements ArtifactFinder {
    private AgentManager agentManager;
    private IdManager idManager;
    private ReadableObjectHome contentResourceHome = null;
+   
+   private static Log log = LogFactory.getLog(FileArtifactFinder.class);
 
    public Collection findByOwnerAndType(Id owner, String type) {
       return findByOwnerAndType(owner, type, null);
    }
 
+   public Collection findBySharedOwnerAndType(List ownerList, String type) {
+      return findBySharedOwnerAndType(ownerList, type, null);
+   }
+
+   /** Return collection of files owned by specified user and of the specified mime type.
+    **/
    public Collection findByOwnerAndType(Id owner, String type, MimeType mimeType) {
       String primaryMimeType = null;
       String subMimeType = null;
@@ -85,6 +96,14 @@ public class FileArtifactFinder implements ArtifactFinder {
       }
 
       return returned;
+   }
+   
+
+   /** Return collection of file owned by specified users and of the specified mime type.
+    ** Only My Workspace(s) and current site are searched.
+    **/
+   public Collection findBySharedOwnerAndType(List ownerList, String type, MimeType mimeType) {
+      return null; // tbd
    }
    
    protected Artifact createArtifact(ContentResource resource, Id artifactId) {

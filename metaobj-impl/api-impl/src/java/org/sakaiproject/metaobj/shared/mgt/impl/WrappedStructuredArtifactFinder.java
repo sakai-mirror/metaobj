@@ -30,6 +30,7 @@ import java.util.TreeSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.content.api.ResourceType;
@@ -42,6 +43,7 @@ import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.MimeType;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 
 /**
  * Created by IntelliJ IDEA.
@@ -55,15 +57,19 @@ public class WrappedStructuredArtifactFinder  extends FileArtifactFinder {
    private ContentHostingService contentHostingService;
    private AgentManager agentManager;
    private IdManager idManager;
+   private WorksiteManager worksiteManager;
    private int finderPageSize = 1000;
    
    private static Log log = LogFactory.getLog(WrappedStructuredArtifactFinder.class);
 
+   /** Return collection of forms (ContentResourceArtifacts) owned by specified user
+    ** and of the specified form type.
+    **/
    public Collection findByOwnerAndType(Id owner, String type) {
    
       if (owner == null)
       {
-         log.info("Null owner passed to findByOwnerAndType -- returning all users' forms");
+         log.info("Null owner passed to findByOwnerAndType -- returning all users forms");
          return findByType( type );
       }
       
@@ -84,12 +90,11 @@ public class WrappedStructuredArtifactFinder  extends FileArtifactFinder {
       // add user MyWorkspace site
       try
       {
-         site = SiteService.getSite(SiteService.getUserSiteId(owner.getValue()));
-         siteIds.add( site.getId() );
+         siteIds.add( SiteService.getUserSiteId(owner.getValue()) );
       }
       catch (Exception e)
       {
-         log.info("findOwnerAndType", e);
+         log.info("findByOwnerAndType", e);
       }      
    
       Collection<ContentResource> artifacts = 
@@ -113,7 +118,63 @@ public class WrappedStructuredArtifactFinder  extends FileArtifactFinder {
       return returned;
    }
 
+   /** Return collection of forms (ContentResourceArtifacts) owned by specified users
+    ** and of the specified form type. Only My Workspace(s) and current site are searched.
+    **/
+   public Collection findBySharedOwnerAndType(List owners, String type) {
+   
+      if (owners == null || owners.size() == 0)
+      {
+         log.info("Null owner passed to findBySharedOwnerAndType -- returning all users' forms");
+         return findByType( type );
+      }
+      
+      Set siteIds = new TreeSet();
+                                           
+      // use current worksite
+      Id worksiteId = worksiteManager.getCurrentWorksiteId();
+      siteIds.add( worksiteId.getValue() );
+      
+      // find all user MyWorkspace sites
+      for (Iterator it = owners.iterator(); it.hasNext();) 
+      {
+         try
+         {
+            String ownerid = ((Agent)it.next()).getId().getValue();
+            Site site = SiteService.getSite(SiteService.getUserSiteId(ownerid) );
+            siteIds.add( site.getId() );
+         }
+         catch (Exception e)
+         {
+            log.info("findBySharedOwnerAndType", e);
+         }
+      }      
+   
+      Collection<ContentResource> artifacts = 
+         getContentHostingService().getContextResourcesOfType( ResourceType.TYPE_METAOBJ, siteIds );
+      
+      ArrayList<ContentResourceArtifact> returned = new ArrayList<ContentResourceArtifact>();
+      
+      for (Iterator<ContentResource> i = artifacts.iterator(); i.hasNext();) {
+         ContentResource resource = i.next();
+         Agent resourceOwner = getAgentManager().getAgent(resource.getProperties().getProperty(ResourceProperties.PROP_CREATOR));
+         String actualType = resource.getProperties().getProperty(ResourceProperties.PROP_STRUCTOBJ_TYPE);
+         
+         // filter list for form type
+         if ( type == null  || type.equals(actualType) ) { 
+         
+          Id resourceId = getIdManager().getId(getContentHostingService().getUuid(resource.getId()));
+          returned.add(new ContentResourceArtifact(resource, resourceId, resourceOwner));
+         }
+      }
+      return returned;
+   }
+
    public Collection findByOwnerAndType(Id owner, String type, MimeType mimeType) {
+      return null;
+   }
+
+   public Collection findBySharedOwnerAndType(List ownerList, String type, MimeType mimeType) {
       return null;
    }
 
@@ -163,6 +224,10 @@ public class WrappedStructuredArtifactFinder  extends FileArtifactFinder {
 
    public void setIdManager(IdManager idManager) {
       this.idManager = idManager;
+   }
+
+   public void setWorksiteManager(WorksiteManager worksiteManager) {
+      this.worksiteManager = worksiteManager;
    }
 
    /**
