@@ -146,7 +146,7 @@ public class WrappedStructuredArtifactFinder  extends FileArtifactFinder {
          }
          catch (Exception e)
          {
-            log.info("findBySharedOwnerAndType", e);
+            log.info("findBySharedOwnerAndType: "+e.toString());
          }
       }      
    
