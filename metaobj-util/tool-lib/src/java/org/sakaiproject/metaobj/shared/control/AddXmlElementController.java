@@ -127,8 +127,10 @@ public class AddXmlElementController extends XmlControllerBase
          return handleNonSubmit(bean, request, session, application, errors, model);
       }
 
+      String externalType = null;
       try {
          WritableObjectHome home = getSchema(session);
+         externalType = home.getExternalType();
          newArtifact = home.store(artifact);
          if (newArtifact.getId() != null) {
             session.put(FormHelper.FORM_SAVE_SUCCESS, newArtifact.getId().getValue());
@@ -136,7 +138,7 @@ public class AddXmlElementController extends XmlControllerBase
             session.put(FormHelper.RETURN_ACTION_TAG, FormHelper.RETURN_ACTION_SAVE);
          }
       } catch (PersistenceException e) {
-         logger.warn("Could not create instance of form typed: " + home.getExternalType());
+         logger.warn("Could not create instance of form typed: " + (externalType == null ? "[UNKNOWN]" : externalType));
          errors.rejectValue(e.getField(), e.getErrorCode(), e.getErrorInfo(),
             e.getDefaultMessage());
       }
