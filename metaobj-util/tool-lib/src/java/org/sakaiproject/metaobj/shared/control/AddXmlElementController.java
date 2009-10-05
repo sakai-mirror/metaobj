@@ -135,8 +135,8 @@ public class AddXmlElementController extends XmlControllerBase
             session.put(FormHelper.RETURN_REFERENCE_TAG, newArtifact.getId().getValue());
             session.put(FormHelper.RETURN_ACTION_TAG, FormHelper.RETURN_ACTION_SAVE);
          }
-         logger.warn("Could not create instance of form typed: " + home.getExternalType());
       } catch (PersistenceException e) {
+         logger.warn("Could not create instance of form typed: " + home.getExternalType());
          errors.rejectValue(e.getField(), e.getErrorCode(), e.getErrorInfo(),
             e.getDefaultMessage());
       }
