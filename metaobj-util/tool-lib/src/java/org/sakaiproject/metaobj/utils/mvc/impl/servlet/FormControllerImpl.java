@@ -32,6 +32,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.sakaiproject.component.cover.ComponentManager;
+import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.metaobj.shared.FormHelper;
 import org.sakaiproject.metaobj.utils.mvc.impl.ControllerFilterManager;
 import org.sakaiproject.metaobj.utils.mvc.impl.HttpServletHelper;
@@ -65,6 +66,9 @@ public class FormControllerImpl extends SimpleFormController {
    private String[] requiredFields = null;
    private Collection filters;
 
+   //Constant for property enabling save attempt/success cookies (SAK-15911)
+   protected static final String PROP_SAVE_COOKIES = "metaobj.save.cookies";
+
    protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response,
                                    Object command, BindException errors) throws Exception {
 
@@ -83,15 +87,19 @@ public class FormControllerImpl extends SimpleFormController {
          returnedMv = controller.handleRequest(command, requestMap, session, application, errors);
       }
 
+      boolean saveCookies = ServerConfigurationService.getBoolean(PROP_SAVE_COOKIES, false);
+
       if (errors.hasErrors()) {
          logger.debug("Form submission errors: " + errors.getErrorCount());
          HttpServletHelper.getInstance().reloadApplicationMap(request, application);
          HttpServletHelper.getInstance().reloadSessionMap(request, session);
          HttpServletHelper.getInstance().reloadRequestMap(request, requestMap);
-         Cookie cookie = new Cookie(FormHelper.FORM_SAVE_ATTEMPT, "yes");
-         cookie.setMaxAge(30);
-         cookie.setPath("/");
-         response.addCookie(cookie);
+         if (saveCookies) {
+            Cookie cookie = new Cookie(FormHelper.FORM_SAVE_ATTEMPT, "yes");
+            cookie.setMaxAge(30);
+            cookie.setPath("/");
+            response.addCookie(cookie);
+         }
          return showForm(request, response, errors);
       }
 
@@ -110,7 +118,7 @@ public class FormControllerImpl extends SimpleFormController {
 
       //We have a successful save coming back, so we set/append to a cookie
       String savedForm = (String) session.get(FormHelper.FORM_SAVE_SUCCESS);
-      if (savedForm != null) {
+      if (savedForm != null && saveCookies) {
          Cookie cookie = null;
          if (request.getCookies() != null) {
             for (Cookie c : request.getCookies()) {
