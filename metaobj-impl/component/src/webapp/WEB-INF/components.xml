@@ -54,6 +54,9 @@
       <property name="contentResourceHome">
          <ref bean="org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome.contentResource"/>
       </property>
+      <property name="worksiteManager">
+         <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
+      </property>
    </bean>
 
    <bean id="org.sakaiproject.metaobj.shared.ArtifactFinder.default"

@@ -25,10 +25,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import org.sakaiproject.site.api.Site;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.entity.api.ResourceProperties;
@@ -44,6 +47,8 @@ import org.sakaiproject.metaobj.shared.model.Artifact;
 import org.sakaiproject.metaobj.shared.model.ContentResourceArtifact;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.MimeType;
+import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 
 /**
  * Created by IntelliJ IDEA.
@@ -58,6 +63,7 @@ public class FileArtifactFinder implements ArtifactFinder {
    private AgentManager agentManager;
    private IdManager idManager;
    private ReadableObjectHome contentResourceHome = null;
+   private WorksiteManager worksiteManager;
    
    private static Log log = LogFactory.getLog(FileArtifactFinder.class);
 
@@ -99,13 +105,54 @@ public class FileArtifactFinder implements ArtifactFinder {
    }
    
 
-   /** Return collection of file owned by specified users and of the specified mime type.
-    ** Only My Workspace(s) and current site are searched.
-    **/
-   public Collection findBySharedOwnerAndType(List ownerList, String type, MimeType mimeType) {
-      return null; // tbd
-   }
-   
+	/** Return collection of file owned by specified users and of the specified mime type.
+	 ** Only My Workspace(s) and current site are searched.
+	 **/
+	public Collection findBySharedOwnerAndType(List ownerList, String type, MimeType mimeType) {
+	
+		Set<String> siteIds = new TreeSet();
+														 
+		// use current worksite
+		Id worksiteId = worksiteManager.getCurrentWorksiteId();
+		siteIds.add( worksiteId.getValue() );
+		
+		// find all user MyWorkspace sites
+		for (Iterator it = ownerList.iterator(); it.hasNext();) 
+		{
+			try
+			{
+				String ownerid = ((Agent)it.next()).getId().getValue();
+				Site site = SiteService.getSite(SiteService.getUserSiteId(ownerid) );
+				siteIds.add( site.getId() );
+			}
+			catch (Exception e)
+			{
+				log.info("findBySharedOwnerAndType: "+e.toString());
+			}
+		}		 
+	
+		String primaryMimeType = null;
+		String subMimeType = null;
+
+		if (mimeType != null) {
+			primaryMimeType = mimeType.getPrimaryType();
+			subMimeType = mimeType.getSubType();
+		}
+
+		List artifacts = getContentHostingService().findResources(ResourceProperties.FILE_TYPE,
+																					 primaryMimeType, subMimeType, siteIds);
+
+      Collection returned = new ArrayList();
+
+		for (Iterator i = artifacts.iterator(); i.hasNext();) {
+			ContentResource resource = (ContentResource) i.next();
+			Artifact resourceArtifact = createArtifact(resource);
+			returned.add(resourceArtifact);
+		}
+
+      return returned;
+	}
+	
    protected Artifact createArtifact(ContentResource resource, Id artifactId) {
 	   Agent resourceOwner = getAgentManager().getAgent(resource.getProperties().getProperty(ResourceProperties.PROP_CREATOR));
 	   ContentResourceArtifact resourceArtifact = new ContentResourceArtifact(resource, artifactId, resourceOwner);
@@ -194,6 +241,10 @@ public class FileArtifactFinder implements ArtifactFinder {
 
    public void setContentResourceHome(ReadableObjectHome contentResourceHome) {
       this.contentResourceHome = contentResourceHome;
+   }
+
+   public void setWorksiteManager(WorksiteManager worksiteManager) {
+      this.worksiteManager = worksiteManager;
    }
 
 }
