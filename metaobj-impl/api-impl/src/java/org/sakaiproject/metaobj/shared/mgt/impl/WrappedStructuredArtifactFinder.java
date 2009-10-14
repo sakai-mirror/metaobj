@@ -24,6 +24,9 @@ package org.sakaiproject.metaobj.shared.mgt.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -37,6 +40,8 @@ import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.ContentResourceArtifact;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.MimeType;
+import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.cover.SiteService;
 
 /**
  * Created by IntelliJ IDEA.
@@ -55,18 +60,54 @@ public class WrappedStructuredArtifactFinder  extends FileArtifactFinder {
    private static Log log = LogFactory.getLog(WrappedStructuredArtifactFinder.class);
 
    public Collection findByOwnerAndType(Id owner, String type) {
-      Collection<ContentResource> artifacts = findArtifacts(type);
-      ArrayList<ContentResourceArtifact> returned = new ArrayList<ContentResourceArtifact>();
-
+   
       if (owner == null)
-    	  log.info("Null owner passed to findByOwnerAndType -- returning all users' forms");
+      {
+         log.info("Null owner passed to findByOwnerAndType -- returning all users' forms");
+         return findByType( type );
+      }
+      
+      Set siteIds = new TreeSet();
+      Site site = null;
+      List siteList = org.sakaiproject.site.cover.SiteService.getSites(
+                                           org.sakaiproject.site.api.SiteService.SelectionType.ACCESS,
+                                           null, null, null, 
+                                           org.sakaiproject.site.api.SiteService.SortType.NONE, null);
+                                           
+      // find all sites user has access to
+      for (Iterator it = siteList.iterator(); it.hasNext();) 
+      {
+         site = (Site) it.next();
+         siteIds.add( site.getId() );
+      }
+         
+      // add user MyWorkspace site
+      try
+      {
+         site = SiteService.getSite(SiteService.getUserSiteId(owner.getValue()));
+         siteIds.add( site.getId() );
+      }
+      catch (Exception e)
+      {
+         log.info("findOwnerAndType", e);
+      }      
+   
+      Collection<ContentResource> artifacts = 
+         getContentHostingService().getContextResourcesOfType( ResourceType.TYPE_METAOBJ, siteIds );
+      
+      ArrayList<ContentResourceArtifact> returned = new ArrayList<ContentResourceArtifact>();
       
       for (Iterator<ContentResource> i = artifacts.iterator(); i.hasNext();) {
          ContentResource resource = i.next();
          Agent resourceOwner = getAgentManager().getAgent(resource.getProperties().getProperty(ResourceProperties.PROP_CREATOR));
-         if (owner == null || owner.equals(resourceOwner.getId())) {         
-        	 Id resourceId = getIdManager().getId(getContentHostingService().getUuid(resource.getId()));
-        	 returned.add(new ContentResourceArtifact(resource, resourceId, resourceOwner));
+         String actualType = resource.getProperties().getProperty(ResourceProperties.PROP_STRUCTOBJ_TYPE);
+         
+         // filter list for owner and form type
+         if ( owner == null || owner.equals(resourceOwner.getId()) 
+              && (type == null  || type.equals(actualType)) ) { 
+         
+          Id resourceId = getIdManager().getId(getContentHostingService().getUuid(resource.getId()));
+          returned.add(new ContentResourceArtifact(resource, resourceId, resourceOwner));
          }
       }
       return returned;
@@ -138,53 +179,4 @@ public class WrappedStructuredArtifactFinder  extends FileArtifactFinder {
       this.finderPageSize = finderPageSize;
    }
   
-	/**
-	 * Find artifacts of a specific type; may be null to find all.
-	 * 
-	 * @deprecated This is a temporary method to avoid code duplication - it is
-	 *             called by findByOwnerAndType here and findByType in
-	 *             StructuredArtifactFinder
-	 * @param type
-	 *            The Form type to retrieve; may be null to get all types
-	 * @return A filtered collection of ContentResource objects for readable Forms of the specific type
-	 */
-	@Deprecated
-	protected Collection<ContentResource> findArtifacts(String type) {
-		//FIXME: Document exactly why WrappedStructuredArtifactFinder.findByType() returns null
-		//TODO: Refactor Wrapped vs. Structured
-		ArrayList<ContentResource> artifacts = new ArrayList<ContentResource>();
-		int page = 0;
-		Collection<ContentResource> rawResources = getContentHostingService()
-				.getResourcesOfType(ResourceType.TYPE_METAOBJ, getFinderPageSize(), page);
-		while (rawResources != null && rawResources.size() > 0) {
-			artifacts.addAll(filterArtifacts(rawResources, type));
-			page++;
-			rawResources = getContentHostingService().getResourcesOfType(
-					ResourceType.TYPE_METAOBJ, getFinderPageSize(), page);
-		}
-		return artifacts;
-	}
-   
-   /**
-	 * Filter a collection of artifacts down to a specific Structured Object/Form type, in place.
-	 * 
-	 * @param artifacts
-	 *            The Collection<ContentResource> to filter - should contain only resources for Forms
-	 * @param type
-	 *            The Form type filter on; may be null to get all Form types
-	 * @return The original collection of artifacts, with non-matching Forms
-	 *         removed
-	 */
-	protected Collection<ContentResource> filterArtifacts(Collection<ContentResource> artifacts, String type) {
-		for (Iterator<ContentResource> i = artifacts.iterator(); i.hasNext();) {
-			ContentResource resource = i.next();
-			String currentType = resource.getProperties().getProperty(ResourceProperties.PROP_STRUCTOBJ_TYPE);
-			if (currentType == null)
-				log.warn("Unexpected null form type on resource: " + resource.getReference());
-		   
-			if (type != null && !type.equals(currentType))
-				i.remove();
-		}
-		return artifacts;
-	}
 }

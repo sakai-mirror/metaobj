@@ -23,8 +23,11 @@ package org.sakaiproject.metaobj.shared.mgt.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 
+import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.content.api.ContentResource;
+import org.sakaiproject.content.api.ResourceType;
 import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
 import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactHomeInterface;
 import org.sakaiproject.metaobj.shared.model.Artifact;
@@ -64,9 +67,29 @@ public class StructuredArtifactFinder extends WrappedStructuredArtifactFinder {
    }
 
    public Collection findByType(String type) {
-	   ArrayList<Artifact> artifacts = new ArrayList<Artifact>();
-	   for (ContentResource resource : findArtifacts(type))
-		   artifacts.add(createArtifact(resource));
-	   return artifacts;
+      ArrayList<Artifact> artifacts = new ArrayList<Artifact>();
+      ArrayList<ContentResource> resources = new ArrayList<ContentResource>();
+      
+      int page = 0;
+      Collection<ContentResource> resourcePagelist = getContentHostingService().getResourcesOfType(
+            ResourceType.TYPE_METAOBJ, getFinderPageSize(), page);
+      
+      while (resourcePagelist != null && resourcePagelist.size() > 0) {
+         resources.addAll(resourcePagelist);
+         resourcePagelist = getContentHostingService().getResourcesOfType(
+            ResourceType.TYPE_METAOBJ, getFinderPageSize(), ++page);
+      }
+            
+      for (Iterator<ContentResource> i = resources.iterator(); i.hasNext();) {
+         ContentResource resource = i.next();
+         String actualType = resource.getProperties().getProperty(ResourceProperties.PROP_STRUCTOBJ_TYPE);
+         
+         // filter list for form type
+         if ( type == null || type.equals(actualType) ) { 
+            artifacts.add(createArtifact(resource));
+         }
+      }
+      
+      return artifacts;
    }
 }
