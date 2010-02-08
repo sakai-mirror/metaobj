@@ -336,7 +336,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
             }
          }
          catch (Exception e) {
-            throw new OspException("Invlaid schema", e);
+            throw new OspException("Invalid schema", e);
          }
          sad = new StructuredArtifactDefinition(bean);
          bean.setExternalType(sad.getExternalType());
@@ -913,7 +913,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
          }
       }
       catch (TypeException te) {
-         logger.error(te);
+         logger.error(".importSADResource",te);
       }
       return false;
    }
@@ -1005,34 +1005,6 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
          zis.closeEntry();
          currentEntry = zis.getNextEntry();
       }
-      /*
-      if (currentEntry != null) {
-         if (currentEntry.getName().endsWith("xml")) {
-            readSADfromXML(bean, zis);
-            hasXML = true;
-         }
-         if (currentEntry.getName().endsWith("xsd")) {
-            readSADSchemaFromXML(bean, zis);
-            hasXSD = true;
-         }
-         zis.closeEntry();
-      }
-      currentEntry = zis.getNextEntry();
-      if (currentEntry != null) {
-         if (currentEntry.getName().endsWith("xml")) {
-            readSADfromXML(bean, zis);
-            hasXML = true;
-         }
-         if (currentEntry.getName().endsWith("xsd")) {
-            readSADSchemaFromXML(bean, zis);
-            hasXSD = true;
-         }
-         zis.closeEntry();
-      }
-      if (!hasXML || !hasXSD) {
-         return null;
-      }
-      */
       
       try {
          Hashtable<Id, Id> fileMap = new Hashtable<Id, Id>();
@@ -1042,8 +1014,13 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
          
          while (currentEntry != null) {
             logger.debug("current entry name: " + currentEntry.getName());
-   
-            if (currentEntry.getName().endsWith("xml")) {
+            
+            File entryFile = new File( currentEntry.getName() );
+            
+            if (entryFile.getName().startsWith(".")) {
+               logger.warn(".readSADfromZip skipping control file: " + currentEntry.getName() );
+            }   
+            else if (currentEntry.getName().endsWith("xml")) {
                readSADfromXML(bean, zis);
                hasXML = true;
             }
@@ -1078,7 +1055,8 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
          
       }
       catch (Exception exp) {
-         throw new RuntimeException(exp);
+         logger.error(".readSADFromZip", exp);
+         return null;
       }
       
 
@@ -1123,7 +1101,8 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
           } 
       }
       catch (Exception e) {
-         throw new RuntimeException(e);
+         logger.error(".getExpandedFileDir",e);
+         return null;
       }
       
       ContentCollection collection = getContentHosting().getCollection(userCollection.getId() + IMPORT_BASE_FOLDER_ID + "/");
@@ -1174,8 +1153,8 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
             bean.setAlternateViewXslt(getIdManager().getId(new String(topNode.getChildTextTrim("altViewXslt").getBytes(), "UTF-8")));
       }
       catch (Exception jdome) {
-         logger.error(jdome);
-         throw new RuntimeException(jdome);
+         logger.error(".readSADfromXML", jdome);
+         return null;
       }
       return bean;
    }
@@ -1327,14 +1306,9 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
          funcs.put(ContentHostingService.AUTH_RESOURCE_HIDDEN, refs);
          getSecurityService().pushAdvisor(new AllowChildrenMapSecurityAdvisor(funcs));
          return getContentHosting().getResource(viewLocation).streamContent();
-      } catch (ServerOverloadException e) {
-         throw new RuntimeException(e);
-      } catch (PermissionException e) {
-         throw new RuntimeException(e);
-      } catch (IdUnusedException e) {
-         throw new RuntimeException(e);
-      } catch (TypeException e) {
-         throw new RuntimeException(e);
+      } catch (Exception e) {
+         logger.error(".getTransformer",e);
+         return null;
       }
    }
 
@@ -1378,7 +1352,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
          bos.flush();
       }
       catch (IOException e) {
-         throw new RuntimeException(e);
+         logger.error(".loadResource",e);
       } finally {
          try {
             is.close();
@@ -1419,7 +1393,8 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
           }
       }
       catch (Exception e) {
-         throw new RuntimeException(e);
+         logger.error(".createResource",e);
+         return null;
       }
 
       try {
@@ -1435,7 +1410,8 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
          }
       }
       catch (Exception e) {
-         throw new RuntimeException(e);
+         logger.error(".createResource",e);
+         return null;
       }
 
       String resourceId = folder + name;
@@ -1478,7 +1454,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
          return resourceId;
       }
       catch (Exception e) {
-         logger.error(e);
+         logger.error(".createResource",e);
          return null;
       }
       return resource.getId();
@@ -1516,17 +1492,13 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
          }
          getSecurityService().popAdvisor();
       } catch (PermissionException e) {
-         logger.error("", e);
-         throw new RuntimeException(e);
+         logger.error(".storeFile", e);
       } catch (IdUnusedException e) {
-         logger.error("", e);
-         throw new RuntimeException(e);
+         logger.error(".storeFile", e);
       } catch (TypeException e) {
-         logger.error("", e);
-         throw new RuntimeException(e);
+         logger.error(".storeFile", e);
       } catch (ServerOverloadException e) {
-         logger.error("", e);
-         throw new RuntimeException(e);
+         logger.error(".storeFile", e);
       }
    }
 
@@ -1558,6 +1530,15 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
 
       File file = new File(currentEntry.getName());
 
+      // Unclear what the original intention is of checking for a files great-grandparent for mime-type
+      // but for now we'll make sure grand-parent exists to avoid throwing NPE. 
+      // In testing, NPE was thrown for __MACOSX files
+      if ( file.getParentFile() == null || file.getParentFile().getParentFile() == null || file.getParentFile().getParentFile().getParentFile() == null )
+      {
+         logger.warn("StructuredArtifactDefinitionManagerImpl.processFile() found unexpected file "+ currentEntry.getName() );
+         return;
+      }
+      
       MimeType mimeType = new MimeType(file.getParentFile().getParentFile().getParentFile().getName(),
             file.getParentFile().getParentFile().getName());
 
@@ -1581,17 +1562,12 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
 
          resource = getContentHosting().addResource(fileParent.getId() + fileName, contentType, bos.toByteArray(),
                resourceProperties, NotificationService.NOTI_NONE);
-//       ResourcePropertiesEdit resourceProperties = resource.getPropertiesEdit();
-//       resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, file.getName());
-//       resource.setContent(bos.toByteArray());
-//       resource.setContentType(contentType);
-//       getContentHosting().commitResource(resource);
 
          Id newId = getIdManager().getId(getContentHosting().getUuid(resource.getId()));
          fileMap.put(oldId, newId);
       }
       catch (Exception exp) {
-         throw new RuntimeException(exp);
+         logger.error(".processFile", exp);
       }
    }
    
