@@ -55,14 +55,26 @@ public abstract class SpringBaseTest extends TestCase {
       if (beanFactory == null) {
          Properties props = new Properties();
          InputStream in = this.getClass().getResourceAsStream("/test-context.properties");
-         try {
-            props.load(in);
+         if (in != null) {
+            try {
+               props.load(in);
+               beanFactory = ApplicationContextFactory.getInstance().createContext(props);
+            }
+            catch (IOException e) {
+               logger.warn("Error loading /text-context.properties", e);
+            }
+            finally {
+               try {
+                  in.close();
+               }
+               catch (IOException e2) {
+                  logger.warn("Could not close stream for /text-context.properties");
+               }
+            }
          }
-         catch (IOException e) {
-            throw new RuntimeException("problem loading context.properties from classpath", e);
-         }
-         beanFactory = ApplicationContextFactory.getInstance().createContext(props);
       }
+      if (beanFactory == null)
+         throw new RuntimeException("problem loading /test-context.properties from classpath");
       return beanFactory;
    }
 

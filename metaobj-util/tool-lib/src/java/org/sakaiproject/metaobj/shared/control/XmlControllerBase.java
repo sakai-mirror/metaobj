@@ -143,6 +143,13 @@ public class XmlControllerBase {
          newBean = parentList.createBlank();
          parentList.add(newBean);
       }
+      else {
+         //TODO: figure out if assuming addButton behavior is right
+         // I think this if-block assumes valid parameter input, and assuming
+         // the addButton behavior is the safest fall-through to avoid a null newBean
+         newBean = parentList.createBlank();
+         parentList.add(newBean);
+      }
 
       sessionBean.pushCurrentElement(newBean);
       sessionBean.pushCurrentPath((String)request.get("childPath"));
