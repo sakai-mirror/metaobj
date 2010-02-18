@@ -136,25 +136,41 @@ public class XmlElementHome implements StructuredArtifactHomeInterface, Initiali
 
       xmlObject.setId(objectFile.getName());
 
+      FileOutputStream outstream = null;
       try {
+         outstream = new FileOutputStream(objectFile);
          Format format = Format.getPrettyFormat();
          outputter.setFormat(format);
-         outputter.output(xmlObject.getBaseElement(), new FileOutputStream(objectFile));
+         outputter.output(xmlObject.getBaseElement(), outstream);
       }
       catch (IOException e) {
          logger.error("", e);
          throw new OspException(e);
       }
+      finally {
+         try {
+            if (outstream != null)
+                outstream.close();
+         }
+         catch (Exception e2) {
+            logger.warn("Problem closing stream: ", e2);
+         }
+      }
 
       return object;
    }
 
-   public void remove(Artifact object) throws PersistenceException {
+   public void remove(Artifact object) {
       File objectFile = null;
+      if (object != null && object.getId() != null)
+         objectFile = new File(homeDirectory, object.getId().getValue());
 
-      objectFile = new File(homeDirectory, object.getId().getValue());
+      boolean deleted = false;
+      if (objectFile != null)
+         deleted = objectFile.delete();
 
-      objectFile.delete();
+      if (!deleted)
+         logger.warn("Could not delete file: " + objectFile.getPath());
    }
 
    public Artifact store(String displayName, String contentType, Type type,
@@ -309,14 +325,16 @@ public class XmlElementHome implements StructuredArtifactHomeInterface, Initiali
     * possible when all bean properties have been set and to throw an
     * exception in the event of misconfiguration.
     *
-    * @throws Exception in the event of misconfiguration (such
+    * @throws SchemaInvalidException in the event of misconfiguration (such
     *                   as failure to set an essential property) or if initialization fails.
     */
-   public void afterPropertiesSet() throws Exception {
+   public void afterPropertiesSet() throws SchemaInvalidException {
       homeDirectory = new File(pathToWebInf(), XML_HOME_PATH + File.separator + rootNode);
 
       if (!homeDirectory.exists()) {
-         homeDirectory.mkdirs();
+         if (!homeDirectory.mkdirs()) {
+            logger.warn("Couldn't create homeDirectory: " + homeDirectory.getPath());
+         }
       }
 
       getSchema();

@@ -260,7 +260,10 @@ public class XsltArtifactView extends AbstractXsltView {
    protected void doTransform(Source source, Map parameters, Result result, String encoding)
          throws Exception {
 
-      InputStream stylesheetLocation = (InputStream) parameters.get(STYLESHEET_LOCATION);
+      InputStream stylesheetLocation = null;
+      // Nulls gets logged by getTransformer, so don't bother logging again.
+      if (parameters != null)
+         stylesheetLocation = (InputStream) parameters.get(STYLESHEET_LOCATION);
       Transformer trans = getTransformer(stylesheetLocation);
 
       // Explicitly apply URIResolver to every created Transformer.

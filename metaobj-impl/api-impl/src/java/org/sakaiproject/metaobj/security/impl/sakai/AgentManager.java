@@ -60,7 +60,8 @@ public class AgentManager extends SecurityBase implements org.sakaiproject.metao
     * @return
     */
    public Agent getAgent(Id id) {
-      if (id.equals(AnonymousAgent.ANONYMOUS_AGENT_ID)) {
+      //TODO: Figure out what's different between an all-null AgentWrapper and "anonymous"
+      if (id != null && id.equals(AnonymousAgent.ANONYMOUS_AGENT_ID)) {
          return getAnonymousAgent();
       }
 
@@ -196,7 +197,8 @@ public class AgentManager extends SecurityBase implements org.sakaiproject.metao
       catch (GroupNotDefinedException e) {
     	    throw new IdUnusedException (e.getId());
       }
-      role = realm.getRole(roleName);
+      if (realm != null)
+          role = realm.getRole(roleName);
 
       if (role == null || realm == null) {
          return null;
