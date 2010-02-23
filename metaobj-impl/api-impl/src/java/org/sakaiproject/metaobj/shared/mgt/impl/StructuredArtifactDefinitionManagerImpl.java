@@ -903,7 +903,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
 
          if (!mimeType.equals(new MimeType("application/zip")) &&
                !mimeType.equals(new MimeType("application/x-zip-compressed"))) {
-        	 logger.warn(".importSADResource has identified the mime type as something unsupported: " + mimeType.toString() + ".";
+        	 logger.warn(".importSADResource has identified the mime type as something unsupported: " + mimeType.toString() + ".");
         	 logger.warn("The import file must be a zip file for the import to work properly.");
         	 logger.warn("It's possible that the browser has identified the mime type incorrectly, so the import may still work.");
          }
