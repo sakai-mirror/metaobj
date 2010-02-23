@@ -901,16 +901,16 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
          ContentResource resource = getContentHosting().getResource(id);
          MimeType mimeType = new MimeType(resource.getContentType());
 
-         if (mimeType.equals(new MimeType("application/zip")) ||
-               mimeType.equals(new MimeType("application/x-zip-compressed"))) {
-            InputStream zipContent = resource.streamContent();
-            StructuredArtifactDefinitionBean bean = importSad(worksiteId, zipContent, findExisting, false);
+         if (!mimeType.equals(new MimeType("application/zip")) &&
+               !mimeType.equals(new MimeType("application/x-zip-compressed"))) {
+        	 logger.warn(".importSADResource has identified the mime type as something unsupported: " + mimeType.toString() + ".";
+        	 logger.warn("The import file must be a zip file for the import to work properly.");
+        	 logger.warn("It's possible that the browser has identified the mime type incorrectly, so the import may still work.");
+         }
+         InputStream zipContent = resource.streamContent();
+         StructuredArtifactDefinitionBean bean = importSad(worksiteId, zipContent, findExisting, false);
 
-            return bean != null;
-         }
-         else {
-            throw new UnsupportedFileTypeException("The import file must be a zip file.");
-         }
+         return bean != null;
       }
       catch (TypeException te) {
          logger.error(".importSADResource",te);
