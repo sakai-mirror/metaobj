@@ -333,5 +333,28 @@
          <ref bean="structuredArtifactDefinitionManager" />
       </property>
    </bean>
+   
+   <bean id="UpdateSchemaHashJob"
+      class="org.sakaiproject.metaobj.job.UpdateSchemaHashJob">
+      <property name="structuredArtifactDefinitionManager">
+         <ref bean="structuredArtifactDefinitionManager" />
+      </property>
+   </bean>
+   
+   <bean
+      id="org.sakaiproject.api.app.scheduler.JobBeanWrapper.scheduler.updateSchemaHash"
+      class="org.sakaiproject.component.app.scheduler.jobs.SpringStatefulJobBeanWrapper"
+      singleton="true" init-method="init">
+      <property name="beanId">
+         <value>UpdateSchemaHashJob</value>
+      </property>
+      <property name="jobName">
+         <value>Update Metaobj Schema Hashes</value>
+      </property>
+      <property name="schedulerManager">
+         <ref
+            bean="org.sakaiproject.api.app.scheduler.SchedulerManager" />
+      </property>
+   </bean>
 
 </beans>
