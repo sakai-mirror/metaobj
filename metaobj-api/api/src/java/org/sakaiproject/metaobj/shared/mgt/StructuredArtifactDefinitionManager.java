@@ -106,6 +106,13 @@ public interface StructuredArtifactDefinitionManager {
    public Collection getRootElements(StructuredArtifactDefinitionBean sad);
 
    public void validateSchema(StructuredArtifactDefinitionBean sad);
+   
+   /**
+    * Method that logs inconsistencies of a form def's schema hashes.  
+    * If updateInvalid is set to true, they will be updated
+    * @param updateInvalid
+    */
+   public void verifySchemaHashes(boolean updateInvalid);
 
    public StructuredArtifactHomeInterface convertToHome(StructuredArtifactDefinitionBean sad);
 

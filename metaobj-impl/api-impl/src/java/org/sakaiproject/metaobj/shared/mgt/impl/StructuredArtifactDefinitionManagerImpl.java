@@ -700,7 +700,13 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       FunctionManager.registerFunction(SharedFunctionConstants.SUGGEST_GLOBAL_PUBLISH_ARTIFACT_DEF);
 
       addConsumer(this);
-
+      
+      boolean runOnInit = ServerConfigurationService.getBoolean("metaobj.schemahash.runOnInit", false);
+      if (runOnInit) {
+    	  boolean updateSchemaHashes = ServerConfigurationService.getBoolean("metaobj.schemahash.update", false);
+    	  verifySchemaHashes(updateSchemaHashes);
+      }      
+      
       if (isAutoDdl()) {
 
          updateSchemaHash();
@@ -750,10 +756,51 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       if (bean.getSchema() != null) {
          hashString += new String(bean.getSchema());
       }
-      hashString += bean.getDocumentRoot();
-      hashString += bean.getDescription();
-      hashString += bean.getInstruction();
+      hashString += convertNull2Empty(bean.getDocumentRoot());
+      hashString += convertNull2Empty(bean.getDescription());
+      hashString += convertNull2Empty(bean.getInstruction());
       return hashString.hashCode() + "";
+   }
+   
+   /**
+    * If the input is null, return an empty string instead, 
+    * otherwise return the input
+    * @param input
+    * @return
+    */
+   private String convertNull2Empty(String input) {
+	   String output = "";
+	   if (input!= null) {
+		   output = input;
+	   }
+	   return output;
+   }
+   
+   public void verifySchemaHashes(boolean updateInvalid) {
+	   List<StructuredArtifactDefinitionBean> homes = findAllHomes();
+	   int badCount = 0;
+	   for (StructuredArtifactDefinitionBean bean : homes) {
+		   String calcHash = calculateSchemaHash(bean);
+		   if (!bean.getSchemaHash().equalsIgnoreCase(calcHash)) {
+			   String text = "Form has invalid schema hash: " + bean.getId() + "; stored: " + bean.getSchemaHash() + "; calc: " + calcHash;
+			   logger.warn(text);
+			   badCount++;
+			   if (updateInvalid) {
+				   if (bean.getOwner() == null || bean.getOwner().getId() == null) {
+					   text = "Unable to update schema hash because unable to get owner for bean: " + bean.getId();
+					   logger.warn(text);
+				   }
+				   else {
+					   bean.setSchemaHash(calculateSchemaHash(bean));
+					   getHibernateTemplate().saveOrUpdate(bean);
+					   text = "Form schema hash has been updated: " + bean.getId();
+					   logger.info(text);
+				   }
+			   }
+		   }
+	   }
+	   String text = "There are " + badCount + " forms with invalid schema hashes.";
+	   logger.warn(text);
    }
 
    public String packageForDownload(Map params, OutputStream out) throws IOException {
@@ -965,6 +1012,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
                                      bean.getSiteId(), bean.getSchemaHash()};
       List beans = getHibernateTemplate().findByNamedQuery("findBean", params);
 
+      //There's an order by on this query so that the global form (if any) will be listed first
       if (beans.size() > 0) {
          return (StructuredArtifactDefinitionBean) beans.get(0);
       }
