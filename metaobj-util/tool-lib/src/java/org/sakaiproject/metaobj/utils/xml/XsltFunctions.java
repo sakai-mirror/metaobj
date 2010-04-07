@@ -174,7 +174,7 @@ public class XsltFunctions {
 
       String javascript = "javascript:var cal"+fieldId+" = new calendar"+calType+
          "(document.getElementById('"+name+"'));cal"+fieldId+".year_scroll = true;cal"+fieldId+
-         ".time_comp = false;cal"+fieldId+".popup('','/sakai-jsf-resource/inputDate/')";
+         ".time_comp = false;cal"+fieldId+".popup('','/jsf-resource/inputDate/')";
 
       return javascript;
    }
