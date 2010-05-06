@@ -148,7 +148,7 @@ public class AgentImpl implements Agent {
    }
 
    public String getPassword() {
-      return getMd5Password();
+      return password;
    }
 
    public String getClearPassword() {
