@@ -161,6 +161,18 @@ public class AgentManager extends SecurityBase implements org.sakaiproject.metao
       //TODO using the same value for both id and eid
       return new RoleWrapper(roleId, roleId, null, null);
    }
+   
+   public Agent getRealmRole(String roleName, String realmId) {
+      try {
+         AuthzGroup realm = AuthzGroupService.getAuthzGroup(realmId);
+         Role role = realm.getRole(roleName);
+         return convertRole(role, realm);
+      }
+      catch (GroupNotDefinedException e) {
+         logger.error("", e);
+         throw new OspException(e);
+      }
+   }
 
    protected Agent getAgentInternal(String username) throws IdUnusedException {
       if (username == null) {
