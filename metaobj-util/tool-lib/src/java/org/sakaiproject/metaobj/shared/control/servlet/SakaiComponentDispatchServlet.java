@@ -123,76 +123,11 @@ public class SakaiComponentDispatchServlet extends DispatcherServlet {
     * It's up to HandlerAdapters to decide which methods are acceptable.
     */
    protected void doService(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-      if (/* getFilter().processRequest(req)*/ true) {
-         try {
-            //req = getFilter().wrapRequest(req, resp);
-            if (req == null) {
-               return;
-            }
-
-            if ("Title".equals(req.getParameter("panel"))) {
-               resp.sendRedirect(req.getContextPath() + "/title.osp?pid=" + req.getParameter("pid"));
-               return;
-            }
-
-
-            Session s = SessionManager.getCurrentSession();
-            if (s == null) {
-               throw new RuntimeException("can't determine user");
-            }
-
-
-            SimpleAgent2 agent = new SimpleAgent2(s.getUserEid(), s.getUserId());
-
-
-            //RepositoryManager rm=(RepositoryManager)BeanFactory.getInstance().getBean("repositoryManager");
-
-
-
-            //logger.debug("Global root: "+rm.getGlobalRoot().getDisplayName());
-            //logger.debug("Agent's root: "+rm.getRootNode(agent));
-
-
-
-
-
-            logger.error("TOOL STATE IS NOT BEING CONSIDERED. FIX ME!!!");
-            //TODO
-
-            // workaround to force tools into a certain state
-
-            //
-
-            // relies on "osp.tool.view" param being in tool session state
-            ToolSession toolState = SessionManager.getCurrentToolSession();
-//            SessionState toolState = PortalService.getCurrentToolState();
-            if (toolState != null) {
-               String redirectPath = (String) toolState.getAttribute(TOOL_STATE_VIEW_KEY);
-
-               if (redirectPath != null) {
-                  StringBuilder redirectUrl = new StringBuilder(redirectPath + "?pid=" + req.getParameter("pid"));
-                  Map requestParams = (Map) toolState.getAttribute(TOOL_STATE_VIEW_REQUEST_PARAMS_KEY);
-                  for (Iterator i = requestParams.keySet().iterator(); i.hasNext();) {
-                     String name = (String) i.next();
-                     redirectUrl.append("&" + name + "=" + requestParams.get(name));
-                  }
-                  toolState.removeAttribute(TOOL_STATE_VIEW_KEY);
-                  toolState.removeAttribute(TOOL_STATE_VIEW_REQUEST_PARAMS_KEY);
-                  resp.sendRedirect(redirectUrl.toString());
-                  return;
-               }
-            }
-
-            super.doService(req, resp);
-         }
-         catch (Exception e) {
-            logger.error("", e);
-            throw new OspException(e);
-         } finally {
-            getFilter().tearDown(req);
-         }
-      }
-
+      // This class has been removed from all places where it was used and replaced by the Spring
+      // dispatcher from which it inherits. Delegate to super for now in case this ever gets called.
+      // There is one place that depends on the tool constants above, in CommentListGenerator.
+      // These constants should be relocated and this class purged.
+      super.doService(req, resp);
    }
 
 
