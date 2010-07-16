@@ -69,9 +69,11 @@ a.nt:hover{
 .osp-radcheck{
 	padding:1em .5em;
 }
+.osp-radcheck .reqStar{
+	margin:0;
+}
 .osp-radcheck legend{
 	padding:0 .5em;
-
 }
 .osp-radcheck div.checkbox{
 	margin-left:2em
