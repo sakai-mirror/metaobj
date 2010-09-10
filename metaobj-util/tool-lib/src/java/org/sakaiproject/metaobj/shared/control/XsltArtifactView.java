@@ -104,6 +104,10 @@ public class XsltArtifactView extends AbstractXsltView {
       if (toolSession.getAttribute(ResourceToolAction.ACTION_PIPE) != null) {
          paramsMap.put("fromResources", "true");
       }
+      
+      if (httpServletRequest.getAttribute(FormHelper.URL_DECORATION) != null) {
+          paramsMap.put("urlDecoration", httpServletRequest.getAttribute(FormHelper.URL_DECORATION));
+       }
 
       boolean edit = false;
 

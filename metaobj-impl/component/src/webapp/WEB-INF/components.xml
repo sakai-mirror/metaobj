@@ -321,6 +321,28 @@
          <ref bean="structuredArtifactDefinitionManager"/>
       </property>
    </bean>
+   
+   <bean id="org.sakaiproject.entity.api.HttpAccess.metaobjContent"
+      class="org.sakaiproject.metaobj.shared.mgt.impl.MetaobjContentHttpAccess"
+      singleton="true" init-method="init">
+      <property name="structuredArtifactDefinitionManager" ref="structuredArtifactDefinitionManager" />
+   </bean>
+   
+   <bean id="org.sakaiproject.entity.api.EntityProducer.metaobjContent"
+      class="org.sakaiproject.metaobj.shared.mgt.impl.MetaobjContentEntityProducer"
+      init-method="init"
+      destroy-method="destroy"
+      singleton="true">
+      <property name="entityManager">
+         <ref bean="org.sakaiproject.entity.api.EntityManager"/>
+      </property>
+      <property name="httpAccess">
+         <ref bean="org.sakaiproject.entity.api.HttpAccess.metaobjContent"/>
+      </property>
+      <property name="structuredArtifactDefinitionManager">
+         <ref bean="structuredArtifactDefinitionManager"/>
+      </property>
+   </bean>
 
    <bean id="org.sakaiproject.content.api.ResourceType.metaobj"
       class="org.sakaiproject.metaobj.registry.FormResourceType"
