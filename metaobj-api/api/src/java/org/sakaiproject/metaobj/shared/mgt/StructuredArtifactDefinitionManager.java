@@ -106,6 +106,13 @@ public interface StructuredArtifactDefinitionManager {
    public Collection getRootElements(StructuredArtifactDefinitionBean sad);
 
    public void validateSchema(StructuredArtifactDefinitionBean sad);
+   
+   /**
+    * Method that logs inconsistencies of a form def's schema hashes.  
+    * If updateInvalid is set to true, they will be updated
+    * @param updateInvalid
+    */
+   public void verifySchemaHashes(boolean updateInvalid);
 
    public StructuredArtifactHomeInterface convertToHome(StructuredArtifactDefinitionBean sad);
 
@@ -160,4 +167,10 @@ public interface StructuredArtifactDefinitionManager {
     * @return a Collection of FormConsumptionDetail objects
     */
    public Collection<FormConsumptionDetail> findFormUsage(StructuredArtifactDefinitionBean sad);
+   
+   /**
+    * Look up the form content and setup any access that is needed for attachments
+    * @param resource_uuid
+    */
+   public void checkFormAccess(String resource_uuid);
 }

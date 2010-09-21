@@ -288,8 +288,10 @@
       </property>
       <property name="mimeTypes">
          <list>
+         	<!-- 
             <value>application/zip</value>
             <value>application/x-zip-compressed</value>
+             -->
          </list>
       </property>
       <property name="acceptedExtensions">
@@ -319,6 +321,28 @@
          <ref bean="structuredArtifactDefinitionManager"/>
       </property>
    </bean>
+   
+   <bean id="org.sakaiproject.entity.api.HttpAccess.metaobjContent"
+      class="org.sakaiproject.metaobj.shared.mgt.impl.MetaobjContentHttpAccess"
+      singleton="true" init-method="init">
+      <property name="structuredArtifactDefinitionManager" ref="structuredArtifactDefinitionManager" />
+   </bean>
+   
+   <bean id="org.sakaiproject.entity.api.EntityProducer.metaobjContent"
+      class="org.sakaiproject.metaobj.shared.mgt.impl.MetaobjContentEntityProducer"
+      init-method="init"
+      destroy-method="destroy"
+      singleton="true">
+      <property name="entityManager">
+         <ref bean="org.sakaiproject.entity.api.EntityManager"/>
+      </property>
+      <property name="httpAccess">
+         <ref bean="org.sakaiproject.entity.api.HttpAccess.metaobjContent"/>
+      </property>
+      <property name="structuredArtifactDefinitionManager">
+         <ref bean="structuredArtifactDefinitionManager"/>
+      </property>
+   </bean>
 
    <bean id="org.sakaiproject.content.api.ResourceType.metaobj"
       class="org.sakaiproject.metaobj.registry.FormResourceType"
@@ -329,6 +353,29 @@
       </property>
       <property name="structuredArtifactDefinitionManager">
          <ref bean="structuredArtifactDefinitionManager" />
+      </property>
+   </bean>
+   
+   <bean id="UpdateSchemaHashJob"
+      class="org.sakaiproject.metaobj.job.UpdateSchemaHashJob">
+      <property name="structuredArtifactDefinitionManager">
+         <ref bean="structuredArtifactDefinitionManager" />
+      </property>
+   </bean>
+   
+   <bean
+      id="org.sakaiproject.api.app.scheduler.JobBeanWrapper.scheduler.updateSchemaHash"
+      class="org.sakaiproject.component.app.scheduler.jobs.SpringStatefulJobBeanWrapper"
+      singleton="true" init-method="init">
+      <property name="beanId">
+         <value>UpdateSchemaHashJob</value>
+      </property>
+      <property name="jobName">
+         <value>Update Metaobj Schema Hashes</value>
+      </property>
+      <property name="schedulerManager">
+         <ref
+            bean="org.sakaiproject.api.app.scheduler.SchedulerManager" />
       </property>
    </bean>
 

@@ -45,6 +45,8 @@ public interface AgentManager {
    public Agent getWorksiteRole(String roleName, String siteId);
 
    public Agent getTempWorksiteRole(String roleName, String siteId);
+   
+   public Agent getRealmRole(String roleName, String realmId);   
 
    public Agent getAnonymousAgent();
 

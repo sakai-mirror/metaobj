@@ -22,6 +22,9 @@
 
 package org.sakaiproject.metaobj.shared.model;
 
+import org.sakaiproject.authz.api.AuthzGroup;
+
+
 public interface OspRole extends Agent {
 
    /**
@@ -30,4 +33,11 @@ public interface OspRole extends Agent {
     * @return
     */
    public String getRoleName();
+   
+   /**
+    * Get the realm for this role
+    *  
+    * @return The Sakai AuthzGroup for the site where this role exists 
+    */
+   public AuthzGroup getSakaiRealm();
 }

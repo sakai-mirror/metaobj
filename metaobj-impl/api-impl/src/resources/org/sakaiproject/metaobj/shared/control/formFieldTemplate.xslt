@@ -980,7 +980,7 @@
 		<input type="hidden" value="{$fieldId}" id="{$schemaNode/@name}-dateWId" />
 		<!-- since there are two links to the right of the input  put some space between them to avoid confusion -->
 		<xsl:text>&#xa0;</xsl:text>
-		<img width="16" height="16" style="cursor:pointer;" border="0" src="/sakai-jsf-resource/inputDate/images/calendar.gif">
+		<img width="16" height="16" style="cursor:pointer;" border="0" src="/jsf-resource/inputDate/images/calendar.gif">
 			<xsl:attribute name="alt">
 				<xsl:value-of select="sakaifn:getMessage('messages', 'date_pick_alt')" />
 			</xsl:attribute>
@@ -1013,7 +1013,7 @@
 		</input>
 		<input type="hidden" value="" id="{$schemaNode/@name}-dateWId" />
 		<xsl:text>&#xa0;</xsl:text>
-		<img width="16" height="16" style="cursor:pointer;" border="0" src="/sakai-jsf-resource/inputDate/images/calendar.gif">
+		<img width="16" height="16" style="cursor:pointer;" border="0" src="/jsf-resource/inputDate/images/calendar.gif">
 			<xsl:attribute name="alt">
 				<xsl:value-of select="sakaifn:getMessage('messages', 'date_pick_alt')" />
 			</xsl:attribute>

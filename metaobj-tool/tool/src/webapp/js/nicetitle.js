@@ -438,7 +438,7 @@ addEvent(window, "load", NiceTitles.autoCreation);
 			{
 				var parentIdval	= document.getElementById(baseid + '-dateWId').value;
 				thisIdVal =parentIdval + "X" + num;
-				newEventValue= "javascript:var cal" +  thisIdVal + " = new calendar2(document.getElementById(\'" + baseid + "-" + num + 'child' +"\'));cal" + thisIdVal +".year_scroll = true;cal" + thisIdVal + ".time_comp = false;cal" + thisIdVal + ".popup(\'\',\'/sakai-jsf-resource/inputDate/\')";
+				newEventValue= "javascript:var cal" +  thisIdVal + " = new calendar2(document.getElementById(\'" + baseid + "-" + num + 'child' +"\'));cal" + thisIdVal +".year_scroll = true;cal" + thisIdVal + ".time_comp = false;cal" + thisIdVal + ".popup(\'\',\'/jsf-resource/inputDate/\')";
 				newItem.childNodes[i].setAttribute('onclick',newEventValue);
 			}
 

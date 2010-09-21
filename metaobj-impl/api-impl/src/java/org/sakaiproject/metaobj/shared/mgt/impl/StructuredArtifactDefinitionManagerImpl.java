@@ -27,6 +27,7 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.XMLOutputter;
+import org.jdom.xpath.XPath;
 import org.sakaiproject.authz.cover.FunctionManager;
 import org.sakaiproject.authz.api.SecurityAdvisor;
 import org.sakaiproject.authz.api.SecurityService;
@@ -37,9 +38,10 @@ import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.content.api.ContentCollectionEdit;
 import org.sakaiproject.exception.*;
+import org.sakaiproject.metaobj.security.AllowChildrenMapSecurityAdvisor;
+import org.sakaiproject.metaobj.security.AllowMapSecurityAdvisor;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.security.AuthorizationFacade;
-import org.sakaiproject.metaobj.security.AllowChildrenMapSecurityAdvisor;
 import org.sakaiproject.metaobj.shared.ArtifactFinder;
 import org.sakaiproject.metaobj.shared.DownloadableManager;
 import org.sakaiproject.metaobj.shared.SharedFunctionConstants;
@@ -336,7 +338,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
             }
          }
          catch (Exception e) {
-            throw new OspException("Invlaid schema", e);
+            throw new OspException("Invalid schema", e);
          }
          sad = new StructuredArtifactDefinition(bean);
          bean.setExternalType(sad.getExternalType());
@@ -700,7 +702,13 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       FunctionManager.registerFunction(SharedFunctionConstants.SUGGEST_GLOBAL_PUBLISH_ARTIFACT_DEF);
 
       addConsumer(this);
-
+      
+      boolean runOnInit = ServerConfigurationService.getBoolean("metaobj.schemahash.runOnInit", false);
+      if (runOnInit) {
+    	  boolean updateSchemaHashes = ServerConfigurationService.getBoolean("metaobj.schemahash.update", false);
+    	  verifySchemaHashes(updateSchemaHashes);
+      }      
+      
       if (isAutoDdl()) {
 
          updateSchemaHash();
@@ -750,10 +758,51 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       if (bean.getSchema() != null) {
          hashString += new String(bean.getSchema());
       }
-      hashString += bean.getDocumentRoot();
-      hashString += bean.getDescription();
-      hashString += bean.getInstruction();
+      hashString += convertNull2Empty(bean.getDocumentRoot());
+      hashString += convertNull2Empty(bean.getDescription());
+      hashString += convertNull2Empty(bean.getInstruction());
       return hashString.hashCode() + "";
+   }
+   
+   /**
+    * If the input is null, return an empty string instead, 
+    * otherwise return the input
+    * @param input
+    * @return
+    */
+   private String convertNull2Empty(String input) {
+	   String output = "";
+	   if (input!= null) {
+		   output = input;
+	   }
+	   return output;
+   }
+   
+   public void verifySchemaHashes(boolean updateInvalid) {
+	   List<StructuredArtifactDefinitionBean> homes = findAllHomes();
+	   int badCount = 0;
+	   for (StructuredArtifactDefinitionBean bean : homes) {
+		   String calcHash = calculateSchemaHash(bean);
+		   if (!bean.getSchemaHash().equalsIgnoreCase(calcHash)) {
+			   String text = "Form has invalid schema hash: " + bean.getId() + "; stored: " + bean.getSchemaHash() + "; calc: " + calcHash;
+			   logger.warn(text);
+			   badCount++;
+			   if (updateInvalid) {
+				   if (bean.getOwner() == null || bean.getOwner().getId() == null) {
+					   text = "Unable to update schema hash because unable to get owner for bean: " + bean.getId();
+					   logger.warn(text);
+				   }
+				   else {
+					   bean.setSchemaHash(calculateSchemaHash(bean));
+					   getHibernateTemplate().saveOrUpdate(bean);
+					   text = "Form schema hash has been updated: " + bean.getId();
+					   logger.info(text);
+				   }
+			   }
+		   }
+	   }
+	   String text = "There are " + badCount + " forms with invalid schema hashes.";
+	   logger.warn(text);
    }
 
    public String packageForDownload(Map params, OutputStream out) throws IOException {
@@ -901,19 +950,19 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
          ContentResource resource = getContentHosting().getResource(id);
          MimeType mimeType = new MimeType(resource.getContentType());
 
-         if (mimeType.equals(new MimeType("application/zip")) ||
-               mimeType.equals(new MimeType("application/x-zip-compressed"))) {
-            InputStream zipContent = resource.streamContent();
-            StructuredArtifactDefinitionBean bean = importSad(worksiteId, zipContent, findExisting, false);
+         if (!mimeType.equals(new MimeType("application/zip")) &&
+               !mimeType.equals(new MimeType("application/x-zip-compressed"))) {
+        	 logger.warn(".importSADResource has identified the mime type as something unsupported: " + mimeType.toString() + ".");
+        	 logger.warn("The import file must be a zip file for the import to work properly.");
+        	 logger.warn("It's possible that the browser has identified the mime type incorrectly, so the import may still work.");
+         }
+         InputStream zipContent = resource.streamContent();
+         StructuredArtifactDefinitionBean bean = importSad(worksiteId, zipContent, findExisting, false);
 
-            return bean != null;
-         }
-         else {
-            throw new UnsupportedFileTypeException("The import file must be a zip file.");
-         }
+         return bean != null;
       }
       catch (TypeException te) {
-         logger.error(te);
+         logger.error(".importSADResource",te);
       }
       return false;
    }
@@ -965,6 +1014,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
                                      bean.getSiteId(), bean.getSchemaHash()};
       List beans = getHibernateTemplate().findByNamedQuery("findBean", params);
 
+      //There's an order by on this query so that the global form (if any) will be listed first
       if (beans.size() > 0) {
          return (StructuredArtifactDefinitionBean) beans.get(0);
       }
@@ -1005,34 +1055,6 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
          zis.closeEntry();
          currentEntry = zis.getNextEntry();
       }
-      /*
-      if (currentEntry != null) {
-         if (currentEntry.getName().endsWith("xml")) {
-            readSADfromXML(bean, zis);
-            hasXML = true;
-         }
-         if (currentEntry.getName().endsWith("xsd")) {
-            readSADSchemaFromXML(bean, zis);
-            hasXSD = true;
-         }
-         zis.closeEntry();
-      }
-      currentEntry = zis.getNextEntry();
-      if (currentEntry != null) {
-         if (currentEntry.getName().endsWith("xml")) {
-            readSADfromXML(bean, zis);
-            hasXML = true;
-         }
-         if (currentEntry.getName().endsWith("xsd")) {
-            readSADSchemaFromXML(bean, zis);
-            hasXSD = true;
-         }
-         zis.closeEntry();
-      }
-      if (!hasXML || !hasXSD) {
-         return null;
-      }
-      */
       
       try {
          Hashtable<Id, Id> fileMap = new Hashtable<Id, Id>();
@@ -1042,8 +1064,13 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
          
          while (currentEntry != null) {
             logger.debug("current entry name: " + currentEntry.getName());
-   
-            if (currentEntry.getName().endsWith("xml")) {
+            
+            File entryFile = new File( currentEntry.getName() );
+            
+            if (entryFile.getName().startsWith(".")) {
+               logger.warn(".readSADfromZip skipping control file: " + currentEntry.getName() );
+            }   
+            else if (currentEntry.getName().endsWith("xml")) {
                readSADfromXML(bean, zis);
                hasXML = true;
             }
@@ -1078,7 +1105,8 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
          
       }
       catch (Exception exp) {
-         throw new RuntimeException(exp);
+         logger.error(".readSADFromZip", exp);
+         return null;
       }
       
 
@@ -1123,7 +1151,8 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
           } 
       }
       catch (Exception e) {
-         throw new RuntimeException(e);
+         logger.error(".getExpandedFileDir",e);
+         return null;
       }
       
       ContentCollection collection = getContentHosting().getCollection(userCollection.getId() + IMPORT_BASE_FOLDER_ID + "/");
@@ -1174,8 +1203,8 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
             bean.setAlternateViewXslt(getIdManager().getId(new String(topNode.getChildTextTrim("altViewXslt").getBytes(), "UTF-8")));
       }
       catch (Exception jdome) {
-         logger.error(jdome);
-         throw new RuntimeException(jdome);
+         logger.error(".readSADfromXML", jdome);
+         return null;
       }
       return bean;
    }
@@ -1327,14 +1356,9 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
          funcs.put(ContentHostingService.AUTH_RESOURCE_HIDDEN, refs);
          getSecurityService().pushAdvisor(new AllowChildrenMapSecurityAdvisor(funcs));
          return getContentHosting().getResource(viewLocation).streamContent();
-      } catch (ServerOverloadException e) {
-         throw new RuntimeException(e);
-      } catch (PermissionException e) {
-         throw new RuntimeException(e);
-      } catch (IdUnusedException e) {
-         throw new RuntimeException(e);
-      } catch (TypeException e) {
-         throw new RuntimeException(e);
+      } catch (Exception e) {
+         logger.error(".getTransformer",e);
+         return null;
       }
    }
 
@@ -1378,7 +1402,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
          bos.flush();
       }
       catch (IOException e) {
-         throw new RuntimeException(e);
+         logger.error(".loadResource",e);
       } finally {
          try {
             is.close();
@@ -1419,7 +1443,8 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
           }
       }
       catch (Exception e) {
-         throw new RuntimeException(e);
+         logger.error(".createResource",e);
+         return null;
       }
 
       try {
@@ -1435,7 +1460,8 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
          }
       }
       catch (Exception e) {
-         throw new RuntimeException(e);
+         logger.error(".createResource",e);
+         return null;
       }
 
       String resourceId = folder + name;
@@ -1478,7 +1504,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
          return resourceId;
       }
       catch (Exception e) {
-         logger.error(e);
+         logger.error(".createResource",e);
          return null;
       }
       return resource.getId();
@@ -1516,17 +1542,13 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
          }
          getSecurityService().popAdvisor();
       } catch (PermissionException e) {
-         logger.error("", e);
-         throw new RuntimeException(e);
+         logger.error(".storeFile", e);
       } catch (IdUnusedException e) {
-         logger.error("", e);
-         throw new RuntimeException(e);
+         logger.error(".storeFile", e);
       } catch (TypeException e) {
-         logger.error("", e);
-         throw new RuntimeException(e);
+         logger.error(".storeFile", e);
       } catch (ServerOverloadException e) {
-         logger.error("", e);
-         throw new RuntimeException(e);
+         logger.error(".storeFile", e);
       }
    }
 
@@ -1558,6 +1580,15 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
 
       File file = new File(currentEntry.getName());
 
+      // Unclear what the original intention is of checking for a files great-grandparent for mime-type
+      // but for now we'll make sure grand-parent exists to avoid throwing NPE. 
+      // In testing, NPE was thrown for __MACOSX files
+      if ( file.getParentFile() == null || file.getParentFile().getParentFile() == null || file.getParentFile().getParentFile().getParentFile() == null )
+      {
+         logger.warn("StructuredArtifactDefinitionManagerImpl.processFile() found unexpected file "+ currentEntry.getName() );
+         return;
+      }
+      
       MimeType mimeType = new MimeType(file.getParentFile().getParentFile().getParentFile().getName(),
             file.getParentFile().getParentFile().getName());
 
@@ -1581,17 +1612,12 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
 
          resource = getContentHosting().addResource(fileParent.getId() + fileName, contentType, bos.toByteArray(),
                resourceProperties, NotificationService.NOTI_NONE);
-//       ResourcePropertiesEdit resourceProperties = resource.getPropertiesEdit();
-//       resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, file.getName());
-//       resource.setContent(bos.toByteArray());
-//       resource.setContentType(contentType);
-//       getContentHosting().commitResource(resource);
 
          Id newId = getIdManager().getId(getContentHosting().getUuid(resource.getId()));
          fileMap.put(oldId, newId);
       }
       catch (Exception exp) {
-         throw new RuntimeException(exp);
+         logger.error(".processFile", exp);
       }
    }
    
@@ -1692,6 +1718,56 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       finally {
          getSecurityService().popAdvisor();
       }
+   }
+   
+   public void checkFormAccess(String resource_uuid) {
+	   String resourceId = getContentHosting().resolveUuid(resource_uuid);
+	   boolean allowed = getContentHosting().allowGetResource(resourceId);
+	   if (!allowed)
+		   return;
+	   
+	   Artifact art = getArtifactFinder().load(getIdManager().getId(resource_uuid));
+	   PresentableObjectHome home = (PresentableObjectHome)art.getHome();
+	   Element elm = home.getArtifactAsXml(art);
+	   List<String> files = new ArrayList<String>();
+	   //try to get all the attachments
+
+	   List<Element> elms = findElementNamesForFileType(elm);
+	   for (Element element : elms) {
+		   String name = element.getAttributeValue("name");
+		   try {
+			   XPath fileAttachPath = XPath.newInstance(".//" + name);
+			   List<Element> fileElements = fileAttachPath.selectNodes(elm);
+			   for (Element theElm : fileElements) {
+				   String file = theElm.getText();
+				   String fileRef = getContentHosting().getReference(file);
+				   logger.debug("Pushing " + fileRef + " on advisor stack");
+				   files.add(fileRef);
+			   }
+
+		   } catch (JDOMException e) {
+			   logger.error("unable to get element", e);
+		   }
+	   }
+
+	  getSecurityService().pushAdvisor(
+			  new AllowMapSecurityAdvisor(ContentHostingService.EVENT_RESOURCE_READ, files));
+   }
+   
+   /**
+    * Return a list of Element objects from the passed root that are of type xs:anyURI
+    * @param root
+    * @return
+    */
+   private List<Element> findElementNamesForFileType(Element root) {
+	   List<Element> fileElements = new ArrayList<Element>();
+	   try {
+		   XPath fileAttachPath = XPath.newInstance(".//element[@type='xs:anyURI']");
+		   fileElements = fileAttachPath.selectNodes(root);
+	   } catch (JDOMException e) {
+		   logger.error("unable to get element", e);
+	   }
+	   return fileElements;
    }
 
    public SecurityService getSecurityService() {

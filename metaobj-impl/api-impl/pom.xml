@@ -145,6 +145,11 @@
       <version>${sakai.spring.test.version}</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>quartz</groupId>
+      <artifactId>quartz</artifactId>
+      <version>1.5.2</version>
+    </dependency>
   </dependencies>
   <build>
     <resources>

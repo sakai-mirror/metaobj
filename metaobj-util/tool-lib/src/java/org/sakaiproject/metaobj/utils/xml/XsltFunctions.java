@@ -25,6 +25,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.sakaiproject.authz.api.SecurityAdvisor;
+import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.content.api.ContentHostingService;
@@ -34,6 +36,7 @@ import org.sakaiproject.util.Xml;
 import org.sakaiproject.util.ResourceLoader;
 import org.sakaiproject.util.DateWidgetFormat;
 import org.sakaiproject.entity.api.Reference;
+import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.entity.cover.EntityManager;
 
 import java.util.*;
@@ -174,7 +177,7 @@ public class XsltFunctions {
 
       String javascript = "javascript:var cal"+fieldId+" = new calendar"+calType+
          "(document.getElementById('"+name+"'));cal"+fieldId+".year_scroll = true;cal"+fieldId+
-         ".time_comp = false;cal"+fieldId+".popup('','/sakai-jsf-resource/inputDate/')";
+         ".time_comp = false;cal"+fieldId+".popup('','/jsf-resource/inputDate/')";
 
       return javascript;
    }
@@ -262,21 +265,46 @@ public class XsltFunctions {
    }
 
    public static String getReferenceName(String idString) {
+	   return getReferenceName(idString, "");
+   }
+   
+   public static String getReferenceName(String idString, String decoration) {
       String refString = getContentHostingService().getReference(idString);
+      String contentRef = refString;
+      if (decoration != null && !decoration.equals("")) {
+    	  refString = decoration + refString;
+      }
       Reference ref = EntityManager.newReference(refString);
 
+      getSecurityService().pushAdvisor(
+ 	         new LocalSecurityAdvisor(ContentHostingService.EVENT_RESOURCE_READ,
+ 	        		 contentRef));
+      
       if (ref == null || ref.getEntity() == null) {
          return "";
       }
-
-      String prop = ref.getEntity().getProperties().getNamePropDisplayName();
-      return ref.getEntity().getProperties().getProperty(prop);
+      
+      ResourceProperties props = ref.getEntity().getProperties();
+      String prop = props.getNamePropDisplayName();
+      return props.getProperty(prop);
+   }
+   
+   public static String getReferenceUrl(String idString) {
+	   return getReferenceUrl(idString, "");
    }
 
-   public static String getReferenceUrl(String idString) {
+   public static String getReferenceUrl(String idString, String decoration) {
       String refString = getContentHostingService().getReference(idString);
+      String contentRef = refString;
+      if (decoration != null && !decoration.equals("")) {
+    	  refString = decoration + refString;
+      }
+      
+      getSecurityService().pushAdvisor(
+ 	         new LocalSecurityAdvisor(ContentHostingService.EVENT_RESOURCE_READ,
+ 	        		 contentRef));
+      
       Reference ref = EntityManager.newReference(refString);
-
       if (ref == null || ref.getEntity() == null) {
          return "";
       }
@@ -303,6 +331,33 @@ public class XsltFunctions {
    protected static ContentTypeImageService getContentTypeImageService() {
       return (ContentTypeImageService)ComponentManager.get(
          "org.sakaiproject.content.api.ContentTypeImageService");   
+   }
+   
+   protected static SecurityService getSecurityService() {
+	      return (SecurityService) ComponentManager.get(
+	         "org.sakaiproject.authz.api.SecurityService");
+	   }
+   
+   public static class LocalSecurityAdvisor implements SecurityAdvisor {
+
+	   private String function;
+	   private String reference;
+
+	   public LocalSecurityAdvisor() {
+		   ;
+	   }
+
+	   public LocalSecurityAdvisor(String function, String reference) {
+		   this.function = function;
+		   this.reference = reference;
+	   }
+
+	   public SecurityAdvice isAllowed(String userId, String function, String reference) {
+		   if (this.function.equals(function) && this.reference.equals(reference)) {
+			   return SecurityAdvice.ALLOWED;
+		   }
+		   return SecurityAdvice.PASS;
+	   }
    }
    
 }

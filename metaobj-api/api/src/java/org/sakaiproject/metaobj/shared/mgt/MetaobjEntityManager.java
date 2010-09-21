@@ -31,5 +31,6 @@ package org.sakaiproject.metaobj.shared.mgt;
 public interface MetaobjEntityManager {
 
    public final static String METAOBJ_ENTITY_PREFIX = "metaobj";
+   public final static String METAOBJ_CONTENT_ENTITY_PREFIX = "metaobjContent";
 
 }
