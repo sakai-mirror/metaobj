@@ -30,6 +30,7 @@ import org.apache.taglibs.standard.tag.el.core.ExpressionUtil;
 import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.content.api.ContentHostingService;
+import org.sakaiproject.portal.api.PortalService;
 import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.util.EditorConfiguration;
 import org.sakaiproject.util.Web;
@@ -41,6 +42,7 @@ import java.io.IOException;
 
 public class RichTextWrapperTag extends BodyTagSupport {
    protected final transient Log logger = LogFactory.getLog(getClass());
+   private static PortalService portalService = (PortalService) ComponentManager.get(PortalService.class);
    
    //private static final String SCRIPT_PATH;
    //private static final String HTMLAREA_SCRIPT_PATH;
@@ -64,6 +66,12 @@ public class RichTextWrapperTag extends BodyTagSupport {
          String.class, this, pageContext);
       
       try {
+    	  
+         writer.write("<script type=\"text/javascript\" defer=\"1\">sakai.editor.launch('" + textAreaId + "');</script>");
+    	  
+    	  
+    	  
+    	  /*
          String editor = ServerConfigurationService.getString("wysiwyg.editor");
          if(editor != null && !editor.equalsIgnoreCase("FCKeditor"))
          {
@@ -103,7 +111,7 @@ public class RichTextWrapperTag extends BodyTagSupport {
                "\t\tif (typeof f.onsubmit != \"function\") f.onsubmit = function() {};\n");
             writer.write("</script>");
          }
-         
+   */      
    
       } catch (IOException e) {
          logger.error("", e);

@@ -26,7 +26,13 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.metaobj.utils.mvc.intf.CommonModelController;
+import org.sakaiproject.portal.api.Editor;
+import org.sakaiproject.portal.api.PortalService;
+import org.sakaiproject.tool.api.Placement;
+import org.sakaiproject.tool.cover.ToolManager;
+import org.sakaiproject.util.EditorConfiguration;
 import org.sakaiproject.util.ResourceLoader;
 import org.springframework.web.servlet.view.JstlView;
 
@@ -75,6 +81,28 @@ public class TemplateJstlView extends JstlView {
       addComponent("_body", body, request, defaultTemplateDef);
       addComponent("_title", title, request, defaultTemplateDef);
       template = addComponent("_template", template, request, defaultTemplateDef);
+      
+      PortalService portalService = (PortalService) ComponentManager.get(PortalService.class);
+
+      Placement placement = ToolManager.getCurrentPlacement();
+      Editor editor = portalService.getActiveEditor(placement);
+      String preloadScript = editor.getPreloadScript() == null ? ""
+         : "<script type=\"text/javascript\" language=\"JavaScript\">" + editor.getPreloadScript() + "</script>\n";
+      String editorScript = editor.getEditorUrl() == null ? ""
+         : "<script type=\"text/javascript\" language=\"JavaScript\" src=\"" + editor.getEditorUrl() + "\"></script>\n";
+      String launchScript = editor.getLaunchUrl() == null ? ""
+         : "<script type=\"text/javascript\" language=\"JavaScript\" src=\"" + editor.getLaunchUrl() + "\"></script>\n";
+      
+      StringBuilder headJs = new StringBuilder();
+      headJs.append("<script type=\"text/javascript\" language=\"JavaScript\" src=\"/library/js/headscripts.js\"></script>\n");
+      headJs.append("<script type=\"text/javascript\" language=\"JavaScript\">var sakai = sakai || {}; sakai.editor = sakai.editor || {}; \n");
+      headJs.append("sakai.editor.collectionId = '" + portalService.getBrowserCollectionId(placement) + "';\n");
+      headJs.append("sakai.editor.enableResourceSearch = " + EditorConfiguration.enableResourceSearch() + ";</script>\n");
+      headJs.append(preloadScript);
+      headJs.append(editorScript);
+      headJs.append(launchScript);
+      
+      request.setAttribute("editorHeadScript", headJs.toString());
 
       CommonModelController controller =
             (CommonModelController) getWebApplicationContext().getBean(commonModelControllerName);
