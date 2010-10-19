@@ -469,7 +469,7 @@
 		<xsl:call-template name="produce-inline">
 			<xsl:with-param name="currentSchemaNode" select="$currentSchemaNode" />
 		</xsl:call-template>
-		<div id="{$name}">
+		<div id="{$name}-div">
 			<xsl:attribute name="class">
             <xsl:call-template
                name="fieldClass"><xsl:with-param
