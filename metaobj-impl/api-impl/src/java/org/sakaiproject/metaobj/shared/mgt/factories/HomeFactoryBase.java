@@ -24,6 +24,7 @@ package org.sakaiproject.metaobj.shared.mgt.factories;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
 import org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome;
@@ -73,13 +74,14 @@ public abstract class HomeFactoryBase implements HomeFactory {
       Map newMap = new Hashtable();
       Map homes = getHomes();
 
-      for (Iterator i = homes.keySet().iterator(); i.hasNext();) {
-         Object key = i.next();
+      for (Iterator i = homes.entrySet().iterator(); i.hasNext();) {
+          Entry entry = (Entry)i.next();
 
-         if (requiredHomeType.isInstance(homes.get(key))) {
-            newMap.put(key, homes.get(key));
-         }
-      }
+          if (requiredHomeType.isInstance(entry.getValue())) {
+             newMap.put(entry.getKey(), entry.getValue());
+          }
+       }
+      
 
       return newMap;
    }

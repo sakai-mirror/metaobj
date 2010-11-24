@@ -204,11 +204,12 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
                                new Integer(StructuredArtifactDefinitionBean.STATE_PUBLISHED)};
       }
 
+      StringBuffer bufQuery = new StringBuffer();
       for (Iterator i = sites.iterator(); i.hasNext();) {
          Site site = (Site) i.next();
-         query += "'" + site.getId() + "'";
-         query += ",";
+         bufQuery.append("'" + site.getId() + "',"); 
       }
+      query += bufQuery.toString();
 
       query += "''))";
 

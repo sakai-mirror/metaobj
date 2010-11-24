@@ -25,6 +25,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -82,17 +83,17 @@ public class HttpServletHelper {
    }
 
    public void reloadSessionMap(HttpServletRequest request, Map map) {
+	   for (Iterator entries = map.entrySet().iterator(); entries.hasNext();) {
+          Entry entry = (Entry) entries.next();
+          String key = (String)entry.getKey();
 
-      for (Iterator keys = map.keySet().iterator(); keys.hasNext();) {
-         String key = (String) keys.next();
-
-         if (map.get(key) == null) {
-            request.getSession().removeAttribute(key);
-         }
-         else if (!map.get(key).equals(request.getSession().getAttribute(key))) {
-            request.getSession().setAttribute(key, map.get(key));
-         }
-      }
+          if (entry.getValue() == null) {
+             request.getSession().removeAttribute(key);
+          }
+          else if (!entry.getValue().equals(request.getSession().getAttribute(key))) {
+             request.getSession().setAttribute(key, entry.getValue());
+          }
+       }
 
       Enumeration enumer = request.getSession().getAttributeNames();
 
@@ -118,16 +119,16 @@ public class HttpServletHelper {
    }
 
    public void reloadRequestMap(HttpServletRequest request, Map map) {
-
-      for (Iterator keys = map.keySet().iterator(); keys.hasNext();) {
-         String key = (String) keys.next();
-         if (map.get(key) == null) {
-            request.removeAttribute(key);
-         }
-         else if (!map.get(key).equals(request.getAttribute(key))) {
-            request.setAttribute(key, map.get(key));
-         }
-      }
+	   for (Iterator entries = map.entrySet().iterator(); entries.hasNext();) {
+          Entry entry = (Entry)entries.next();
+    	  String key = (String) entry.getKey();
+          if (entry.getValue() == null) {
+             request.removeAttribute(key);
+          }
+          else if (!map.get(key).equals(request.getAttribute(key))) {
+             request.setAttribute(key, entry.getValue());
+          }
+       }
 
       Enumeration enumer = request.getAttributeNames();
 
