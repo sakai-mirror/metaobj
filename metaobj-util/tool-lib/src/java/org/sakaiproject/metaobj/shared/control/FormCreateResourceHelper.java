@@ -19,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.validation.Errors;
 
 import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * Created by IntelliJ IDEA.
@@ -67,16 +68,18 @@ public class FormCreateResourceHelper implements Controller, FormController, Can
 
       Map<String, List> homes = getStructuredArtifactDefinitionManager().findCategorizedHomes(false);
       List categorizedHomes = new ArrayList();
-      for (Iterator<String> i=homes.keySet().iterator();i.hasNext();) {
-         try {
-            Site site = SiteService.getSite(i.next());
-            List homesList = homes.get(site.getId());
-            Collections.sort(homesList);
-            categorizedHomes.add(new SiteHomeWrapper(site, homesList));
-         } catch (IdUnusedException e) {
-            throw new RuntimeException(e);
-         }
-      }
+      for (Iterator i=homes.entrySet().iterator();i.hasNext();) {
+          try {
+        	  Entry<String, List> entry = (Entry)i.next();
+             Site site = SiteService.getSite(entry.getKey());
+             List homesList = entry.getValue();
+             Collections.sort(homesList);
+             categorizedHomes.add(new SiteHomeWrapper(site, homesList));
+          } catch (IdUnusedException e) {
+             throw new RuntimeException(e);
+          }
+       }
+      
       Collections.sort(categorizedHomes);
       
       ref.put("categorizedFormList", categorizedHomes);

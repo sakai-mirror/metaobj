@@ -132,7 +132,7 @@ public class ImportStructuredArtifactDefinitionController extends AddStructuredA
          List refs = (List) session.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
          if (refs.size() >= 1) {
             String ids = "";
-            String names = "";
+            StringBuffer names = new StringBuffer();
 
             for (Iterator iter = refs.iterator(); iter.hasNext();) {
                Reference ref = (Reference) iter.next();
@@ -158,10 +158,10 @@ public class ImportStructuredArtifactDefinitionController extends AddStructuredA
                   ids += ",";
                }
                ids += nodeId;
-               names += resource.getProperties().getProperty(resource.getProperties().getNamePropDisplayName()) + " ";
+               names.append(resource.getProperties().getProperty(resource.getProperties().getNamePropDisplayName()) + " ");
             }
             templateForm.setUploadedForm(ids);
-            model.put("name", names);
+            model.put("name", names.toString());
          }
          else {
             templateForm.setUploadedForm(null);

@@ -131,7 +131,7 @@ public class FileDownloadServlet extends HttpServlet {
       
       response.setHeader("Content-Type", "application/octet-stream");
       response.setHeader("Content-Disposition", "attachment"
-              + ((filename != null && filename != "") ? ";filename=\"" + filename + "\"" : ""));
+              + ((filename != null && !filename.equals("")) ? ";filename=\"" + filename + "\"" : ""));
       response.setHeader("Content-Length", Integer.toString(bos.size()));
       
       copyStream(new ByteArrayInputStream(bos.toByteArray()), response.getOutputStream());            
