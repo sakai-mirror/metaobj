@@ -181,11 +181,6 @@ public class ComplexSchemaNodeImpl extends SchemaNodeImpl {
       ValidatedNodeImpl validatedNode =
             new ValidatedNodeImpl(this, node);
 
-      if (orderDependant) {
-         // todo add ordering check here
-
-      }
-
       for (int i = 0; i < childrenElements.length; i++) {
          SchemaNode currentSchemaNode =
                (SchemaNode) childrenMap.get(childrenElements[i]);
