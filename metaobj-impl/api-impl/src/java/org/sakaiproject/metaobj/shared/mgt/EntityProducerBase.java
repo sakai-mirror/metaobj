@@ -99,6 +99,11 @@ public abstract class EntityProducerBase implements EntityProducer {
       ReferenceParser parser = parseReference(wholeRef);
       ContentResource base =
             (ContentResource) entityManager.newReference(parser.getRef()).getEntity();
+      //base could be null because we have a second level of wrapping
+      if (base == null) {
+    	  parser = parseReference(ref.getReference());
+    	  base = (ContentResource) entityManager.newReference(parser.getRef()).getEntity();
+      }
       return new ContentEntityWrapper(base, wholeRef);
    }
 

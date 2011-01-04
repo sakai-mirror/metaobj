@@ -27,6 +27,7 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.XMLOutputter;
+import org.jdom.xpath.XPath;
 import org.sakaiproject.authz.cover.FunctionManager;
 import org.sakaiproject.authz.api.SecurityAdvisor;
 import org.sakaiproject.authz.api.SecurityService;
@@ -37,9 +38,10 @@ import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.content.api.ContentCollectionEdit;
 import org.sakaiproject.exception.*;
+import org.sakaiproject.metaobj.security.AllowChildrenMapSecurityAdvisor;
+import org.sakaiproject.metaobj.security.AllowMapSecurityAdvisor;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.security.AuthorizationFacade;
-import org.sakaiproject.metaobj.security.AllowChildrenMapSecurityAdvisor;
 import org.sakaiproject.metaobj.shared.ArtifactFinder;
 import org.sakaiproject.metaobj.shared.DownloadableManager;
 import org.sakaiproject.metaobj.shared.SharedFunctionConstants;
@@ -1717,6 +1719,56 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       finally {
          getSecurityService().popAdvisor();
       }
+   }
+   
+   public void checkFormAccess(String resource_uuid) {
+	   String resourceId = getContentHosting().resolveUuid(resource_uuid);
+	   boolean allowed = getContentHosting().allowGetResource(resourceId);
+	   if (!allowed)
+		   return;
+	   
+	   Artifact art = getArtifactFinder().load(getIdManager().getId(resource_uuid));
+	   PresentableObjectHome home = (PresentableObjectHome)art.getHome();
+	   Element elm = home.getArtifactAsXml(art);
+	   List<String> files = new ArrayList<String>();
+	   //try to get all the attachments
+
+	   List<Element> elms = findElementNamesForFileType(elm);
+	   for (Element element : elms) {
+		   String name = element.getAttributeValue("name");
+		   try {
+			   XPath fileAttachPath = XPath.newInstance(".//" + name);
+			   List<Element> fileElements = fileAttachPath.selectNodes(elm);
+			   for (Element theElm : fileElements) {
+				   String file = theElm.getText();
+				   String fileRef = getContentHosting().getReference(file);
+				   logger.debug("Pushing " + fileRef + " on advisor stack");
+				   files.add(fileRef);
+			   }
+
+		   } catch (JDOMException e) {
+			   logger.error("unable to get element", e);
+		   }
+	   }
+
+	  getSecurityService().pushAdvisor(
+			  new AllowMapSecurityAdvisor(ContentHostingService.EVENT_RESOURCE_READ, files));
+   }
+   
+   /**
+    * Return a list of Element objects from the passed root that are of type xs:anyURI
+    * @param root
+    * @return
+    */
+   private List<Element> findElementNamesForFileType(Element root) {
+	   List<Element> fileElements = new ArrayList<Element>();
+	   try {
+		   XPath fileAttachPath = XPath.newInstance(".//element[@type='xs:anyURI']");
+		   fileElements = fileAttachPath.selectNodes(root);
+	   } catch (JDOMException e) {
+		   logger.error("unable to get element", e);
+	   }
+	   return fileElements;
    }
 
    public SecurityService getSecurityService() {

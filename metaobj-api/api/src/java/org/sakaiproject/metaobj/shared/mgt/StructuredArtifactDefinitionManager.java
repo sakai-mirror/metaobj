@@ -167,4 +167,10 @@ public interface StructuredArtifactDefinitionManager {
     * @return a Collection of FormConsumptionDetail objects
     */
    public Collection<FormConsumptionDetail> findFormUsage(StructuredArtifactDefinitionBean sad);
+   
+   /**
+    * Look up the form content and setup any access that is needed for attachments
+    * @param resource_uuid
+    */
+   public void checkFormAccess(String resource_uuid);
 }

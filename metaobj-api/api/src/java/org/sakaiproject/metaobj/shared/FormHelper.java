@@ -52,4 +52,6 @@ public interface FormHelper {
 
    public static final String FORM_SAVE_ATTEMPT = "metaobj.saveAttempt";
    
+   public static final String URL_DECORATION = "metaobj.urlDecoration";
+   
 }
