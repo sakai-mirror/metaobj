@@ -85,7 +85,6 @@
     <dependency>
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
-      <version>1.0.4</version>
     </dependency>
     <dependency>
       <groupId>commons-beanutils</groupId>
@@ -135,19 +134,18 @@
       <version>3.8.1</version>
     </dependency>
     <dependency>
-      <groupId>jsf</groupId>
+      <groupId>javax.faces</groupId>
       <artifactId>jsf-impl</artifactId>
-      <version>1.1.01</version>
+      <version>1.1_02-PATCHED</version>
     </dependency>
     <dependency>
-      <groupId>jsf</groupId>
+      <groupId>javax.faces</groupId>
       <artifactId>jsf-api</artifactId>
-      <version>1.1.01</version>
+      <version>1.1_02</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>jstl</artifactId>
-      <version>1.1.2</version>
     </dependency>
     <dependency>
       <groupId>javax.transaction</groupId>
