@@ -54,4 +54,34 @@ public interface FormHelper {
    
    public static final String URL_DECORATION = "metaobj.urlDecoration";
    
+   public static final String PRESENTATION_ID = "_Presentation:Id";
+
+   public static final String PRESENTATION_TEMPLATE_ID = "_PresentationTemplate:Id";
+
+   public static final String PRESENTATION_ITEM_DEF_ID = "_PresentationItemDef:Id";
+
+   public static final String PRESENTATION_ITEM_DEF_NAME = "_PresentationItemDef:Name";
+
+   public static final String XSL_SITE_ID = "sakaiSiteId";
+
+   public static final String XSL_PRESENTATION_TYPE = "sakaiPresentationType";
+
+   public static final String XSL_PRESENTATION_ID = "sakaiPresentationId";
+
+   public static final String XSL_PRESENTATION_ITEM_ID = "sakaiPresentationItemId";
+
+   public static final String XSL_PRESENTATION_ITEM_NAME = "sakaiPresentationItemName";
+
+   public static final String XSL_FORM_TYPE = "metaobjFormType";
+
+   public static final String XSL_ARTIFACT_ID = "metaobjArtifactId";
+
+   public static final String XSL_ARTIFACT_REFERENCE = "metaobjArtifactReference";
+
+   public static final String XSL_OBJECT_ID = "sakaiObjectId";
+
+   public static final String XSL_OBJECT_TITLE = "sakaiObjectTitle";
+
+   public static final String XSL_WIZARD_PAGE_ID = "sakaiWizardPageId";
+
 }
