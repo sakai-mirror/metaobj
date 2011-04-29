@@ -124,9 +124,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>quartz</groupId>
+            <groupId>org.opensymphony.quartz</groupId>
             <artifactId>quartz</artifactId>
-            <version>1.5.2</version>
+            <version>${sakai.quartz.version}</version>
         </dependency>
     </dependencies>
     <build>
