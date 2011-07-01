@@ -25,8 +25,9 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-<fmt:setLocale value="${locale}"/>
-<fmt:setBundle basename = "messages"/>
+<jsp:useBean id="msgs" class="org.sakaiproject.util.ResourceLoader" scope="session">
+   <jsp:setProperty name="msgs" property="baseName" value="messages"/>
+</jsp:useBean>
 
 
 <form method="POST" action="confirmSADDelete.osp">
@@ -45,16 +46,16 @@
    </spring:hasBindErrors>
 
 <fieldset>
-<h3><fmt:message key="legend_confirm_delete"/></h3>
+<h3><c:out value="${msgs.legend_confirm_delete}"/></h3>
 
 <div class="instruction">
-<fmt:message key="confirm_delete"/>
+<c:out value="${msgs.confirm_delete}"/>
 </div>
 
 
 <p class="act">
-<input name="delete" type="submit" value="<fmt:message key="button_yes"/>" accesskey="s" class="active"/>
-<input name="_cancel" type="submit" value="<fmt:message key="button_no"/>" accesskey="x" />
+<input name="delete" type="submit" value='<c:out value="${msgs.button_yes}"/>' accesskey="s" class="active"/>
+<input name="_cancel" type="submit" value='<c:out value="${msgs.button_no}"/>' accesskey="x" />
 </p>
 
 </form>

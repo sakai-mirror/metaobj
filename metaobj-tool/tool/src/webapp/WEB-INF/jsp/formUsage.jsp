@@ -1,12 +1,13 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-<fmt:setLocale value="${locale}"/>
-<fmt:setBundle basename = "messages"/>
+<jsp:useBean id="msgs" class="org.sakaiproject.util.ResourceLoader" scope="session">
+   <jsp:setProperty name="msgs" property="baseName" value="messages"/>
+</jsp:useBean>
 
 <div class="navIntraTool">
 	<a href="<osp:url value="/listStructuredArtifactDefinitions.osp"/>"
-         title="<fmt:message key="back_to_list"/>" ><fmt:message key="back_to_list"/></a>
+         title='<c:out value="${msgs.back_to_list}"/>' ><c:out value="${msgs.back_to_list}"/></a>
 </div>
 
 <osp:url var="listUrl" value="formUsage.osp">
@@ -23,10 +24,10 @@
  <table class="listHier lines nolines" cellspacing="0" cellpadding="0" summary="<fmt:message key="table_header_summary"/>">
    <thead>
       <tr>
-         <th scope="col"><fmt:message key="table_header_type"/></th>
-         <th scope="col"><fmt:message key="table_header_detail1"/></th>
-         <th scope="col"><fmt:message key="table_header_detail2"/></th>
-         <th scope="col"><fmt:message key="table_header_sitename"/></th>
+         <th scope="col"><c:out value="${msgs.table_header_type}"/></th>
+         <th scope="col"><c:out value="${msgs.table_header_detail1}"/></th>
+         <th scope="col"><c:out value="${msgs.table_header_detail2}"/></th>
+         <th scope="col"><c:out value="${msgs.table_header_sitename}"/></th>
       </tr>
    </thead>
 
