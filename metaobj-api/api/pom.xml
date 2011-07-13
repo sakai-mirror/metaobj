@@ -2,45 +2,29 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    
     <parent>
         <artifactId>metaobj-base</artifactId>
-        <groupId>org.sakaiproject</groupId>
+        <groupId>org.sakaiproject.metaobj</groupId>
         <version>2.9-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
-    <artifactId>sakai-metaobj-api</artifactId>
-    <groupId>org.sakaiproject</groupId>
+    
     <name>sakai-metaobj-api</name>
+    <groupId>org.sakaiproject.metaobj</groupId>
+    <artifactId>sakai-metaobj-api</artifactId>
     <organization>
         <name>Sakai Project</name>
         <url>http://sakaiproject.org/</url>
     </organization>
     <inceptionYear>2004</inceptionYear>
     <packaging>jar</packaging>
+    
     <properties>
         <deploy.target>shared</deploy.target>
     </properties>
+    
     <dependencies>
-        <dependency>
-            <groupId>org.sakaiproject.kernel</groupId>
-            <artifactId>sakai-kernel-util</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>net.sf.ehcache</groupId>
-            <artifactId>ehcache-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.sakaiproject.kernel</groupId>
             <artifactId>sakai-kernel-api</artifactId>
@@ -48,6 +32,10 @@
         <dependency>
             <groupId>org.sakaiproject.kernel</groupId>
             <artifactId>sakai-component-manager</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.sakaiproject.kernel</groupId>
+            <artifactId>sakai-kernel-util</artifactId>
         </dependency>
         <dependency>
             <groupId>aopalliance</groupId>
@@ -60,11 +48,6 @@
             <version>2.0.2</version>
         </dependency>
         <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>1.0.4</version>
-        </dependency>
-        <dependency>
             <groupId>commons-collections</groupId>
             <artifactId>commons-collections</artifactId>
             <version>3.1</version>
@@ -73,6 +56,10 @@
             <groupId>commons-dbcp</groupId>
             <artifactId>commons-dbcp</artifactId>
             <version>1.2.2</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
         </dependency>
         <dependency>
             <groupId>commons-pool</groupId>
@@ -90,9 +77,17 @@
             <version>1.7.3.3</version>
         </dependency>
         <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+        </dependency>
+        <dependency>
             <groupId>jdom</groupId>
             <artifactId>jdom</artifactId>
             <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>jta</groupId>
+            <artifactId>jta</artifactId>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -100,8 +95,16 @@
             <version>3.8.1</version>
         </dependency>
         <dependency>
-            <groupId>jta</groupId>
-            <artifactId>jta</artifactId>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring</artifactId>
         </dependency>
         <dependency>
             <groupId>portlet-api</groupId>
@@ -109,6 +112,7 @@
             <version>1.0.1</version>
         </dependency>
     </dependencies>
+    
     <build>
         <resources>
             <resource>
@@ -124,7 +128,6 @@
                 </includes>
             </resource>
         </resources>
-        <!-- java source -->
         <testSourceDirectory>src/test/java</testSourceDirectory>
         <testResources>
             <testResource>
@@ -135,7 +138,6 @@
                     <include>**/*.properties</include>
                 </includes>
             </testResource>
-            <!--includes: include: **/*Test.java -->
         </testResources>
     </build>
 </project>
