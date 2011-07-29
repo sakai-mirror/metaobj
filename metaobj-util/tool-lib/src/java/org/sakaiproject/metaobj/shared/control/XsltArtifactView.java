@@ -79,7 +79,8 @@ public class XsltArtifactView extends AbstractXsltView {
          FormHelper.XSL_SITE_ID, FormHelper.XSL_PRESENTATION_TYPE,
          FormHelper.XSL_PRESENTATION_ID, FormHelper.XSL_PRESENTATION_ITEM_ID,
          FormHelper.XSL_PRESENTATION_ITEM_NAME, FormHelper.XSL_FORM_TYPE,
-         FormHelper.XSL_ARTIFACT_ID, FormHelper.XSL_OBJECT_ID, FormHelper.XSL_OBJECT_TITLE
+         FormHelper.XSL_ARTIFACT_ID, FormHelper.XSL_ARTIFACT_REFERENCE,
+         FormHelper.XSL_OBJECT_ID, FormHelper.XSL_OBJECT_TITLE, FormHelper.XSL_WIZARD_PAGE_ID
    ));
 
    protected Source createXsltSource(Map map, String string, HttpServletRequest httpServletRequest,
