@@ -50,6 +50,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
+import java.util.Map.Entry;
 import java.io.InputStream;
 
 /**
@@ -71,6 +72,16 @@ public class XsltArtifactView extends AbstractXsltView {
    private URIResolver uriResolver;
    private boolean readOnly;
 
+   // These parameter names are reserved. Anything not on this list may be passed
+   // as an HTTP query parameter to pass through from the browser to the stylesheet.
+   protected static final List<String> reservedParams = Collections.unmodifiableList(Arrays.asList(
+         "preview", "fromResources", "edit", "panelId", "subForm",
+         FormHelper.XSL_SITE_ID, FormHelper.XSL_PRESENTATION_TYPE,
+         FormHelper.XSL_PRESENTATION_ID, FormHelper.XSL_PRESENTATION_ITEM_ID,
+         FormHelper.XSL_PRESENTATION_ITEM_NAME, FormHelper.XSL_FORM_TYPE,
+         FormHelper.XSL_ARTIFACT_ID, FormHelper.XSL_OBJECT_ID, FormHelper.XSL_OBJECT_TITLE
+   ));
+
    protected Source createXsltSource(Map map, String string, HttpServletRequest httpServletRequest,
                                      HttpServletResponse httpServletResponse) throws Exception {
 
@@ -89,9 +100,8 @@ public class XsltArtifactView extends AbstractXsltView {
 
       for (Enumeration e = httpServletRequest.getParameterNames(); e.hasMoreElements(); ) {
          String k = e.nextElement().toString();
-         //These are reserved parameters
-         if (! ("preview".equals(k) || "fromResources".equals(k) || "edit".equals(k)
-                  || "panelId".equals(k) || "subForm".equals(k))) {
+         // Do not allow reserved parameter names to be overwritten
+         if (!reservedParams.contains(k)) {
             paramsMap.put(k, httpServletRequest.getParameter(k));
          }
       }
@@ -108,6 +118,26 @@ public class XsltArtifactView extends AbstractXsltView {
       if (httpServletRequest.getAttribute(FormHelper.URL_DECORATION) != null) {
           paramsMap.put("urlDecoration", httpServletRequest.getAttribute(FormHelper.URL_DECORATION));
        }
+
+      HashMap<String, String> xslParams = new HashMap<String, String>();
+      xslParams.put(FormHelper.XSL_PRESENTATION_ID,        FormHelper.PRESENTATION_ID);
+      xslParams.put(FormHelper.XSL_PRESENTATION_TYPE,      FormHelper.PRESENTATION_TEMPLATE_ID);
+      xslParams.put(FormHelper.XSL_PRESENTATION_ITEM_ID,   FormHelper.PRESENTATION_ITEM_DEF_ID);
+      xslParams.put(FormHelper.XSL_PRESENTATION_ITEM_NAME, FormHelper.PRESENTATION_ITEM_DEF_NAME);
+      xslParams.put(FormHelper.XSL_FORM_TYPE,              ResourceEditingHelper.CREATE_SUB_TYPE);
+      xslParams.put(FormHelper.XSL_ARTIFACT_REFERENCE,     ResourceEditingHelper.ATTACHMENT_ID);
+      xslParams.put(FormHelper.XSL_OBJECT_ID,              FormHelper.XSL_OBJECT_ID);
+      xslParams.put(FormHelper.XSL_OBJECT_TITLE,           FormHelper.XSL_OBJECT_TITLE);
+      xslParams.put(FormHelper.XSL_WIZARD_PAGE_ID,         FormHelper.XSL_WIZARD_PAGE_ID);
+
+      // Load up our XSL parameters according to the mapping into the tool session above.
+      // Note that this is not always one-to-one due to some string/key inconsistencies around the tools.
+      for (Entry<String, String> item : xslParams.entrySet()) {
+         Object val = toolSession.getAttribute(item.getValue());
+         if (val != null) {
+            paramsMap.put(item.getKey(), val);
+         }
+      }
 
       boolean edit = false;
 
@@ -137,6 +167,7 @@ public class XsltArtifactView extends AbstractXsltView {
 
       if (edit) {
          paramsMap.put("edit", "true");
+         paramsMap.put(FormHelper.XSL_ARTIFACT_ID, ((Artifact)bean).getId().getValue());
       }
 
       httpServletRequest.setAttribute(STYLESHEET_LOCATION,
@@ -243,6 +274,7 @@ public class XsltArtifactView extends AbstractXsltView {
 
       if (ToolManager.getCurrentPlacement() != null) {
          params.put("panelId", Web.escapeJavascript("Main" + ToolManager.getCurrentPlacement().getId()));
+         params.put(FormHelper.XSL_SITE_ID, ToolManager.getCurrentPlacement().getContext());
       }
 
       if ( request.getAttribute(STYLESHEET_PARAMS) != null )
