@@ -25,7 +25,7 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-<jsp:useBean id="msgs" class="org.sakaiproject.util.ResourceLoader" scope="session">
+<jsp:useBean id="msgs" class="org.sakaiproject.util.ResourceLoader" scope="request">
    <jsp:setProperty name="msgs" property="baseName" value="messages"/>
 </jsp:useBean>
 
