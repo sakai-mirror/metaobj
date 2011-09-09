@@ -31,6 +31,7 @@ import org.sakaiproject.metaobj.utils.xml.NormalizationException;
 import org.sakaiproject.metaobj.utils.xml.SchemaInvalidException;
 import org.sakaiproject.metaobj.utils.xml.SchemaNode;
 import org.sakaiproject.metaobj.utils.xml.ValueRange;
+import org.sakaiproject.util.ResourceLoader;
 
 /**
  * Created by IntelliJ IDEA.
@@ -54,7 +55,7 @@ public class NumberElementType extends FormatterElementType {
    public NumberElementType(String typeName, Element schemaElement, SchemaNode parentNode, Namespace xsdNamespace) {
       super(typeName, schemaElement, parentNode, xsdNamespace);
 
-      format = NumberFormat.getIntegerInstance();
+      format = NumberFormat.getIntegerInstance(new ResourceLoader().getLocale());
 
       totalDigits = (new String(Long.MAX_VALUE + "")).length();
 
