@@ -52,6 +52,8 @@ public interface StructuredArtifactDefinitionManager {
    public Map getWorksiteHomes(Id worksiteId);
 
    public Map getWorksiteHomes(Id worksiteId, boolean includeHidden);
+   
+   public Map getWorksiteHomes(Id worksiteId, String currentUserId, boolean includeHidden);
 
    public List findHomes();
 
@@ -160,6 +162,8 @@ public interface StructuredArtifactDefinitionManager {
    public void addConsumer(FormConsumer consumer);
 
    List findHomes(Id currentWorksiteId, boolean includeHidden, boolean includeGlobal);
+   
+   public List<StructuredArtifactDefinitionBean> findAvailableHomes(Id currentWorksiteId, String currentUserId, boolean includeHidden, boolean includeGlobal);
    
    /**
     * Return form usage details

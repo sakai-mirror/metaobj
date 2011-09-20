@@ -94,4 +94,8 @@ public abstract class HomeFactoryBase implements HomeFactory {
       return getHomes();
    }
 
+   public Map getWorksiteHomes(Id worksiteId, String currentUserId, boolean includeHidden) {
+      return getHomes();
+   }
+
 }

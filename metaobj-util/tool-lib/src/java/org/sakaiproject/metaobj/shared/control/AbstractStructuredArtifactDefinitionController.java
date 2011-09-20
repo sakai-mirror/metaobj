@@ -71,6 +71,17 @@ abstract public class AbstractStructuredArtifactDefinitionController extends Abs
       }
 
    }
+   
+   protected boolean isAllowed(String function) {
+	   boolean isAllowed = false;   
+	   if (getStructuredArtifactDefinitionManager().isGlobal()) {
+		   isAllowed = getAuthzManager().isAuthorized(function, getIdManager().getId(StructuredArtifactDefinitionManager.GLOBAL_SAD_QUALIFIER));
+	   }
+	   else {
+		   isAllowed = getAuthzManager().isAuthorized(function, getIdManager().getId(ToolManager.getCurrentPlacement().getId()));
+	   }
+	   return isAllowed;
+   }
 
    protected Boolean isMaintainer() {
       return new Boolean(getAuthzManager().isAuthorized(WorksiteManager.WORKSITE_MAINTAIN,
@@ -85,6 +96,7 @@ abstract public class AbstractStructuredArtifactDefinitionController extends Abs
       model.put("sites", getUserSites());
       ToolConfiguration tool = getWorksiteManager().getTool(ToolManager.getCurrentPlacement().getId());
       model.put("tool", tool);
+      model.put("currentAgent", getAuthManager().getAgent());
 
       boolean global = getStructuredArtifactDefinitionManager().isGlobal();
       model.put("isGlobal", new Boolean(global));
@@ -106,8 +118,8 @@ abstract public class AbstractStructuredArtifactDefinitionController extends Abs
          types = getStructuredArtifactDefinitionManager().findGlobalHomes();
       }
       else {
-         types = getStructuredArtifactDefinitionManager().findHomes(
-            getWorksiteManager().getCurrentWorksiteId(), true, false);
+         types = getStructuredArtifactDefinitionManager().findAvailableHomes(
+            getWorksiteManager().getCurrentWorksiteId(), getAuthManager().getAgent().getId().getValue(), true, false);
       }
 
       Collections.sort(types);

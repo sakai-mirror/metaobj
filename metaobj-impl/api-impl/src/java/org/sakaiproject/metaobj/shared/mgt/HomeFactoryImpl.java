@@ -107,6 +107,16 @@ public class HomeFactoryImpl implements HomeFactory {
       return homes;
    }
 
+   public Map getWorksiteHomes(Id worksiteId, String currentUserId, boolean includeHidden) {
+	   Map homes = new Hashtable();
+
+	   for (Iterator i = getHomeFactories().iterator(); i.hasNext();) {
+		   homes.putAll(((HomeFactory) i.next()).getWorksiteHomes(worksiteId, currentUserId, includeHidden));
+	   }
+
+	   return homes;
+   }
+
    public Map getHomes(Class requiredHomeType) {
       Map homes = new Hashtable();
 
