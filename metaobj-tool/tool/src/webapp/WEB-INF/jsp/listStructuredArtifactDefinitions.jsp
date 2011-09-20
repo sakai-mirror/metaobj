@@ -1,9 +1,8 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-<jsp:useBean id="msgs" class="org.sakaiproject.util.ResourceLoader" scope="request">
-   <jsp:setProperty name="msgs" property="baseName" value="messages"/>
-</jsp:useBean>
+<fmt:setLocale value="${locale}"/>
+<fmt:setBundle basename = "messages"/>
 
 <osp:authZMap prefix="metaobj." var="can" qualifier="${authZqualifier}"/>
 <!-- GUID=<c:out value="${newFormId}" /> -->
@@ -13,9 +12,9 @@
 <div class="navIntraTool">
 <c:if test="${can.create}">
       <a href="<osp:url value="/addStructuredArtifactDefinition.osp?new=true"/>"
-          title='<c:out value="${msgs.action_new_title}"/>' ><c:out value="${msgs.action_new}"/></a>
+          title="<fmt:message key="action_new_title"/>" ><fmt:message key="action_new"/></a>
       <a href="<osp:url value="/importStructuredArtifactDefinition.osp"/>"
-          title='<c:out value="${msgs.action_import_title}"/>' ><c:out value="${msgs.action_import}"/></a>
+          title="<fmt:message key="action_import_title"/>" ><fmt:message key="action_import"/></a>
     </c:if>
    <c:if test="${isMaintainer}">
 
@@ -31,7 +30,7 @@
             value="${worksite.reference}"/>
       <osp:param name="session.sakai.permissions.helpersakai.tool.helper.done.url" value="${homeUrl}"/>
       <osp:param name="session.sakaiproject.permissions.prefix" value="metaobj."/>
-       </osp:url>"title='<c:out value="${msgs.action_permissions}"/>' ><c:out value="${msgs.action_permissions_title}"/>
+       </osp:url>"title="<fmt:message key="action_permissions"/>" ><fmt:message key="action_permissions_title"/>
      </a>
 
    </c:if>
@@ -51,9 +50,9 @@
          <th scope="col"><fmt:message key="table_header_siteId"/></th>
          <th scope="col"><fmt:message key="table_header_modified"/></th>
          <c:if test="${isGlobal == false}">
-            <th scope="col"><c:out value="${msgs.table_header_siteState}"/></th>
+            <th scope="col"><fmt:message key="table_header_siteState"/></th>
          </c:if>
-         <th scope="col"><c:out value="${msgs.table_header_globalState}"/></th>
+         <th scope="col"><fmt:message key="table_header_globalState"/></th>
       </tr>
    </thead>
 
@@ -85,7 +84,7 @@
       <TD>
          <c:choose>
             <c:when test="${!home.modifiable}">
-               <c:out value="${msgs.text_global}"/>
+               <fmt:message key="text_global"/>
             </c:when>
             <c:otherwise>
                <c:set var="site" value="${sites[home.siteId]}" />
@@ -93,7 +92,7 @@
                   <c:out value="${site.title}" />
                </c:if>
                <c:if test="${empty site}">
-                  <c:out value="${msgs.text_global}"/>
+                  <fmt:message key="text_global"/>
                </c:if>
             </c:otherwise>
          </c:choose>
@@ -103,16 +102,16 @@
       <TD>
          <c:choose>
             <c:when test="${home.global}">
-               <c:out value="${msgs.text_na}"/>
+               <fmt:message key="text_na"/>
             </c:when>
             <c:otherwise>
                <c:if test="${home.modifiable}">
                   <c:choose>
                      <c:when test="${home.siteState == 0}">
-                        <c:out value="${msgs.text_unpublished}"/>
+                        <fmt:message key="text_unpublished"/>
                      </c:when>
                      <c:when test="${home.siteState == 2}">
-                        <c:out value="${msgs.text_published}"/>
+                        <fmt:message key="text_published"/>
                      </c:when>
                   </c:choose>
                </c:if>
@@ -124,30 +123,30 @@
          <c:if test="${home.modifiable}">
             <c:choose>
                <c:when test="${home.globalState == 0}">
-                  <c:out value="${msgs.text_unpublished}"/>
+                  <fmt:message key="text_unpublished"/>
                </c:when>
                <c:when test="${home.globalState == 1}">
-                  <c:out value="${msgs.text_waitingForApproval}"/>
+                  <fmt:message key="text_waitingForApproval"/>
                </c:when>
                <c:when test="${home.globalState == 2}">
-                  <c:out value="${msgs.text_published}"/>
+                  <fmt:message key="text_published"/>
                </c:when>
             </c:choose>
          </c:if>
-         <c:if test="${!home.modifiable}"><c:out value="${msgs.text_published}"/></c:if>
+         <c:if test="${!home.modifiable}"><fmt:message key="text_published"/></c:if>
       </TD>
     </TR>
   </c:forEach>
   </table>
 <br/>
-<c:out value="${msgs.text_explainState}"/>
-<c:out value="${msgs.text_adminsApproveGlobalAccess}"/>
+<fmt:message key="text_explainState"/>
+<fmt:message key="text_adminsApproveGlobalAccess"/>
 
 </c:if>
 
 <c:if test="${empty types}">
-	<c:out value="${msgs.text_noFormsAvailable}"/>
+	<fmt:message key="text_noFormsAvailable"/>
 	<c:if test="${can.create}">
-		<c:out value="${msgs.text_clickAdd}"/>
+		<fmt:message key="text_clickAdd"/>
 	</c:if>
 </c:if>
