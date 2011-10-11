@@ -68,10 +68,14 @@ public class XsltFunctions {
    
    private static PortalService portalService = (PortalService) ComponentManager.get(PortalService.class);
 
+   //NOTE: For 2.8.1 and newer, it is encouraged to use getRichTextHead and either
+   //      getRichTextLaunch or to simply call sakai.editor.launch via JavaScript,
+   //      rather than getRichTextScript. This is to allow for installations to
+   //      progressively update their custom creation renderers.
+   //
+   //      This is related to SAK-21126. See formCreate.xslt and
+   //      formFieldTemplate.xslt for an example of how to use the updated binding.
    public static String getRichTextScript(String textBoxId, Node schemaElement) {
-      return "<script type=\"text/javascript\" defer=\"1\">sakai.editor.launch('" + textBoxId + "');</script>";
-      
-	   /*
       String script = "";
 
       String editor = ServerConfigurationService.getString("wysiwyg.editor");
@@ -129,7 +133,6 @@ public class XsltFunctions {
          "\t<script type=\"text/javascript\" defer=\"1\">chef_setupformattedtextarea('"+textBoxId+"');</script>";
 
       return script;
-      */
    }
    
    public static String getRichTextHead() {
@@ -152,6 +155,16 @@ public class XsltFunctions {
       headJs.append(launchScript);
 	      
       return headJs.toString();
+   }
+
+   public static String getRichTextLaunch(String textBoxId, Node schemaElement) {
+      return getRichTextLaunch(textBoxId, "{}", schemaElement);
+   }
+
+   //Note that config should be a well-formed JavaScript object as a string (JSON). It will be used
+   //verbatim in the editor launch call.
+   public static String getRichTextLaunch(String textBoxId, String config, Node schemaElement) {
+      return "<script type=\"text/javascript\" defer=\"1\">sakai.editor.launch('" + textBoxId + "', " + config + ");</script>";
    }
 
    public static String formatDate(String date, String format) {

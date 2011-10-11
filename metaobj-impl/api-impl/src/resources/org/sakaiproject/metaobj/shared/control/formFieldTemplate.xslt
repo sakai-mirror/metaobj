@@ -500,7 +500,7 @@
 						<xsl:if test="string($currentNode) = ''">
 							<script language="JavaScript" type="text/javascript"> document.forms[0].<xsl:value-of select="$name" />.value="" </script>
 						</xsl:if>
-						<xsl:value-of select="sakaifn:getRichTextScript($name, $currentSchemaNode)" disable-output-escaping="yes" />
+						<xsl:value-of select="sakaifn:getRichTextLaunch($name, $currentSchemaNode)" disable-output-escaping="yes" />
 						<xsl:if test="@maxOccurs='-1'">
 							<a href="javascript:addItem('{$name}parent');" class="addEl">
 								<xsl:attribute name="title">
