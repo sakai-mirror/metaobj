@@ -30,7 +30,7 @@
             value="${worksite.reference}"/>
       <osp:param name="session.sakai.permissions.helpersakai.tool.helper.done.url" value="${homeUrl}"/>
       <osp:param name="session.sakaiproject.permissions.prefix" value="metaobj."/>
-       </osp:url>"title="<fmt:message key="action_permissions"/>" ><fmt:message key="action_permissions_title"/>
+       </osp:url>" title="<fmt:message key="action_permissions"/>" ><fmt:message key="action_permissions_title"/>
      </a>
 
    </c:if>
