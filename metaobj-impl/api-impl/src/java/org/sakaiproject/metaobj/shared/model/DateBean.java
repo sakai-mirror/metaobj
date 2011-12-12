@@ -33,7 +33,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.metaobj.utils.mvc.intf.FieldValueWrapper;
 import org.sakaiproject.metaobj.utils.xml.NormalizationException;
-import org.sakaiproject.util.DateWidgetFormat;
+import org.sakaiproject.metaobj.utils.DateWidgetFormat;
 
 public class DateBean implements FieldValueWrapper {
    protected final Log logger = LogFactory.getLog(getClass());

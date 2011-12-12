@@ -121,6 +121,11 @@
                 <version>2.9-SNAPSHOT</version>
             </dependency>
             <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>sakai-metaobj-tool-lib</artifactId>
+                <version>2.9-SNAPSHOT</version>
+            </dependency>
+            <dependency>
                 <groupId>org.sakaiproject.portal</groupId>
                 <artifactId>sakai-portal-api</artifactId>
                 <version>2.9-SNAPSHOT</version>
