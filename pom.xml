@@ -11,7 +11,7 @@
     <name>sakai-metaobj base pom</name>
     <groupId>org.sakaiproject.metaobj</groupId>
     <artifactId>metaobj-base</artifactId>
-    <version>2.9-SNAPSHOT</version>
+    <version>2.9.0-b01</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -26,9 +26,9 @@
     </modules>
 
     <scm>
-        <connection>scm:svn:https://source.sakaiproject.org/svn/metaobj/branches/sakai-2.9.0-b01</connection>
-        <developerConnection>scm:svn:https://source.sakaiproject.org/svn/metaobj/branches/sakai-2.9.0-b01</developerConnection>
-        <url>https://source.sakaiproject.org/svn/metaobj/branches/sakai-2.9.0-b01</url>
+        <connection>scm:svn:https://source.sakaiproject.org/svn/metaobj/tags/sakai-2.9.0-b01</connection>
+        <developerConnection>scm:svn:https://source.sakaiproject.org/svn/metaobj/tags/sakai-2.9.0-b01</developerConnection>
+        <url>https://source.sakaiproject.org/svn/metaobj/tags/sakai-2.9.0-b01</url>
     </scm>
 
     <distributionManagement>
@@ -44,18 +44,18 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>sakai-metaobj-api</artifactId>
-                <version>2.9-SNAPSHOT</version>
+                <version>${project.version}</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>sakai-metaobj-impl</artifactId>
-                <version>2.9-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>sakai-metaobj-tool-lib</artifactId>
-                <version>2.9-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>jta</groupId>
