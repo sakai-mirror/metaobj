@@ -215,7 +215,7 @@ public class XsltFunctions {
       String calType = "2"; // default to US
       DateWidgetFormat format = new DateWidgetFormat();
 
-      if (format.getLocaleDateFormat() == DateWidgetFormat.DD_MM_YYYY()) {
+      if (format.getLocaleDateFormat().equals(DateWidgetFormat.DD_MM_YYYY())) {
          calType = "1"; // European type
       }
 
