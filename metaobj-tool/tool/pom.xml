@@ -70,7 +70,6 @@
         <dependency>
             <groupId>commons-dbcp</groupId>
             <artifactId>commons-dbcp</artifactId>
-            <version>1.2.2</version>
         </dependency>
         <dependency>
             <groupId>commons-digester</groupId>
@@ -84,7 +83,6 @@
         <dependency>
             <groupId>commons-pool</groupId>
             <artifactId>commons-pool</artifactId>
-            <version>1.2</version>
         </dependency>
         <dependency>
             <groupId>dom4j</groupId>
@@ -111,9 +109,8 @@
             <artifactId>jstl</artifactId>
         </dependency>
         <dependency>
-            <groupId>javax.servlet</groupId>
+            <groupId>javax.servlet.jsp</groupId>
             <artifactId>jsp-api</artifactId>
-            <version>2.0</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
