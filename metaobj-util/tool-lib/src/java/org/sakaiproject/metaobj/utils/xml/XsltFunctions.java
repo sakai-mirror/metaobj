@@ -31,7 +31,11 @@ import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentTypeImageService;
+import org.sakaiproject.portal.api.Editor;
+import org.sakaiproject.portal.api.PortalService;
+import org.sakaiproject.tool.api.Placement;
 import org.sakaiproject.tool.cover.ToolManager;
+import org.sakaiproject.util.EditorConfiguration;
 import org.sakaiproject.util.Xml;
 import org.sakaiproject.util.ResourceLoader;
 import org.sakaiproject.util.DateWidgetFormat;
@@ -61,9 +65,13 @@ public class XsltFunctions {
    private static final Format timeFormat = new SimpleDateFormat(TIME_FORMAT);
 
    private static Map<String, ResourceLoader> resourceLoaders = new Hashtable<String, ResourceLoader>();
+   
+   private static PortalService portalService = (PortalService) ComponentManager.get(PortalService.class);
 
    public static String getRichTextScript(String textBoxId, Node schemaElement) {
-
+      return "<script type=\"text/javascript\" defer=\"1\">sakai.editor.launch('" + textBoxId + "');</script>";
+      
+	   /*
       String script = "";
 
       String editor = ServerConfigurationService.getString("wysiwyg.editor");
@@ -121,6 +129,29 @@ public class XsltFunctions {
          "\t<script type=\"text/javascript\" defer=\"1\">chef_setupformattedtextarea('"+textBoxId+"');</script>";
 
       return script;
+      */
+   }
+   
+   public static String getRichTextHead() {
+      Placement placement = ToolManager.getCurrentPlacement();
+      Editor editor = portalService.getActiveEditor(placement);
+      String preloadScript = editor.getPreloadScript() == null ? ""
+         : "<script type=\"text/javascript\" language=\"JavaScript\">" + editor.getPreloadScript() + "</script>\n";
+      String editorScript = editor.getEditorUrl() == null ? ""
+         : "<script type=\"text/javascript\" language=\"JavaScript\" src=\"" + editor.getEditorUrl() + "\"></script>\n";
+      String launchScript = editor.getLaunchUrl() == null ? ""
+         : "<script type=\"text/javascript\" language=\"JavaScript\" src=\"" + editor.getLaunchUrl() + "\"></script>\n";
+	      
+      StringBuilder headJs = new StringBuilder();
+      headJs.append("<script type=\"text/javascript\" language=\"JavaScript\" src=\"/library/js/headscripts.js\"></script>\n");
+      headJs.append("<script type=\"text/javascript\" language=\"JavaScript\">var sakai = sakai || {}; sakai.editor = sakai.editor || {}; \n");
+      headJs.append("sakai.editor.collectionId = '" + portalService.getBrowserCollectionId(placement) + "';\n");
+      headJs.append("sakai.editor.enableResourceSearch = " + EditorConfiguration.enableResourceSearch() + ";</script>\n");
+      headJs.append(preloadScript);
+      headJs.append(editorScript);
+      headJs.append(launchScript);
+	      
+      return headJs.toString();
    }
 
    public static String formatDate(String date, String format) {
