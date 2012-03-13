@@ -12,7 +12,7 @@
    <bean id="forms_resources" class="org.sakaiproject.component.app.help.model.ResourceBean">
       <property name="docId"><value>aymk</value></property>
       <property name="name"><value>Resources Tool</value></property>
-      <property name="location"><value>/sakai_metaobj/amyk.html</value></property>
+      <property name="location"><value>/sakai_metaobj/aymk.html</value></property>
    </bean>
 
    <bean id="forms_list" class="org.sakaiproject.component.app.help.model.ResourceBean">
@@ -36,7 +36,7 @@
    <bean id="forms_change" class="org.sakaiproject.component.app.help.model.ResourceBean">
       <property name="docId"><value>aymq</value></property>
       <property name="name"><value>Editing a Form</value></property>
-      <property name="location"><value>/sakai_metaobj/amy.html</value></property>
+      <property name="location"><value>/sakai_metaobj/aymq.html</value></property>
    </bean>
 
    <bean id="forms_publish" class="org.sakaiproject.component.app.help.model.ResourceBean">
