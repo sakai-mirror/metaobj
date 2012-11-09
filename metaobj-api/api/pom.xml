@@ -8,7 +8,7 @@
         <version>2.9-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
-    
+    <version>${sakai.version}</version>
     <name>sakai-metaobj-api</name>
     <groupId>org.sakaiproject.metaobj</groupId>
     <artifactId>sakai-metaobj-api</artifactId>
