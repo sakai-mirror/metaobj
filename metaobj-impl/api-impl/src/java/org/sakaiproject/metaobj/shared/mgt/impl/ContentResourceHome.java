@@ -157,6 +157,7 @@ public class ContentResourceHome implements ReadableObjectHome, PresentableObjec
          throw new RuntimeException(e);
       }
       SAXBuilder builder = new SAXBuilder();
+      builder.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true); // SAK-23245
       Document doc = null;
 
       try {

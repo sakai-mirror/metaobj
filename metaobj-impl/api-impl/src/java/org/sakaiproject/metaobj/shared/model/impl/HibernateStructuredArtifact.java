@@ -93,6 +93,7 @@ public class HibernateStructuredArtifact extends StructuredArtifact implements U
       StructuredArtifact artifact = (StructuredArtifact) home.createInstance();
       ByteArrayInputStream in = new ByteArrayInputStream(bytes);
       SAXBuilder saxBuilder = new SAXBuilder();
+      saxBuilder.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true); // SAK-23245
       try {
          Document doc = saxBuilder.build(in);
          artifact.setBaseElement(doc.getRootElement());

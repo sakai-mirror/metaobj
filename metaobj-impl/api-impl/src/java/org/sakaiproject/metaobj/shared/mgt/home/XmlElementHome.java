@@ -214,6 +214,7 @@ public class XmlElementHome implements StructuredArtifactHomeInterface, Initiali
       File objectFile = new File(homeDirectory, id);
 
       SAXBuilder builder = new SAXBuilder();
+      builder.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true); // SAK-23245
 
       try {
          Document doc = builder.build(objectFile);
