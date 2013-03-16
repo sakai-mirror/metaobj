@@ -126,6 +126,7 @@ public class StructuredArtifactHome extends XmlElementHome
             resource.getProperties().getProperty(ResourceProperties.PROP_CREATOR));
 
          SAXBuilder builder = new SAXBuilder();
+         builder.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true); // SAK-23245
          Document doc = builder.build(resource.streamContent());
 
          StructuredArtifact xmlObject =

@@ -1220,6 +1220,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
 
    private StructuredArtifactDefinitionBean readSADfromXML(StructuredArtifactDefinitionBean bean, InputStream inStream) {
       SAXBuilder builder = new SAXBuilder();
+      builder.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true); // SAK-23245
 
       try {
          byte[] bytes = readStreamToBytes(inStream);
