@@ -57,8 +57,14 @@ public class WorksiteManagerImpl implements WorksiteManager {
    }
    
    public List getUserSites(Map properties, List siteTypes) {
-      List mySites = SiteService.getSites(org.sakaiproject.site.api.SiteService.SelectionType.ACCESS,
+      List mySites;
+      if ((properties == null || properties.isEmpty()) && (siteTypes == null || siteTypes.isEmpty())) {
+         mySites = SiteService.getUserSites();
+      }
+      else {
+         mySites = SiteService.getSites(org.sakaiproject.site.api.SiteService.SelectionType.ACCESS,
             siteTypes, null, properties, org.sakaiproject.site.api.SiteService.SortType.NONE, null);
+      }
 
       if (mySites.size() > 0) {
          Collections.sort(mySites);
