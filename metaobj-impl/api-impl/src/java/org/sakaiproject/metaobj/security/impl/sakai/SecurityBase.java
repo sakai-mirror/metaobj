@@ -70,7 +70,7 @@ public class SecurityBase {
          return null;
       }
       Id roleId = getOspiIdManager().getId(siteRealm.getId() + "/" + sakaiRole.getId());
-
+      
       //TODO using the same value for id and eid
       return new RoleWrapper(roleId, roleId, sakaiRole, siteRealm);
    }

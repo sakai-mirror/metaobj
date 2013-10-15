@@ -131,7 +131,7 @@ public class AgentWrapper extends IdentifiableObject implements Agent {
 
       return getWorksiteRoles(currentPlacement.getContext());
    }
-
+   
    public boolean isRole() {
       return false;
    }

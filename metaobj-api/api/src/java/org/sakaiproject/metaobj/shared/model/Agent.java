@@ -25,7 +25,6 @@ import java.io.Serializable;
 import java.security.Principal;
 import java.util.List;
 
-
 /**
  * Created by IntelliJ IDEA.
  * User: John Ellis
@@ -61,7 +60,7 @@ public interface Agent extends Serializable, Principal {
    public List getWorksiteRoles(String worksiteId);
 
    public List getWorksiteRoles();
-
+   
    public boolean isRole();
 
    public String getPassword();

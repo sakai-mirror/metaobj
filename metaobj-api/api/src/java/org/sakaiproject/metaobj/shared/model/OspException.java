@@ -29,6 +29,8 @@ public class OspException
    public static final String MOVE_FAILED = "Move failed ";
    public static final String RENAME_FAILED = "Rename failed ";
    public static final String WRITE_STREAM_FAILED = "Create stream failed ";
+   
+   private String sadName;
 
    /**
     *
@@ -57,6 +59,24 @@ public class OspException
     */
    public OspException(String message, Throwable cause) {
       super(message, cause);
+   }
+   
+   /**
+    * @param message
+    * @param sadName
+    * @param cause
+    */
+   public OspException(String message, String sadName, Throwable cause) {
+	   super(message, cause);
+	   setSadName(sadName);
+   }
+
+   public String getSadName() {
+	   return sadName;
+   }
+
+   public void setSadName(String sadName) {
+	   this.sadName = sadName;
    }
 
 }
