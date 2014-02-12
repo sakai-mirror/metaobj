@@ -45,18 +45,18 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>sakai-metaobj-api</artifactId>
-                <version>10.0-SNAPSHOT</version>
+                <version>${project.version}</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>sakai-metaobj-impl</artifactId>
-                <version>10.0-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>sakai-metaobj-tool-lib</artifactId>
-                <version>10.0-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>jta</groupId>
@@ -65,19 +65,4 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-    
-    <repositories> 
-		<repository> 
-			<id>sonatype-nexus-snapshots</id> 
-			<name>Sonatype Nexus Snapshots</name> 
-			<url> https://oss.sonatype.org/content/repositories/snapshots </url> 
-			<releases> 
-				<enabled>false</enabled> 
-			</releases> 
-			<snapshots> 
-				<enabled>true</enabled> 
-			</snapshots> 
-		</repository> 
-	</repositories>
-    
 </project>
