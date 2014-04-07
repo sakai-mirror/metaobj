@@ -4,7 +4,7 @@
 <div class ="chefPortletContent">
 
 <div class="chefPageviewTitle">
-   <c:out value="${message}" escapeXml="true" />
+   <c:out value="${message}"/>
 </div>
 
 <form method="post">

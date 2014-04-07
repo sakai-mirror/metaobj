@@ -29,19 +29,12 @@ public class ListScroll {
 
    public static final String STARTING_INDEX_TAG = "listScroll_startingIndex";
    public static final String ENSURE_VISIBLE_TAG = "listScroll_ensureVisibleIndex";
-   public static final String REVERSE_PROCESS_LIST_TAG = "listScroll_reverseProcessList";
-   public static final int NO_VIRTUAL_INDEX = -99;
 
    private int total;
    private int perPage;
    private int startingIndex;
    private boolean hideOnePageScroll = false;
-   private boolean hideRecCounts = false;
-   private int virtualPreviousIndex = NO_VIRTUAL_INDEX;
-   private int virtualNextIndex = NO_VIRTUAL_INDEX;
-   private boolean processPreviousFromEnd = false;
-   private boolean processLastFromEnd = false;
-   
+
    public ListScroll(int perPage, int total, int startingIndex) {
       this.perPage = perPage;
       this.total = total;
@@ -54,30 +47,12 @@ public class ListScroll {
       this.startingIndex = startingIndex;
       this.hideOnePageScroll = hideOnePageScroll;
    }
-   
-   public ListScroll(int perPage, int total, int startingIndex, boolean hideOnePageScroll, boolean hideRecCounts, int virtualPreviousIndex, int virtualNextIndex, boolean processPreviousFromEnd, boolean processLastFromEnd) {
-      this.perPage = perPage;
-      this.total = total;
-      this.startingIndex = startingIndex;
-      this.hideOnePageScroll = hideOnePageScroll;
-      this.hideRecCounts = hideRecCounts;
-      this.virtualPreviousIndex = virtualPreviousIndex;
-      this.virtualNextIndex = virtualNextIndex;
-      this.processPreviousFromEnd = processPreviousFromEnd;
-      this.processLastFromEnd = processLastFromEnd;
-      
-   }
 
    public int getNextIndex() {
       int nextIndex = startingIndex + perPage;
 
-      if (nextIndex >= total || virtualNextIndex >= total) {
+      if (nextIndex >= total) {
          return -1;
-      }
-      
-      if (virtualNextIndex != NO_VIRTUAL_INDEX) {
-      	logger.debug("Returning VirtualNextIndex of " + virtualNextIndex + " instead of regular NextIndex of " + nextIndex);
-      	return virtualNextIndex;
       }
 
       return nextIndex;
@@ -94,11 +69,6 @@ public class ListScroll {
    public int getPrevIndex() {
       int prevIndex = startingIndex - perPage;
 
-      if (virtualPreviousIndex != NO_VIRTUAL_INDEX) {
-      	logger.debug("Returning VirtualPreviousIndex of " + virtualPreviousIndex + " instead of regular PreviousIndex of " + prevIndex);
-      	return virtualPreviousIndex;
-      }
-      
       if (prevIndex < 0) {
          return -1;
       }
@@ -145,29 +115,5 @@ public class ListScroll {
    public void setHideOnePageScroll(boolean hideOnePageScroll) {
       this.hideOnePageScroll = hideOnePageScroll;
    }
-   
-   public boolean getHideRecCounts() {
-      return hideRecCounts;
-   }
-
-   public void setHideRecCounts(boolean hideRecCounts) {
-      this.hideRecCounts = hideRecCounts;
-   }
-
-	public boolean isProcessPreviousFromEnd() {
-		return processPreviousFromEnd;
-	}
-
-	public void setProcessPreviousFromEnd(boolean processPreviousFromEnd) {
-		this.processPreviousFromEnd = processPreviousFromEnd;
-	}
-
-	public boolean isProcessLastFromEnd() {
-		return processLastFromEnd;
-	}
-
-	public void setProcessLastFromEnd(boolean processLastFromEnd) {
-		this.processLastFromEnd = processLastFromEnd;
-	}
 
 }
