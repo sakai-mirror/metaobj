@@ -17,7 +17,6 @@
 
     <modules>
         <module>metaobj-api/api</module>
-        <module>metaobj-assembly</module>
         <module>metaobj-impl/api-impl</module>
         <module>metaobj-impl/component</module>
         <module>metaobj-tool</module>
