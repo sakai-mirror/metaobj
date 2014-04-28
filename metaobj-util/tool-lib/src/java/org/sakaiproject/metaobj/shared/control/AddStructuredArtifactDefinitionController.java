@@ -27,8 +27,6 @@ import java.util.Map;
 import java.util.Hashtable;
 import java.io.InputStream;
 
-import org.sakaiproject.authz.api.SecurityAdvisor;
-import org.sakaiproject.authz.cover.SecurityService;
 import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentResource;
@@ -49,7 +47,6 @@ import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolSession;
-import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.util.FormattedText;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
@@ -226,19 +223,9 @@ public class AddStructuredArtifactDefinitionController extends AbstractStructure
 
    protected boolean validateXslt(Id xsltResource, String field, Errors errors) {
       try {
-    	  Boolean canEdit =  getAuthzManager().isAuthorized(SharedFunctionConstants.EDIT_ARTIFACT_DEF, 
-        		  getIdManager().getId(ToolManager.getCurrentPlacement().getId()));
-    	  if (canEdit != null && canEdit) {
-    		  String id = getContentHosting().resolveUuid(xsltResource.getValue());
-    		  String ref = getContentHosting().getReference(id);
-    		  SecurityService.pushAdvisor(new LocalSecurityAdvisor(getAuthManager().getAgent().getId().getValue(), "content.read", ref));
-    	  }
-         ContentResource resource = getContentResource(xsltResource, canEdit);
+         ContentResource resource = getContentResource(xsltResource);
          InputStream is = resource.streamContent();
          getTransformerFactory().newTransformer(new StreamSource(is));
-         if (canEdit != null && canEdit) {
-   		  SecurityService.popAdvisor();
-   	  }
          return true;
       }
       catch (Exception e) {
@@ -311,12 +298,8 @@ public class AddStructuredArtifactDefinitionController extends AbstractStructure
             errors.rejectValue("schemaFile", errorMessage, errorMessage);
          }
       }
-      
-      boolean canEdit =  getAuthzManager().isAuthorized(SharedFunctionConstants.EDIT_ARTIFACT_DEF, 
-    		  getIdManager().getId(ToolManager.getCurrentPlacement().getId()));
-      
       if (sad.getAlternateCreateXslt() != null){
-         ContentResource resource = getContentResource(sad.getAlternateCreateXslt(), canEdit);
+         ContentResource resource = getContentResource(sad.getAlternateCreateXslt());
          if ( resource != null ) {
             String name = resource.getProperties().getProperty(
                resource.getProperties().getNamePropDisplayName());
@@ -328,7 +311,7 @@ public class AddStructuredArtifactDefinitionController extends AbstractStructure
          }
       }
       if (sad.getAlternateViewXslt() != null){
-         ContentResource resource = getContentResource(sad.getAlternateViewXslt(), canEdit);
+         ContentResource resource = getContentResource(sad.getAlternateViewXslt());
          if ( resource != null ) {
             String name = resource.getProperties().getProperty(
                resource.getProperties().getNamePropDisplayName());
@@ -342,21 +325,14 @@ public class AddStructuredArtifactDefinitionController extends AbstractStructure
       return base;
    }
    
-   protected ContentResource getContentResource(Id fileId, Boolean canEdit) {
+   protected ContentResource getContentResource(Id fileId) {
       String id = getContentHosting().resolveUuid(fileId.getValue());
       if ( id == null )
          return null;
 		
       ContentResource resource = null;
       try {
-    	  if (canEdit != null && canEdit) {
-    		  String ref = getContentHosting().getReference(id);
-    		  SecurityService.pushAdvisor(new LocalSecurityAdvisor(getAuthManager().getAgent().getId().getValue(), "content.read", ref));
-    	  }
-    	  resource = getContentHosting().getResource(id);
-    	  if (canEdit != null && canEdit) {
-    		  SecurityService.popAdvisor();
-    	  }
+         resource = getContentHosting().getResource(id);
       } catch (PermissionException e) {
          logger.error("", e);
          throw new RuntimeException(e);
@@ -405,28 +381,5 @@ public class AddStructuredArtifactDefinitionController extends AbstractStructure
       this.uriResolver = uriResolver;
       getTransformerFactory().setURIResolver(uriResolver);
    }
-   
-   
-   public class LocalSecurityAdvisor implements SecurityAdvisor {
-
-	   private String user;
-	   private String function;
-	   private String reference;
-	   
-
-	   public LocalSecurityAdvisor(String user, String function, String reference) {
-	      this.user = user;
-	      this.function = function;
-	      this.reference = reference;
-	   }
-
-	   public SecurityAdvice isAllowed(String userId, String function, String reference) {
-	      if (userId.equals(this.user) && function.equals(this.function) && reference.equals(this.reference)) {
-	         return SecurityAdvice.ALLOWED;
-	      }
-
-	      return SecurityAdvice.PASS;
-	   }
-	}
    
 }

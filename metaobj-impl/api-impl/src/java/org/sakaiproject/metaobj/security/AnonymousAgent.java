@@ -82,7 +82,7 @@ public class AnonymousAgent implements Agent {
    public List getWorksiteRoles() {
       return new ArrayList();
    }
-   
+
    public boolean isRole() {
       return false;
    }
