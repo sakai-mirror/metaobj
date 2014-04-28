@@ -22,7 +22,6 @@
         <module>metaobj-tool</module>
         <module>metaobj-tool/tool</module>
         <module>metaobj-util/tool-lib</module>
-        <module>help</module>
     </modules>
 
     <scm>
